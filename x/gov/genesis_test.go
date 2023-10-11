@@ -185,7 +185,8 @@ func TestSimappExportGenesis(t *testing.T) {
     "dapp_pool_slippage_default": "0.100000000000000000",
     "minting_ft_fee": "100000000000000",
     "minting_nft_fee": "100000000000000",
-    "veto_threshold": "33.400000000000000000"
+    "veto_threshold": "33.400000000000000000",
+    "autocompound_interval_num_blocks": "17280"
   },
   "execution_fees": [
     {
@@ -512,7 +513,8 @@ func TestExportInitGenesis(t *testing.T) {
     "dapp_pool_slippage_default": "0.100000000000000000",
     "minting_ft_fee": "100000000000000",
     "minting_nft_fee": "100000000000000",
-    "veto_threshold": "33.400000000000000000"
+    "veto_threshold": "33.400000000000000000",
+    "autocompound_interval_num_blocks": "17280"
   },	
   "execution_fees": [	
     {	
