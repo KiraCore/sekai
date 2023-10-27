@@ -3567,7 +3567,7 @@ type QueryClient interface {
 	// Query list of all polls by address
 	PollsListByAddress(ctx context.Context, in *QueryPollsListByAddress, opts ...grpc.CallOption) (*QueryPollsListByAddressResponse, error)
 	PollsVotesByPollId(ctx context.Context, in *QueryPollsVotesByPollId, opts ...grpc.CallOption) (*QueryPollsVotesByPollIdResponse, error)
-	// CustomPrefixes returns custom prefixes
+	// CustomPrefixes returns custom denom and bech32 address prefix
 	CustomPrefixes(ctx context.Context, in *QueryCustomPrefixesRequest, opts ...grpc.CallOption) (*QueryCustomPrefixesResponse, error)
 }
 
@@ -3964,7 +3964,7 @@ type QueryServer interface {
 	// Query list of all polls by address
 	PollsListByAddress(context.Context, *QueryPollsListByAddress) (*QueryPollsListByAddressResponse, error)
 	PollsVotesByPollId(context.Context, *QueryPollsVotesByPollId) (*QueryPollsVotesByPollIdResponse, error)
-	// CustomPrefixes returns custom prefixes
+	// CustomPrefixes returns custom denom and bech32 address prefix
 	CustomPrefixes(context.Context, *QueryCustomPrefixesRequest) (*QueryCustomPrefixesResponse, error)
 }
 

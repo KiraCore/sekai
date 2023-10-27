@@ -18,7 +18,7 @@ service Query {
     option (google.api.http).get = "/kira/multistaking/v1beta1/outstanding_rewards";
   }
   rpc Undelegations(QueryUndelegationsRequest) returns (QueryUndelegationsResponse) {
-    option (google.api.http).get = "/kira/multistaking/v1beta1/undelegations";
+    option (google.api.http).get = "/kira/multistaking/v1beta1/undelegations/{delegator}";
   }
   rpc CompoundInfo(QueryCompoundInfoRequest) returns (QueryCompoundInfoResponse) {
     option (google.api.http).get = "/kira/multistaking/v1beta1/compound_info/{delegator}";
