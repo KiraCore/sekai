@@ -6,6 +6,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// MultistakingHooks event hooks for multistaking
+type MultistakingHooks interface {
+	AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool StakingPool) // Must be called when a upsert staking pool
+}
+
 // StakingKeeper expected staking keeper
 type StakingKeeper interface {
 	DefaultDenom(sdk.Context) string

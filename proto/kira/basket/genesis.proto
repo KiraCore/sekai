@@ -10,12 +10,14 @@ import "kira/basket/basket.proto";
 message GenesisState {
   // baskets registered on the module
   repeated Basket baskets = 1 [ (gogoproto.nullable) = false ];
+  // last basket id
+  uint64 last_basket_id = 2;
   // mints by time
-  repeated AmountAtTime historical_mints = 2 [ (gogoproto.nullable) = false ];
+  repeated AmountAtTime historical_mints = 3 [ (gogoproto.nullable) = false ];
   // burns by time
-  repeated AmountAtTime historical_burns = 3 [ (gogoproto.nullable) = false ];
+  repeated AmountAtTime historical_burns = 4 [ (gogoproto.nullable) = false ];
   // swaps by time
-  repeated AmountAtTime historical_swaps = 4 [ (gogoproto.nullable) = false ];
+  repeated AmountAtTime historical_swaps = 5 [ (gogoproto.nullable) = false ];
 }
 
 // https://www.notion.so/kira-network/KIP-78-Token-Basketing-Module-7e6da1f2667c4c13b2274d546031d5db

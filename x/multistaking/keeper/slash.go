@@ -38,4 +38,6 @@ func (k Keeper) SlashStakingPool(ctx sdk.Context, validator string, slash sdk.De
 	feesTreasury = feesTreasury.Add(treasurySendAmount...)
 	k.distrKeeper.SetFeesTreasury(ctx, feesTreasury)
 	k.SetStakingPool(ctx, pool)
+
+	// TODO: pause the basket when the pool's slashed
 }

@@ -96,6 +96,7 @@ func (am AppModule) InitGenesis(
 	var genesisState baskettypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
+	am.basketKeeper.SetLastBasketId(ctx, genesisState.LastBasketId)
 	for _, basket := range genesisState.Baskets {
 		am.basketKeeper.SetBasket(ctx, basket)
 	}
@@ -118,6 +119,7 @@ func (am AppModule) InitGenesis(
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	genesisState := baskettypes.GenesisState{
 		Baskets:         am.basketKeeper.GetAllBaskets(ctx),
+		LastBasketId:    am.basketKeeper.GetLastBasketId(ctx),
 		HistoricalMints: am.basketKeeper.GetAllMintAmounts(ctx),
 		HistoricalBurns: am.basketKeeper.GetAllBurnAmounts(ctx),
 		HistoricalSwaps: am.basketKeeper.GetAllSwapAmounts(ctx),

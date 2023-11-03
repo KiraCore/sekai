@@ -2,6 +2,7 @@ package types
 
 import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -27,4 +28,9 @@ type MultiStakingKeeper interface {
 	RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress)
 	ClaimRewards(ctx sdk.Context, delegator sdk.AccAddress) sdk.Coins
 	ClaimRewardsFromModule(ctx sdk.Context, module string) sdk.Coins
+}
+
+// MultistakingHooks event hooks for multistaking
+type MultistakingHooks interface {
+	AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) // Must be called when a upsert staking pool
 }
