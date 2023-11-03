@@ -16,7 +16,7 @@ func (k Keeper) AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, 
 			if err != nil {
 				basket = types.Basket{
 					Id:              1,
-					Suffix:          fmt.Sprint("staking/%s", rate.Denom),
+					Suffix:          fmt.Sprintf("staking/%s", rate.Denom),
 					Description:     fmt.Sprintf("Basket of staking derivatives for %s token", rate.Denom),
 					Amount:          sdk.ZeroInt(),
 					SwapFee:         sdk.ZeroDec(),
@@ -57,6 +57,51 @@ func (k Keeper) AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, 
 	}
 }
 
+func (k Keeper) AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool, slash sdk.Dec) {
+	rates := k.tk.GetAllTokenRates(ctx)
+	for _, rate := range rates {
+		if rate.StakeToken {
+			basket, err := k.GetBasketByDenom(ctx, fmt.Sprintf("sdb/%s", rate.Denom))
+			if err != nil {
+				continue
+			}
+
+			shareDenom := multistakingtypes.GetShareDenom(pool.Id, rate.Denom)
+			for i, token := range basket.Tokens {
+				if token.Denom == shareDenom {
+					basket.Tokens[i].Weight = token.Weight.Mul(sdk.OneDec().Sub(slash))
+					basket.Tokens[i].Deposits = true
+					basket.Tokens[i].Withdraws = true
+					basket.Tokens[i].Swaps = true
+				}
+			}
+			k.SetBasket(ctx, basket)
+		}
+	}
+}
+
+func (k Keeper) AfterSlashProposalRaise(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) {
+	rates := k.tk.GetAllTokenRates(ctx)
+	for _, rate := range rates {
+		if rate.StakeToken {
+			basket, err := k.GetBasketByDenom(ctx, fmt.Sprintf("sdb/%s", rate.Denom))
+			if err != nil {
+				continue
+			}
+
+			shareDenom := multistakingtypes.GetShareDenom(pool.Id, rate.Denom)
+			for i, token := range basket.Tokens {
+				if token.Denom == shareDenom {
+					basket.Tokens[i].Deposits = false
+					basket.Tokens[i].Withdraws = false
+					basket.Tokens[i].Swaps = false
+				}
+			}
+			k.SetBasket(ctx, basket)
+		}
+	}
+}
+
 //_________________________________________________________________________________________
 
 // Hooks wrapper struct for multistaking keeper
@@ -71,7 +116,17 @@ func (k Keeper) Hooks() Hooks {
 	return Hooks{k}
 }
 
-// Implements sdk.ValidatorHooks
+// Implements Multistaking hooks
 func (h Hooks) AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) {
 	h.k.AfterUpsertStakingPool(ctx, valAddr, pool)
+}
+
+// Implements Multistaking hooks
+func (h Hooks) AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool, slash sdk.Dec) {
+	h.k.AfterSlashStakingPool(ctx, valAddr, pool, slash)
+}
+
+// Implements Slashing hooks
+func (h Hooks) AfterSlashProposalRaise(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) {
+	h.k.AfterSlashProposalRaise(ctx, valAddr, pool)
 }

@@ -75,6 +75,9 @@ func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 			if err == nil {
 				write()
 				fmt.Println("proposal created", proposalID)
+				if k.hooks != nil {
+					k.hooks.AfterSlashProposalRaise(ctx, validator.ValKey, pool)
+				}
 			} else {
 				fmt.Println("proposal creation error", err)
 			}

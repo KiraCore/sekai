@@ -33,4 +33,5 @@ type MultiStakingKeeper interface {
 // MultistakingHooks event hooks for multistaking
 type MultistakingHooks interface {
 	AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) // Must be called when a upsert staking pool
+	AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool, slash sdk.Dec)
 }

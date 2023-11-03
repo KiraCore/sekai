@@ -9,6 +9,7 @@ import (
 // MultistakingHooks event hooks for multistaking
 type MultistakingHooks interface {
 	AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool StakingPool) // Must be called when a upsert staking pool
+	AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool StakingPool, slash sdk.Dec)
 }
 
 // StakingKeeper expected staking keeper

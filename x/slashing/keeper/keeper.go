@@ -23,6 +23,7 @@ type Keeper struct {
 	gk         types.GovKeeper
 	msk        types.MultiStakingKeeper
 	paramspace types.ParamSubspace
+	hooks      types.SlashingHooks
 }
 
 // NewKeeper creates a slashing keeper
@@ -96,4 +97,15 @@ func (k Keeper) setAddrPubkeyRelation(ctx sdk.Context, addr crypto.Address, pubk
 func (k Keeper) deleteAddrPubkeyRelation(ctx sdk.Context, addr crypto.Address) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.AddrPubkeyRelationKey(addr))
+}
+
+// Set the slashing hooks
+func (k *Keeper) SetHooks(sh types.SlashingHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set slashing hooks twice")
+	}
+
+	k.hooks = sh
+
+	return k
 }

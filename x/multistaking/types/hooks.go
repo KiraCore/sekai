@@ -16,3 +16,9 @@ func (h Hooks) AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, p
 		h[i].AfterUpsertStakingPool(ctx, valAddr, pool)
 	}
 }
+
+func (h Hooks) AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool StakingPool, slash sdk.Dec) {
+	for i := range h {
+		h[i].AfterSlashStakingPool(ctx, valAddr, pool, slash)
+	}
+}

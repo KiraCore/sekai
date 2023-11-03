@@ -272,18 +272,13 @@ func NewInitApp(
 	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[govtypes.ModuleName], appCodec, app.BankKeeper)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[stakingtypes.ModuleName], cdc, app.CustomGovKeeper)
 	multiStakingKeeper := multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper, customStakingKeeper)
-	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(
+	customSlashingKeeper := customslashingkeeper.NewKeeper(
 		appCodec,
 		keys[slashingtypes.StoreKey],
 		&customStakingKeeper,
 		multiStakingKeeper,
 		app.CustomGovKeeper,
 		app.GetSubspace(slashingtypes.ModuleName),
-	)
-	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
-	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
-	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
 
 	app.BasketKeeper = basketkeeper.NewKeeper(
@@ -292,6 +287,16 @@ func NewInitApp(
 		app.CustomGovKeeper,
 		app.TokensKeeper,
 		multiStakingKeeper,
+	)
+
+	app.CustomSlashingKeeper = *customSlashingKeeper.SetHooks(
+		slashingtypes.NewMultiSlashingHooks(app.BasketKeeper.Hooks()),
+	)
+
+	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
+	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
+	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
 
 	app.CollectivesKeeper = collectiveskeeper.NewKeeper(
