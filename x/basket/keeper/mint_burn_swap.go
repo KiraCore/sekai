@@ -6,7 +6,6 @@ import (
 	"github.com/KiraCore/sekai/x/basket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) error {
@@ -228,10 +227,7 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 		// pay network for fee
 		feeAmount := pair.InAmount.Amount.Sub(swapAmount)
 		if feeAmount.IsPositive() {
-			err := k.bk.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, sdk.Coins{sdk.NewCoin(pair.InAmount.Denom, feeAmount)})
-			if err != nil {
-				return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
-			}
+			basket.Surplus = sdk.Coins(basket.Surplus).Add(sdk.NewCoin(pair.InAmount.Denom, feeAmount))
 		}
 
 		outAmount := sdk.NewDecFromInt(swapAmount).Mul(inRate).Quo(outRate).RoundInt()
