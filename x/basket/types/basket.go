@@ -120,6 +120,10 @@ func (b Basket) AverageDisbalance() sdk.Dec {
 func (b Basket) SlippageFee(oldDisbalance sdk.Dec) sdk.Dec {
 	disbalance := b.AverageDisbalance()
 	disbalanceDiff := disbalance.Sub(oldDisbalance)
+	// do not charge anything when disbalanceDiff is negative
+	if disbalanceDiff.LT(sdk.ZeroDec()) {
+		return sdk.ZeroDec()
+	}
 	if b.SlipppageFeeMin.GT(disbalanceDiff) {
 		return b.SlipppageFeeMin
 	}
