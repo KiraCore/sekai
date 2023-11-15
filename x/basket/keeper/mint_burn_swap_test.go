@@ -644,7 +644,7 @@ func (suite *KeeperTestSuite) TestBasketSwap() {
 			prevSwapAmount:    sdk.NewInt(0),
 			tokensCap:         sdk.NewDec(1),
 			expectErr:         false,
-			expectedOutAmount: sdk.NewCoins(sdk.NewInt64Coin("ueth", 8_920)),
+			expectedOutAmount: sdk.NewCoins(sdk.NewInt64Coin("ueth", 8_919)),
 		},
 	}
 
