@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 
 	"github.com/KiraCore/sekai/x/recovery/client/cli"
 	"github.com/KiraCore/sekai/x/recovery/keeper"
@@ -119,19 +119,9 @@ func (AppModule) Name() string {
 // RegisterInvariants registers the recovery module invariants.
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-// Route returns the message routing key for the recovery module.
-func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(types.RouterKey, NewHandler(am.keeper))
-}
-
 // QuerierRoute returns the recovery module's querier route name.
 func (AppModule) QuerierRoute() string {
 	return types.QuerierRoute
-}
-
-// LegacyQuerierHandler returns the recovery module sdk.Querier.
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return nil
 }
 
 // RegisterServices registers module services.
@@ -184,8 +174,8 @@ func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.We
 }
 
 // RandomizedParams creates randomized recovery param changes for the simulator.
-func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.ParamChange {
-	return []simtypes.ParamChange{}
+func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.LegacyParamChange {
+	return []simtypes.LegacyParamChange{}
 }
 
 // RegisterStoreDecoder registers a decoder for recovery module's types

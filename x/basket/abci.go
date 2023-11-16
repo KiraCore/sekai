@@ -1,7 +1,7 @@
 package basket
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 
 	"github.com/KiraCore/sekai/x/basket/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"

@@ -3,21 +3,21 @@ package keeper
 import (
 	"errors"
 	"fmt"
-
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Keeper struct {
 	cdc            codec.BinaryCodec
-	storeKey       sdk.StoreKey
+	storeKey       storetypes.StoreKey
 	bk             types.BankKeeper
 	proposalRouter types.ProposalRouter
 }
 
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper) Keeper {
+func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper) Keeper {
 	return Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
@@ -246,6 +246,8 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.MintingFtFee}, nil
 	case types.MintingNftFee:
 		return types.NetworkPropertyValue{Value: properties.MintingNftFee}, nil
+	case types.VetoThreshold:
+		return types.NetworkPropertyValue{StrValue: properties.VetoThreshold.String()}, nil
 
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
@@ -393,6 +395,12 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.MintingFtFee = value.Value
 	case types.MintingNftFee:
 		properties.MintingNftFee = value.Value
+	case types.VetoThreshold:
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.VetoThreshold = decValue
 
 	default:
 		return errors.New("trying to set network property that does not exist")

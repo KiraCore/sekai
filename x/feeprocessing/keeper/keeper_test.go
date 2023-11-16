@@ -8,11 +8,11 @@ import (
 	kiratypes "github.com/KiraCore/sekai/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestNewKeeper_SenderCoinsHistory(t *testing.T) {
@@ -141,7 +141,7 @@ func TestNewKeeper_SendCoinsFromModuleToAccount(t *testing.T) {
 	require.True(t, balance.Amount.Int64() == 100-10)
 
 	savedFees := app.FeeProcessingKeeper.GetSenderCoinsHistory(ctx, addr)
-	require.True(t, savedFees.IsEqual(fees.Sub(returnFees)))
+	require.True(t, savedFees.IsEqual(fees.Sub(returnFees...)))
 }
 
 func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {

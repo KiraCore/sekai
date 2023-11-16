@@ -87,11 +87,11 @@ func (b Basket) DerivativeBasket() bool {
 func (b Basket) ValidateTokensCap() error {
 	totalTokens := sdk.ZeroDec()
 	for _, token := range b.Tokens {
-		totalTokens = totalTokens.Add(token.Amount.ToDec().Mul(token.Weight))
+		totalTokens = totalTokens.Add(sdk.NewDecFromInt(token.Amount).Mul(token.Weight))
 	}
 
 	for _, token := range b.Tokens {
-		if token.Amount.ToDec().Mul(token.Weight).GT(totalTokens.Mul(b.TokensCap)) {
+		if sdk.NewDecFromInt(token.Amount).Mul(token.Weight).GT(totalTokens.Mul(b.TokensCap)) {
 			return sdkerrors.Wrap(ErrTokenExceedingCap, fmt.Sprintf("denom=%s", token.Denom))
 		}
 	}
@@ -105,12 +105,12 @@ func (b Basket) AverageDisbalance() sdk.Dec {
 
 	totalVal := sdk.ZeroDec()
 	for _, token := range b.Tokens {
-		totalVal = totalVal.Add(token.Weight.Mul(token.Amount.ToDec()))
+		totalVal = totalVal.Add(token.Weight.Mul(sdk.NewDecFromInt(token.Amount)))
 	}
 	averageVal := totalVal.Quo(sdk.NewDec(int64(len(b.Tokens))))
 	totalDisbalance := sdk.ZeroDec()
 	for _, token := range b.Tokens {
-		disbalance := averageVal.Sub(token.Weight.Mul(token.Amount.ToDec())).Quo(averageVal)
+		disbalance := averageVal.Sub(token.Weight.Mul(sdk.NewDecFromInt(token.Amount))).Quo(averageVal)
 		totalDisbalance = totalDisbalance.Add(disbalance.Abs())
 	}
 	averageDisbalance := totalDisbalance.Quo(sdk.NewDec(int64(len(b.Tokens))))

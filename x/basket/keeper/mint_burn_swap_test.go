@@ -4,10 +4,10 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/x/basket/types"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func (suite *KeeperTestSuite) TestMintBasketToken() {
@@ -753,7 +753,7 @@ func (suite *KeeperTestSuite) TestBasketSwap() {
 				for _, token := range savedBasket.Tokens {
 					basketUnderlyingCoins = basketUnderlyingCoins.Add(sdk.NewCoin(token.Denom, token.Amount))
 				}
-				suite.Require().True(basketUnderlyingCoins.Add(tc.expectedOutAmount...).Sub(sdk.Coins{tc.swapBalance}).IsAllLTE(depositCoins))
+				suite.Require().True(basketUnderlyingCoins.Add(tc.expectedOutAmount...).Sub(tc.swapBalance).IsAllLTE(depositCoins))
 
 				// check limit period amount increased
 				historicalAmount := suite.app.BasketKeeper.GetLimitsPeriodSwapAmount(suite.ctx, 1, tc.limitPeriod)
@@ -762,10 +762,10 @@ func (suite *KeeperTestSuite) TestBasketSwap() {
 				// check correct fee amount
 				feeCollector := suite.app.AccountKeeper.GetModuleAddress(authtypes.FeeCollectorName)
 				feeCollectorBalance := suite.app.BankKeeper.GetBalance(suite.ctx, feeCollector, "ukex")
-				suite.Require().Equal(feeCollectorBalance.Amount, tc.swapBalance.Amount.ToDec().Mul(basket.SwapFee).RoundInt())
+				suite.Require().Equal(feeCollectorBalance.Amount, sdk.NewDecFromInt(tc.swapBalance.Amount).Mul(basket.SwapFee).RoundInt())
 
 				// check correct slippage amount + surplus
-				suite.Require().True(sdk.Coins(savedBasket.Surplus).Sub(basket.Surplus).IsAllPositive())
+				suite.Require().True(sdk.Coins(savedBasket.Surplus).Sub(basket.Surplus...).IsAllPositive())
 			}
 		})
 	}

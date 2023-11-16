@@ -6,12 +6,12 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
 	types "github.com/cosmos/cosmos-sdk/codec/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/gogo/protobuf/gogoproto"
-	grpc1 "github.com/gogo/protobuf/grpc"
-	proto "github.com/gogo/protobuf/proto"
-	_ "github.com/regen-network/cosmos-proto"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	grpc1 "github.com/cosmos/gogoproto/grpc"
+	proto "github.com/cosmos/gogoproto/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -1145,9 +1145,9 @@ func (m *MsgExecuteDappTxResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgExecuteDappTxResponse proto.InternalMessageInfo
 
-//  allow executors to denounce the current session leader, should take a
-//  session id as a parameter as well as a true or false flag to allow vote
-//  change.
+// allow executors to denounce the current session leader, should take a
+// session id as a parameter as well as a true or false flag to allow vote
+// change.
 type MsgDenounceLeaderTx struct {
 	Sender       string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	DappName     string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`

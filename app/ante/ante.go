@@ -33,16 +33,18 @@ func NewAnteHandler(
 	fk feeprocessingkeeper.Keeper,
 	ak keeper.AccountKeeper,
 	bk types.BankKeeper,
+	ck custodykeeper.Keeper,
+	feegrantKeeper ante.FeegrantKeeper,
+	extensionOptionChecker ante.ExtensionOptionChecker,
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
 	signModeHandler signing.SignModeHandler,
-	ck custodykeeper.Keeper,
+	txFeeChecker ante.TxFeeChecker,
 ) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
 		NewCustodyDecorator(ck, cgk),
 		NewZeroGasMeterDecorator(),
-		ante.NewRejectExtensionOptionsDecorator(),
-		ante.NewMempoolFeeDecorator(),
+		ante.NewExtensionOptionsDecorator(extensionOptionChecker),
 		ante.NewValidateBasicDecorator(),
 		ante.TxTimeoutHeightDecorator{},
 		ante.NewValidateMemoDecorator(ak),
@@ -51,7 +53,7 @@ func NewAnteHandler(
 		NewValidateFeeRangeDecorator(sk, cgk, tk, ak),
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
-		ante.NewDeductFeeDecorator(ak, bk, nil),
+		ante.NewDeductFeeDecorator(ak, bk, feegrantKeeper, txFeeChecker),
 		// poor network management decorator
 		NewPoorNetworkManagementDecorator(ak, cgk, sk),
 		NewBlackWhiteTokensCheckDecorator(cgk, sk, tk),
@@ -334,7 +336,7 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		if tokensBlackWhite.IsFrozen(feeCoin.Denom, defaultDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use as fee is frozen"))
 		}
-		feeAmount = feeAmount.Add(feeCoin.Amount.ToDec().Mul(rate.FeeRate))
+		feeAmount = feeAmount.Add(sdk.NewDecFromInt(feeCoin.Amount).Mul(rate.FeeRate))
 	}
 
 	// execution fee should be prepaid

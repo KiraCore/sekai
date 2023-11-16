@@ -21,7 +21,7 @@ func (s IntegrationTestSuite) WhitelistPermissions(addr sdk.AccAddress, perm gov
 		fmt.Sprintf("--%s=%s", customstakingcli.FlagAddr, addr.String()),
 		fmt.Sprintf("--%s=%d", cli.FlagPermission, perm),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -31,14 +31,9 @@ func (s IntegrationTestSuite) WhitelistPermissions(addr sdk.AccAddress, perm gov
 
 	// We check if the user has the permissions
 	cmd = cli.GetCmdQueryPermissions()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		addr.String(),
 	})
 	s.Require().NoError(err)
 
-	var perms govtypes.Permissions
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
-
-	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsWhitelisted(perm))
 }

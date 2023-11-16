@@ -6,12 +6,12 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/KiraCore/sekai/middleware"
 	layer2cli "github.com/KiraCore/sekai/x/layer2/client/cli"
 	layer2keeper "github.com/KiraCore/sekai/x/layer2/keeper"
 	"github.com/KiraCore/sekai/x/layer2/types"
 	layer2types "github.com/KiraCore/sekai/x/layer2/types"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -19,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 var (
@@ -111,11 +110,6 @@ func (am AppModule) QuerierRoute() string {
 	return layer2types.QuerierRoute
 }
 
-// LegacyQuerierHandler returns the staking module sdk.Querier.
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return nil
-}
-
 func (am AppModule) BeginBlock(clientCtx sdk.Context, req abci.RequestBeginBlock) {
 	am.layer2Keeper.BeginBlocker(clientCtx)
 }
@@ -127,11 +121,6 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 func (am AppModule) Name() string {
 	return layer2types.ModuleName
-}
-
-// Route returns the message routing key for the staking module.
-func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(layer2types.ModuleName, NewHandler(am.layer2Keeper))
 }
 
 // NewAppModule returns a new Custom Staking module.

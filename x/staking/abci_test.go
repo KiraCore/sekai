@@ -5,9 +5,9 @@ import (
 
 	"github.com/KiraCore/sekai/x/staking"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	simapp "github.com/KiraCore/sekai/app"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -33,7 +33,7 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 
 	// First checkings
 	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Len(t, validatorSet, 0)
+	require.Len(t, validatorSet, 1)
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 1)
 
@@ -41,7 +41,7 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 	require.Len(t, updates, 1)
 
 	validatorSet = app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Len(t, validatorSet, 1)
+	require.Len(t, validatorSet, 2)
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 0)
 }
@@ -52,7 +52,7 @@ func TestItDoesNotReturnUpdatesIfThereIsNoPending(t *testing.T) {
 
 	// First checkings
 	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Len(t, validatorSet, 0)
+	require.Len(t, validatorSet, 1)
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 0)
 
@@ -60,7 +60,7 @@ func TestItDoesNotReturnUpdatesIfThereIsNoPending(t *testing.T) {
 	require.Len(t, updates, 0)
 
 	validatorSet = app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Len(t, validatorSet, 0)
+	require.Len(t, validatorSet, 1)
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 0)
 }

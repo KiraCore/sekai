@@ -5,10 +5,10 @@ import (
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
+	"github.com/cometbft/cometbft/crypto/ed25519"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func (suite *KeeperTestSuite) TestLastUndelegationIdGetSet() {
@@ -134,7 +134,7 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 	suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 	suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr2, coins)
 
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
@@ -283,7 +283,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			suite.SetupTest()
 			addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 			valAddr := sdk.ValAddress(addr1)
-			pubkeys := simapp.CreateTestPubKeys(1)
+			pubkeys := simtestutil.CreateTestPubKeys(1)
 			pubKey := pubkeys[0]
 
 			val, err := stakingtypes.NewValidator(valAddr, pubKey)
@@ -355,7 +355,7 @@ func (suite *KeeperTestSuite) TestRegisterDelegator() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
@@ -441,7 +441,7 @@ func (suite *KeeperTestSuite) TestUndelegate() {
 			suite.SetupTest()
 			addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 			valAddr := sdk.ValAddress(addr1)
-			pubkeys := simapp.CreateTestPubKeys(1)
+			pubkeys := simtestutil.CreateTestPubKeys(1)
 			pubKey := pubkeys[0]
 
 			val, err := stakingtypes.NewValidator(valAddr, pubKey)

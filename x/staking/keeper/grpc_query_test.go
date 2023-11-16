@@ -8,12 +8,12 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	stakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestQuerier_ValidatorByAddress(t *testing.T) {
@@ -61,7 +61,6 @@ func TestQuerier_Validators(t *testing.T) {
 	}
 
 	querier := stakingkeeper.NewQuerier(app.CustomStakingKeeper)
-
 	resp, err := querier.Validators(types.WrapSDKContext(ctx), &stakingtypes.ValidatorsRequest{
 		// no restriction to query all
 	})
@@ -69,6 +68,6 @@ func TestQuerier_Validators(t *testing.T) {
 
 	require.Len(t, resp.Validators, 100)
 	require.Len(t, resp.Actors, 1000)
-	require.Equal(t, resp.Pagination.Total, uint64(1000))
+	require.Equal(t, resp.Pagination.Total, uint64(1001))
 	require.NotNil(t, resp.Pagination.NextKey)
 }

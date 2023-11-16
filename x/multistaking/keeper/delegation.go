@@ -57,6 +57,12 @@ func (k Keeper) SetUndelegation(ctx sdk.Context, undelegation types.Undelegation
 	store.Set(key, k.cdc.MustMarshal(&undelegation))
 }
 
+func (k Keeper) RemoveUndelegation(ctx sdk.Context, id uint64) {
+	store := ctx.KVStore(k.storeKey)
+	key := append(types.KeyPrefixUndelegation, sdk.Uint64ToBigEndian(id)...)
+	store.Delete(key)
+}
+
 func (k Keeper) SetPoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	key := append(append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...), delegator...)
@@ -178,7 +184,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 		denomAllocation := sdk.Coins{}
 		for _, reward := range rewards {
 			denomAllocation = denomAllocation.Add(
-				sdk.NewCoin(reward.Denom, reward.Amount.ToDec().Mul(rate.StakeCap).RoundInt()),
+				sdk.NewCoin(reward.Denom, sdk.NewDecFromInt(reward.Amount).Mul(rate.StakeCap).RoundInt()),
 			)
 		}
 
@@ -212,7 +218,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 				}
 			}
 			if !autoCompoundRewards.IsZero() {
-				k.SetDelegatorRewards(ctx, delegator, rewards.Sub(autoCompoundRewards))
+				k.SetDelegatorRewards(ctx, delegator, rewards.Sub(autoCompoundRewards...))
 			}
 		}
 		if !autoCompoundRewards.IsZero() {
@@ -361,8 +367,8 @@ func (k Keeper) Undelegate(ctx sdk.Context, msg *types.MsgUndelegate) error {
 		return types.ErrInsufficientTotalStakingTokens
 	}
 
-	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Sub(msg.Amounts)
-	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Sub(poolCoins)
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Sub(msg.Amounts...)
+	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Sub(poolCoins...)
 	k.SetStakingPool(ctx, pool)
 
 	lastUndelegationId := k.GetLastUndelegationId(ctx) + 1
@@ -394,7 +400,7 @@ func (k Keeper) GetPoolDelegationValue(ctx sdk.Context, pool types.StakingPool, 
 		}
 		shareToken := getShareDenom(pool.Id, stakingToken.Denom)
 		balance := balances.AmountOf(shareToken)
-		delegationValue = delegationValue.Add(balance.ToDec().Mul(rate.FeeRate).RoundInt())
+		delegationValue = delegationValue.Add(sdk.NewDecFromInt(balance).Mul(rate.FeeRate).RoundInt())
 	}
 	return delegationValue
 }
@@ -406,7 +412,7 @@ func (k Keeper) GetCoinsValue(ctx sdk.Context, coins sdk.Coins) sdk.Int {
 		if rate == nil {
 			continue
 		}
-		delegationValue = delegationValue.Add(coin.Amount.ToDec().Mul(rate.FeeRate).RoundInt())
+		delegationValue = delegationValue.Add(sdk.NewDecFromInt(coin.Amount).Mul(rate.FeeRate).RoundInt())
 	}
 	return delegationValue
 }

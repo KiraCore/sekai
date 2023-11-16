@@ -750,7 +750,7 @@ func (suite *AnteTestSuite) TestInfiniteGasMeterDecorator() {
 	suite.ctx = suite.ctx.WithBlockHeight(1)
 
 	// Context GasMeter Limit not set
-	suite.Require().Equal(uint64(0), suite.ctx.GasMeter().Limit(), "GasMeter set with limit before setup")
+	suite.Require().Equal(uint64(0xffffffffffffffff), suite.ctx.GasMeter().Limit(), "GasMeter set with limit before setup")
 
 	newCtx, err := antehandler(suite.ctx, tx, false)
 	suite.Require().Nil(err, "InfiniteGasMeterDecorator returned error")
