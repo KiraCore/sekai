@@ -118,13 +118,13 @@ jobs:
       pull-requests: write
     steps:
           # Install the cosign tool
-          # ref.: https://github.com/sigstore/cosign-installer, v2.2.0
+          # ref.: https://github.com/sigstore/cosign-installer, v3.2.0
           - name: Install cosign
             uses: sigstore/cosign-installer@1fc5bd396d372bee37d608f955b336615edf79c8
             with:
               cosign-release: 'v2.0.0'
           - name: Confirm installation!
-            uses: cosign version
+            run: cosign version
           - name: Download artifacts
             uses: actions/download-artifact@v3.0.0
             with:
