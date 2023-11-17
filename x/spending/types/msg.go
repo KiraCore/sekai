@@ -48,12 +48,12 @@ func (m *MsgCreateSpendingPool) ValidateBasic() error {
 		return ErrEmptyProposerAccAddress
 	}
 	for _, beneficiary := range m.Beneficiaries.Accounts {
-		if beneficiary.Weight == 0 {
+		if beneficiary.Weight.IsNil() || beneficiary.Weight.IsZero() {
 			return ErrEmptyWeightBeneficiary
 		}
 	}
 	for _, beneficiary := range m.Beneficiaries.Roles {
-		if beneficiary.Weight == 0 {
+		if beneficiary.Weight.IsNil() || beneficiary.Weight.IsZero() {
 			return ErrEmptyWeightBeneficiary
 		}
 	}

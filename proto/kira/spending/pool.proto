@@ -23,13 +23,19 @@ message WeightedRole {
   option (gogoproto.equal) = true;
   
   uint64 role = 1;
-  uint64 weight = 2;
+  string weight = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message WeightedAccount {
   option (gogoproto.equal) = true;
 
   string account = 1;
-  uint64 weight = 2;
+  string weight = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message WeightedPermInfo {
   option (gogoproto.equal) = true;

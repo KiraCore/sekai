@@ -50,7 +50,7 @@ func (q Querier) GetTokenRatesByDenom(ctx context.Context, request *types.TokenR
 }
 
 func (q Querier) GetAllTokenRates(ctx context.Context, request *types.AllTokenRatesRequest) (*types.AllTokenRatesResponse, error) {
-	rates := q.keeper.ListTokenRate(sdk.UnwrapSDKContext(ctx))
+	rates := q.keeper.GetAllTokenRates(sdk.UnwrapSDKContext(ctx))
 	return &types.AllTokenRatesResponse{Data: rates}, nil
 }
 

@@ -110,7 +110,7 @@ func (k Keeper) FinishDappBootstrap(ctx sdk.Context, dapp types.Dapp) {
 		for _, userBond := range userBonds {
 			beneficiaries = append(beneficiaries, spendingtypes.WeightedAccount{
 				Account: userBond.User,
-				Weight:  userBond.Bond.Amount.Uint64(),
+				Weight:  userBond.Bond.Amount.ToLegacyDec(),
 			})
 		}
 

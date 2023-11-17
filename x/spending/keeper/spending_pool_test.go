@@ -30,13 +30,13 @@ func (suite *KeeperTestSuite) TestSpendingPoolSetGet() {
 				Roles: []types.WeightedRole{
 					{
 						Role:   1,
-						Weight: 1,
+						Weight: sdk.NewDec(1),
 					},
 				},
 				Accounts: []types.WeightedAccount{
 					{
 						Account: addr1.String(),
-						Weight:  2,
+						Weight:  sdk.NewDec(2),
 					},
 				},
 			},
@@ -61,13 +61,13 @@ func (suite *KeeperTestSuite) TestSpendingPoolSetGet() {
 				Roles: []types.WeightedRole{
 					{
 						Role:   1,
-						Weight: 1,
+						Weight: sdk.NewDec(1),
 					},
 				},
 				Accounts: []types.WeightedAccount{
 					{
 						Account: addr1.String(),
-						Weight:  2,
+						Weight:  sdk.NewDec(2),
 					},
 				},
 			},
