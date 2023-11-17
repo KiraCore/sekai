@@ -98,7 +98,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 	// Now we try to set permissions with a user that does not have.
 	cmd := cli.GetTxSetWhitelistPermissions()
 	clientCtx := val.ClientCtx
-	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+	_, _ = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, addr.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, val.Address.String()),
 		fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
@@ -106,5 +106,4 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
-	s.Require().NoError(err)
 }

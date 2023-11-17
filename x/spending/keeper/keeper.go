@@ -26,7 +26,7 @@ func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, bk types.Ban
 	}
 }
 
-func (k Keeper) GetBeneficiaryWeight(ctx sdk.Context, address sdk.AccAddress, permInfo types.WeightedPermInfo) uint64 {
+func (k Keeper) GetBeneficiaryWeight(ctx sdk.Context, address sdk.AccAddress, permInfo types.WeightedPermInfo) sdk.Dec {
 	for _, owner := range permInfo.Accounts {
 		if owner.Account == address.String() {
 			return owner.Weight
@@ -35,20 +35,20 @@ func (k Keeper) GetBeneficiaryWeight(ctx sdk.Context, address sdk.AccAddress, pe
 
 	actor, found := k.gk.GetNetworkActorByAddress(ctx, address)
 	if !found {
-		return 0
+		return sdk.ZeroDec()
 	}
 
-	weights := make(map[uint64]uint64)
+	weights := make(map[uint64]sdk.Dec)
 	for _, role := range permInfo.Roles {
 		weights[role.Role] = role.Weight
 	}
 
 	for _, role := range actor.Roles {
-		if weights[role] != 0 {
+		if _, ok := weights[role]; ok {
 			return weights[role]
 		}
 	}
-	return 0
+	return sdk.ZeroDec()
 }
 
 func (k Keeper) IsAllowedBeneficiary(ctx sdk.Context, address sdk.AccAddress, permInfo types.WeightedPermInfo) bool {

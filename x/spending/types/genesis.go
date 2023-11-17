@@ -19,7 +19,7 @@ func DefaultGenesis() *GenesisState {
 				VoteEnactment: 300, // 300s
 				Owners:        &PermInfo{OwnerRoles: []uint64{govtypes.RoleValidator}},
 				Beneficiaries: &WeightedPermInfo{
-					Roles: []WeightedRole{{govtypes.RoleValidator, 1}},
+					Roles: []WeightedRole{{govtypes.RoleValidator, sdk.OneDec()}},
 				},
 				Balances: sdk.Coins{},
 			},
