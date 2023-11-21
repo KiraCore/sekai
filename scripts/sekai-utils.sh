@@ -577,7 +577,7 @@ function verifyIdentityRecord() {
     ($(isNullOrEmpty $FINAL_IR_KEYS)) && echoErr "ERROR: No valid record keys were found" && return 1
 
     echoInfo "INFO: Sending request to verify '$FINAL_IR_KEYS'"
-    sekaid tx customgov request-identity-record-verify --verifier="$KM_VER" --record-ids="$FINAL_IR_KEYS" --from=$KM_ACC --tip="$KM_TIP" --keyring-backend=test --home=$SEKAID_HOME --chain-id=$NETWORK_NAME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
+    sekaid tx customgov request-identity-record-verify --verifier="$KM_VER" --record-ids="$FINAL_IR_KEYS" --from=$KM_ACC --verifier-tip="$KM_TIP" --keyring-backend=test --home=$SEKAID_HOME --chain-id=$NETWORK_NAME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
 }
 
 # showIdentityVerificationRequests <verifier-account/address> <requester-address>
