@@ -1,9 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -61,23 +58,4 @@ func (k Keeper) RemoveStakingPool(ctx sdk.Context, pool types.StakingPool) {
 	store := ctx.KVStore(k.storeKey)
 	key := append([]byte(types.KeyPrefixStakingPool), []byte(pool.Validator)...)
 	store.Delete(key)
-}
-
-func getPoolPrefix(poolID uint64) string {
-	return fmt.Sprintf("v%d/", poolID)
-}
-func getPoolCoins(pool types.StakingPool, coins sdk.Coins) sdk.Coins {
-	prefix := getPoolPrefix(pool.Id)
-	poolCoins := sdk.Coins{}
-	for _, coin := range coins {
-		poolCoins = poolCoins.Add(sdk.NewCoin(prefix+coin.Denom, sdk.NewDecFromInt(coin.Amount).Mul(sdk.OneDec().Sub(pool.Slashed)).RoundInt()))
-	}
-	return poolCoins
-}
-func getShareDenom(poolID uint64, denom string) string {
-	prefix := getPoolPrefix(poolID)
-	return prefix + denom
-}
-func getNativeDenom(poolID uint64, denom string) string {
-	return strings.TrimPrefix(denom, getPoolPrefix(poolID))
 }

@@ -20,14 +20,14 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		}
 
 		claimInfos := k.GetPoolClaimInfos(ctx, pool.Name)
-		totalWeight := uint64(0)
+		totalWeight := sdk.ZeroDec()
 		for _, info := range claimInfos {
 			addr := sdk.MustAccAddressFromBech32(info.Account)
 			weight := k.GetBeneficiaryWeight(ctx, addr, *pool.Beneficiaries)
-			totalWeight += weight
+			totalWeight = totalWeight.Add(weight)
 		}
 
-		if totalWeight == 0 {
+		if totalWeight.IsZero() {
 			continue
 		}
 
@@ -36,7 +36,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		// `new_token_rate(x) = ( ( token_deposits(x) /  (dynamic_rate_period * weights_sum))`
 		poolRates := sdk.DecCoins{}
 		for _, deposit := range pool.Balances {
-			rate := sdk.NewDecFromInt(deposit.Amount).Quo(sdk.NewDec(int64(pool.DynamicRatePeriod * totalWeight)))
+			rate := sdk.NewDecFromInt(deposit.Amount).Quo(sdk.NewDec(int64(pool.DynamicRatePeriod)).Mul(totalWeight))
 			poolRates = poolRates.Add(sdk.NewDecCoinFromDec(deposit.Denom, rate))
 		}
 		pool.Rates = poolRates

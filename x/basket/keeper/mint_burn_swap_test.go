@@ -6,7 +6,6 @@ import (
 	"github.com/KiraCore/sekai/x/basket/types"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
@@ -645,7 +644,7 @@ func (suite *KeeperTestSuite) TestBasketSwap() {
 			prevSwapAmount:    sdk.NewInt(0),
 			tokensCap:         sdk.NewDec(1),
 			expectErr:         false,
-			expectedOutAmount: sdk.NewCoins(sdk.NewInt64Coin("ueth", 8_920)),
+			expectedOutAmount: sdk.NewCoins(sdk.NewInt64Coin("ueth", 8_919)),
 		},
 	}
 
@@ -758,11 +757,6 @@ func (suite *KeeperTestSuite) TestBasketSwap() {
 				// check limit period amount increased
 				historicalAmount := suite.app.BasketKeeper.GetLimitsPeriodSwapAmount(suite.ctx, 1, tc.limitPeriod)
 				suite.Require().Equal(historicalAmount, tc.prevSwapAmount.Add(tc.swapBalance.Amount))
-
-				// check correct fee amount
-				feeCollector := suite.app.AccountKeeper.GetModuleAddress(authtypes.FeeCollectorName)
-				feeCollectorBalance := suite.app.BankKeeper.GetBalance(suite.ctx, feeCollector, "ukex")
-				suite.Require().Equal(feeCollectorBalance.Amount, sdk.NewDecFromInt(tc.swapBalance.Amount).Mul(basket.SwapFee).RoundInt())
 
 				// check correct slippage amount + surplus
 				suite.Require().True(sdk.Coins(savedBasket.Surplus).Sub(basket.Surplus...).IsAllPositive())

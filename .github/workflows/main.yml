@@ -118,11 +118,13 @@ jobs:
       pull-requests: write
     steps:
           # Install the cosign tool
-          # ref.: https://github.com/sigstore/cosign-installer, v2.2.0
+          # ref.: https://github.com/sigstore/cosign-installer, v3.2.0
           - name: Install cosign
-            uses: sigstore/cosign-installer@d6a3abf1bdea83574e28d40543793018b6035605
+            uses: sigstore/cosign-installer@1fc5bd396d372bee37d608f955b336615edf79c8
             with:
-              cosign-release: 'v1.7.2'
+              cosign-release: 'v2.0.0'
+          - name: Confirm installation!
+            run: cosign version
           - name: Download artifacts
             uses: actions/download-artifact@v3.0.0
             with:
@@ -187,7 +189,7 @@ jobs:
               COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
             run: |
               echo "$KEY" > ../cosign.key
-              for FILE in *; do FILE_NAME=$(basename $FILE); cosign sign-blob --key=../cosign.key --output-signature=./${FILE_NAME}.sig ./$FILE_NAME; done
+              for FILE in *; do FILE_NAME=$(basename $FILE); cosign sign-blob --yes --key=../cosign.key --output-signature=./${FILE_NAME}.sig ./$FILE_NAME; done
               rm -fv ../cosign.key
           # ref: https://github.com/softprops/action-gh-release, v0.1.14
           # Release on merge only (push action) - this should run only once

@@ -26,4 +26,5 @@ var (
 	ErrDuplicateDenomExistsOnTokens   = errors.Register(ModuleName, 20, "duplicated denom exists on tokens list")
 	ErrTokenExceedingCap              = errors.Register(ModuleName, 21, "token exceeding cap")
 	ErrEmptyUnderlyingTokens          = errors.Register(ModuleName, 22, "empty underlying tokens")
+	ErrBasketDenomSupplyTooBig        = errors.Register(ModuleName, 23, "basket denom supply too big compared to underlying tokens")
 )

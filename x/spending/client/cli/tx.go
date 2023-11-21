@@ -570,13 +570,13 @@ func parseBeneficiaryRolesAndAccounts(cmd *cobra.Command) (types.WeightedPermInf
 			if err != nil {
 				return types.WeightedPermInfo{}, err
 			}
-			weight, err := strconv.Atoi(beneficiaryRoleWeightStrArr[index])
+			weight, err := sdk.NewDecFromStr(beneficiaryRoleWeightStrArr[index])
 			if err != nil {
 				return types.WeightedPermInfo{}, err
 			}
 			beneficiaryRoles = append(beneficiaryRoles, types.WeightedRole{
 				Role:   uint64(role),
-				Weight: uint64(weight),
+				Weight: weight,
 			})
 		}
 	}
@@ -597,13 +597,13 @@ func parseBeneficiaryRolesAndAccounts(cmd *cobra.Command) (types.WeightedPermInf
 			return types.WeightedPermInfo{}, fmt.Errorf("beneficiary account and weight count mismatch")
 		}
 		for index, account := range beneficiaryAccountStrArr {
-			weight, err := strconv.Atoi(beneficiaryAccountWeightStrArr[index])
+			weight, err := sdk.NewDecFromStr(beneficiaryAccountWeightStrArr[index])
 			if err != nil {
 				return types.WeightedPermInfo{}, err
 			}
 			beneficiaryAccounts = append(beneficiaryAccounts, types.WeightedAccount{
 				Account: account,
-				Weight:  uint64(weight),
+				Weight:  weight,
 			})
 		}
 	}
