@@ -189,7 +189,8 @@ jobs:
               COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
             run: |
               echo "$KEY" > ../cosign.key
-              for FILE in *; do FILE_NAME=$(basename $FILE); yes 2>/dev/null | cosign sign-blob --key=../cosign.key --output-signature=./${FILE_NAME}.sig ./$FILE_NAME; done
+              trap "echo Broken pipe; exit 0" SIGPIPE
+              for FILE in *; do FILE_NAME=$(basename $FILE); yes |  cosign sign-blob --key=../cosign.key --output-signature=./${FILE_NAME}.sig ./$FILE_NAME; done
               rm -fv ../cosign.key
           # ref: https://github.com/softprops/action-gh-release, v0.1.14
           # Release on merge only (push action) - this should run only once
