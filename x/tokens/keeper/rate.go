@@ -25,8 +25,8 @@ func (k Keeper) GetTokenRate(ctx sdk.Context, denom string) *types.TokenRate {
 	return rate
 }
 
-// ListTokenRate returns all list of token rate
-func (k Keeper) ListTokenRate(ctx sdk.Context) []*types.TokenRate {
+// GetAllTokenRates returns all list of token rate
+func (k Keeper) GetAllTokenRates(ctx sdk.Context) []*types.TokenRate {
 	var tokenRates []*types.TokenRate
 
 	// get iterator for token rates
@@ -73,7 +73,7 @@ func (k Keeper) UpsertTokenRate(ctx sdk.Context, rate types.TokenRate) error {
 	store.Set(tokenRateStoreID, k.cdc.MustMarshal(&rate))
 
 	totalRewardsCap := sdk.ZeroDec()
-	rates := k.ListTokenRate(ctx)
+	rates := k.GetAllTokenRates(ctx)
 	for _, rate := range rates {
 		totalRewardsCap = totalRewardsCap.Add(rate.StakeCap)
 	}

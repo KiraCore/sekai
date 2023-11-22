@@ -115,7 +115,7 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 	}
 
 	weight := k.GetBeneficiaryWeight(ctx, sender, *pool.Beneficiaries)
-	if weight == 0 {
+	if weight.IsZero() {
 		return types.ErrNotPoolBeneficiary
 	}
 
@@ -150,7 +150,7 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 		if duration > int64(pool.ClaimExpiry) {
 			duration = int64(pool.ClaimExpiry)
 		}
-		amount := rate.Amount.Mul(sdk.NewDec(duration * int64(weight))).RoundInt()
+		amount := rate.Amount.Mul(sdk.NewDec(duration)).Mul(weight).RoundInt()
 		rewards = rewards.Add(sdk.NewCoin(rate.Denom, amount))
 	}
 
