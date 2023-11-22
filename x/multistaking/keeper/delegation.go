@@ -206,6 +206,10 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 		// autocompound rewards
 		rewards := k.GetDelegatorRewards(ctx, delegator)
 		compoundInfo := k.GetCompoundInfoByAddress(ctx, delegator.String())
+		properties := k.govKeeper.GetNetworkProperties(ctx)
+		if compoundInfo.LastExecBlock+properties.AutocompoundIntervalNumBlocks > uint64(ctx.BlockHeight()) {
+			continue
+		}
 		autoCompoundRewards := sdk.Coins{}
 		if compoundInfo.AllDenom {
 			autoCompoundRewards = rewards
@@ -234,6 +238,8 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 			if err != nil {
 				panic(err)
 			}
+			compoundInfo.LastExecBlock = uint64(ctx.BlockHeight())
+			k.SetCompoundInfo(ctx, compoundInfo)
 		}
 	}
 }

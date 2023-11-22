@@ -196,6 +196,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MintingFtFee:                    100_000_000_000_000,
 						MintingNftFee:                   100_000_000_000_000,
 						VetoThreshold:                   sdk.NewDecWithPrec(3340, 2), //33.40%
+						AutocompoundIntervalNumBlocks:   17280,
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

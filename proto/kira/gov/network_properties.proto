@@ -74,7 +74,8 @@ enum NetworkProperty {
     DAPP_POOL_SLIPPAGE_DEFAULT = 56 [(gogoproto.enumvalue_customname) = "DappPoolSlippageDefault"];
     MINTING_FT_FEE = 57 [ (gogoproto.enumvalue_customname) = "MintingFtFee" ];
     MINTING_NFT_FEE = 58 [ (gogoproto.enumvalue_customname) = "MintingNftFee" ];
-    VETO_THRESHOLD  = 59 [ (gogoproto.enumvalue_customname) = "VetoThreshold" ];
+    VETO_THRESHOLD = 59 [ (gogoproto.enumvalue_customname) = "VetoThreshold" ];
+    AUTOCOMPOUND_INTERVAL_NUM_BLOCKS = 60 [ (gogoproto.enumvalue_customname) = "AutocompoundIntervalNumBlocks" ];
 }
 
 message NetworkPropertyValue {
@@ -172,4 +173,5 @@ message NetworkProperties {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
+    uint64 autocompound_interval_num_blocks = 61; // default 17280 - once per day
 }
