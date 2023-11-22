@@ -57,4 +57,5 @@ message CompoundInfo {
   string delegator = 1;
   bool all_denom = 2;
   repeated string compound_denoms = 3;
+  uint64 last_exec_block = 4;
 }
