@@ -125,9 +125,15 @@ func (k Keeper) EditBasket(ctx sdk.Context, basket types.Basket) error {
 	}
 
 	usedDenom := make(map[string]bool)
+	rates, _ := basket.RatesAndIndexes()
+	basketDenomSupplyEst := sdk.ZeroDec()
 	for index, token := range basket.Tokens {
 		// ensure tokens amount is derivated from previous by denom
-		basket.Tokens[index].Amount = prevAmounts[token.Denom]
+		if !prevAmounts[token.Denom].IsNil() {
+			basket.Tokens[index].Amount = prevAmounts[token.Denom]
+		} else {
+			basket.Tokens[index].Amount = sdk.ZeroInt()
+		}
 
 		// validate denom for the token
 		if err := sdk.ValidateDenom(token.Denom); err != nil {
@@ -140,6 +146,13 @@ func (k Keeper) EditBasket(ctx sdk.Context, basket types.Basket) error {
 			return types.ErrDuplicateDenomExistsOnTokens
 		}
 		usedDenom[token.Denom] = true
+		basketDenomSupplyEst = basketDenomSupplyEst.
+			Add(basket.Tokens[index].Amount.ToLegacyDec().Mul(rates[token.Denom]))
+	}
+
+	supply := k.bk.GetSupply(ctx, basket.GetBasketDenom())
+	if supply.Amount.GT(basketDenomSupplyEst.TruncateInt()) {
+		return types.ErrBasketDenomSupplyTooBig
 	}
 
 	k.SetBasket(ctx, basket)

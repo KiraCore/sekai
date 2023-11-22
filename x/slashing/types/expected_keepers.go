@@ -45,6 +45,11 @@ type StakingKeeper interface {
 	GetIdRecordsByAddress(sdk.Context, sdk.AccAddress) []govtypes.IdentityRecord
 }
 
+// SlashingHooks event hooks for slashing
+type SlashingHooks interface {
+	AfterSlashProposalRaise(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool)
+}
+
 // StakingHooks event hooks for staking validator object (noalias)
 type StakingHooks interface {
 	AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress)                           // Must be called when a validator is created

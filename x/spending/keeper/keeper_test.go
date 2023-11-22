@@ -77,16 +77,16 @@ func (suite *KeeperTestSuite) TestGetBeneficiaryWeight() {
 	})
 
 	whitelistInfo := types.WeightedPermInfo{
-		Roles:    []types.WeightedRole{{Role: 1, Weight: 1}},
-		Accounts: []types.WeightedAccount{{Account: addrs[1].String(), Weight: 2}},
+		Roles:    []types.WeightedRole{{Role: 1, Weight: sdk.NewDec(1)}},
+		Accounts: []types.WeightedAccount{{Account: addrs[1].String(), Weight: sdk.NewDec(2)}},
 	}
 
 	weight := suite.app.SpendingKeeper.GetBeneficiaryWeight(suite.ctx, addrs[0], whitelistInfo)
-	suite.Require().Equal(weight, uint64(1))
+	suite.Require().Equal(weight.String(), sdk.NewDec(1).String())
 	weight = suite.app.SpendingKeeper.GetBeneficiaryWeight(suite.ctx, addrs[1], whitelistInfo)
-	suite.Require().Equal(weight, uint64(2))
+	suite.Require().Equal(weight.String(), sdk.NewDec(2).String())
 	weight = suite.app.SpendingKeeper.GetBeneficiaryWeight(suite.ctx, addrs[2], whitelistInfo)
-	suite.Require().Equal(weight, uint64(0))
+	suite.Require().Equal(weight.String(), sdk.NewDec(0).String())
 }
 
 func (suite *KeeperTestSuite) TestIsAllowedBeneficiary() {
@@ -122,8 +122,8 @@ func (suite *KeeperTestSuite) TestIsAllowedBeneficiary() {
 	})
 
 	whitelistInfo := types.WeightedPermInfo{
-		Roles:    []types.WeightedRole{{Role: 1, Weight: 1}},
-		Accounts: []types.WeightedAccount{{Account: addrs[1].String(), Weight: 2}},
+		Roles:    []types.WeightedRole{{Role: 1, Weight: sdk.NewDec(1)}},
+		Accounts: []types.WeightedAccount{{Account: addrs[1].String(), Weight: sdk.NewDec(2)}},
 	}
 
 	isAllowed := suite.app.SpendingKeeper.IsAllowedBeneficiary(suite.ctx, addrs[0], whitelistInfo)

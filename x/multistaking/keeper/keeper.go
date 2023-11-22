@@ -16,6 +16,7 @@ type Keeper struct {
 	govKeeper   govkeeper.Keeper
 	sk          types.StakingKeeper
 	distrKeeper types.DistributorKeeper
+	hooks       types.MultistakingHooks
 }
 
 // NewKeeper returns new keeper.
@@ -28,6 +29,17 @@ func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, bankKeeper t
 		govKeeper:   govKeeper,
 		sk:          sk,
 	}
+}
+
+// Set the validator hooks
+func (k *Keeper) SetHooks(sh types.MultistakingHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set validator hooks twice")
+	}
+
+	k.hooks = sh
+
+	return k
 }
 
 func (k *Keeper) SetDistrKeeper(distrKeeper types.DistributorKeeper) {

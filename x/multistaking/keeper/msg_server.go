@@ -57,8 +57,7 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 		// increase id when creating a new pool
 		lastPoolId := k.keeper.GetLastPoolId(ctx) + 1
 		k.keeper.SetLastPoolId(ctx, lastPoolId)
-
-		k.keeper.SetStakingPool(ctx, types.StakingPool{
+		pool = types.StakingPool{
 			Id:                 lastPoolId,
 			Enabled:            msg.Enabled,
 			Validator:          msg.Validator,
@@ -66,7 +65,12 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 			TotalStakingTokens: []sdk.Coin{},
 			TotalShareTokens:   []sdk.Coin{},
 			TotalRewards:       []sdk.Coin{},
-		})
+		}
+		k.keeper.SetStakingPool(ctx, pool)
+	}
+
+	if k.keeper.hooks != nil {
+		k.keeper.hooks.AfterUpsertStakingPool(ctx, valAddr, pool)
 	}
 
 	return &types.MsgUpsertStakingPoolResponse{}, nil
