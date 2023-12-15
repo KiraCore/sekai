@@ -282,3 +282,38 @@ func (m *MsgRegisterDelegator) GetSigners() []sdk.AccAddress {
 		sender,
 	}
 }
+
+var (
+	_ sdk.Msg = &MsgClaimMaturedUndelegations{}
+)
+
+func NewMsgClaimMaturedUndelegations(sender string) *MsgClaimMaturedUndelegations {
+	return &MsgClaimMaturedUndelegations{
+		Sender: sender,
+	}
+}
+
+func (m *MsgClaimMaturedUndelegations) Route() string {
+	return ModuleName
+}
+
+func (m *MsgClaimMaturedUndelegations) Type() string {
+	return types.MsgTypeClaimMaturedUndelegations
+}
+
+func (m *MsgClaimMaturedUndelegations) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgClaimMaturedUndelegations) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgClaimMaturedUndelegations) GetSigners() []sdk.AccAddress {
+	sender, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{sender}
+}

@@ -17,6 +17,7 @@ service Msg {
   rpc SetCompoundInfo(MsgSetCompoundInfo) returns (MsgSetCompoundInfoResponse);
   rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
   rpc ClaimUndelegation(MsgClaimUndelegation) returns (MsgClaimUndelegationResponse);
+  rpc ClaimMaturedUndelegations(MsgClaimMaturedUndelegations) returns (MsgClaimMaturedUndelegationsResponse);
   rpc RegisterDelegator(MsgRegisterDelegator) returns (MsgRegisterDelegatorResponse);
 }
 
@@ -91,6 +92,15 @@ message MsgClaimUndelegation {
 }
 
 message MsgClaimUndelegationResponse {}
+
+message MsgClaimMaturedUndelegations {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1;
+}
+
+message MsgClaimMaturedUndelegationsResponse {}
 
 message MsgRegisterDelegator {
   string delegator = 1;

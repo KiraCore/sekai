@@ -43,13 +43,14 @@ const (
 	MsgTypeClaimValidator = "claim-validator"
 
 	// multistaking module
-	MsgTypeUpsertStakingPool = "upsert_staking_pool"
-	MsgTypeDelegate          = "delegate"
-	MsgTypeUndelegate        = "undelegate"
-	MsgTypeClaimRewards      = "claim_rewards"
-	MsgTypeClaimUndelegation = "claim_undelegation"
-	MsgTypeSetCompoundInfo   = "set_compound_info"
-	MsgTypeRegisterDelegator = "register_delegator"
+	MsgTypeUpsertStakingPool         = "upsert_staking_pool"
+	MsgTypeDelegate                  = "delegate"
+	MsgTypeUndelegate                = "undelegate"
+	MsgTypeClaimRewards              = "claim_rewards"
+	MsgTypeClaimUndelegation         = "claim_undelegation"
+	MsgTypeClaimMaturedUndelegations = "claim_matured_undelegations"
+	MsgTypeSetCompoundInfo           = "set_compound_info"
+	MsgTypeRegisterDelegator         = "register_delegator"
 
 	// basket module
 	MsgTypeDisableBasketDeposits  = "disable-basket-deposits"
