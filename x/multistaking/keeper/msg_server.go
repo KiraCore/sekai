@@ -135,6 +135,34 @@ func (k msgServer) ClaimUndelegation(goCtx context.Context, msg *types.MsgClaimU
 	return &types.MsgClaimUndelegationResponse{}, nil
 }
 
+func (k msgServer) ClaimMaturedUndelegations(goCtx context.Context, msg *types.MsgClaimMaturedUndelegations) (*types.MsgClaimMaturedUndelegationsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	delegator, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	allUndelegations := k.keeper.GetAllUndelegations(ctx)
+	for _, undelegation := range allUndelegations {
+		if undelegation.Address != msg.Sender {
+			continue
+		}
+
+		if uint64(ctx.BlockTime().Unix()) < undelegation.Expiry {
+			continue
+		}
+
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, delegator, undelegation.Amount)
+		if err != nil {
+			return nil, err
+		}
+		k.keeper.RemoveUndelegation(ctx, undelegation.Id)
+	}
+
+	return &types.MsgClaimMaturedUndelegationsResponse{}, nil
+}
+
 func (k msgServer) SetCompoundInfo(goCtx context.Context, msg *types.MsgSetCompoundInfo) (*types.MsgSetCompoundInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
