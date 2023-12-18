@@ -34,7 +34,7 @@ const (
 	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 
 	MsgTypeRegisterIdentityRecords            = "register-identity-records"
-	MsgTypeEditIdentityRecord                 = "edit-identity-record"
+	MsgTypeDeleteIdentityRecord               = "delete-identity-record"
 	MsgTypeRequestIdentityRecordsVerify       = "request-identity-records-verify"
 	MsgTypeHandleIdentityRecordsVerifyRequest = "handle-identity-records-verify-request"
 	MsgTypeCancelIdentityRecordsVerifyRequest = "cancel-identity-records-verify-request"
@@ -153,7 +153,7 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeSubmitProposal:                     10,
 	MsgTypeVoteProposal:                       11,
 	MsgTypeRegisterIdentityRecords:            12,
-	MsgTypeEditIdentityRecord:                 13,
+	MsgTypeDeleteIdentityRecord:               13,
 	MsgTypeRequestIdentityRecordsVerify:       14,
 	MsgTypeHandleIdentityRecordsVerifyRequest: 15,
 	MsgTypeCancelIdentityRecordsVerifyRequest: 16,

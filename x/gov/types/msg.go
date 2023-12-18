@@ -635,6 +635,7 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgPollCreate creates a new MsgPollCreate.
+//
 //nolint:interfacer
 func NewMsgPollCreate(creator sdk.AccAddress, title, description string, reference string, checksum string, pollValues []string, roles []string, valueCount uint64, valueType string, possibleChoices uint64, duration string) *MsgPollCreate {
 	m := &MsgPollCreate{
@@ -763,7 +764,7 @@ func (m *MsgDeleteIdentityRecords) Route() string {
 }
 
 func (m *MsgDeleteIdentityRecords) Type() string {
-	return types.MsgTypeEditIdentityRecord
+	return types.MsgTypeDeleteIdentityRecord
 }
 
 func (m *MsgDeleteIdentityRecords) ValidateBasic() error {
@@ -902,6 +903,7 @@ func (m *MsgCancelIdentityRecordsVerifyRequest) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgSubmitProposal creates a new MsgSubmitProposal.
+//
 //nolint:interfacer
 func NewMsgSubmitProposal(proposer sdk.AccAddress, title, description string, content Content) (*MsgSubmitProposal, error) {
 	m := &MsgSubmitProposal{
