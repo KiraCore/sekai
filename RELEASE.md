@@ -1,4 +1,3 @@
 Features:
 
-- Autocompound interval addition
-- sekai utils script fix for CI
+- Upgrade Cosmos SDK version to v0.47.6

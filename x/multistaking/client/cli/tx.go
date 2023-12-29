@@ -36,6 +36,7 @@ func NewTxCmd() *cobra.Command {
 		GetTxUndelegate(),
 		GetTxClaimRewards(),
 		GetTxClaimUndelegation(),
+		GetTxClaimMaturedUndelegations(),
 		GetTxSetCompoundInfo(),
 		GetTxRegisterDelegator(),
 	)
@@ -182,6 +183,28 @@ func GetTxClaimUndelegation() *cobra.Command {
 			}
 			msg := types.NewMsgClaimUndelegation(clientCtx.FromAddress.String(), uint64(undelegationId))
 
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxClaimMaturedUndelegations() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "claim-matured-undelegations",
+		Short: "Submit a transaction to claim all matured undelegations.",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgClaimMaturedUndelegations(clientCtx.FromAddress.String())
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
