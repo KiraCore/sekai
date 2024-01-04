@@ -40,6 +40,7 @@ message AllTokenAliasesRequest {}
 message AllTokenAliasesResponse {
   repeated kira.tokens.TokenAlias data = 1;
   string default_denom = 2;
+  string bech32_prefix = 3;
 }
 
 message TokenAliasesByDenomRequest {

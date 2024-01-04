@@ -36,6 +36,7 @@ func (q Querier) GetAllTokenAliases(ctx context.Context, request *types.AllToken
 	return &types.AllTokenAliasesResponse{
 		Data:         aliases,
 		DefaultDenom: appparams.DefaultDenom,
+		Bech32Prefix: appparams.AccountAddressPrefix,
 	}, nil
 }
 
