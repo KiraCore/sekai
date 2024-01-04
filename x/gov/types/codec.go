@@ -79,7 +79,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 				"description": "After what time function execution should fail"
 			},
 			"default_parameters": {
-				"type":        "bool",
+				"type":        "uint64",
 				"description": "Default values that the function in question will consume as input parameters before execution"
 			},
 			"proposer": {
