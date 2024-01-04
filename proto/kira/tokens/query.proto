@@ -39,6 +39,7 @@ message AllTokenAliasesRequest {}
 
 message AllTokenAliasesResponse {
   repeated kira.tokens.TokenAlias data = 1;
+  string default_denom = 2;
 }
 
 message TokenAliasesByDenomRequest {

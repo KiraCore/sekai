@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -32,7 +33,10 @@ func (q Querier) GetTokenAliasesByDenom(ctx context.Context, request *types.Toke
 func (q Querier) GetAllTokenAliases(ctx context.Context, request *types.AllTokenAliasesRequest) (*types.AllTokenAliasesResponse, error) {
 	aliases := q.keeper.ListTokenAlias(sdk.UnwrapSDKContext(ctx))
 
-	return &types.AllTokenAliasesResponse{Data: aliases}, nil
+	return &types.AllTokenAliasesResponse{
+		Data:         aliases,
+		DefaultDenom: appparams.DefaultDenom,
+	}, nil
 }
 
 func (q Querier) GetTokenRate(ctx context.Context, request *types.TokenRateRequest) (*types.TokenRateResponse, error) {
