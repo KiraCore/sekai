@@ -1,3 +1,4 @@
 Features:
 
-- Upgrade Cosmos SDK version to v0.47.6
+- Add default denom on AllTokenAliases response
+- Update default_parameters type from bool to uint64 on codec metadata
