@@ -3,6 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/KiraCore/sekai/x/genutil"
 	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
@@ -16,14 +17,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 const (
 	FlagJsonMinimize = "json-minimize"
-	FlagBankOnly     = "bank-only"
+	FlagModulesOnly  = "modules-only"
 )
 
 func upgradedPlan(plan *v03123upgradetypes.PlanV03123) *upgradetypes.Plan {
@@ -91,12 +91,22 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 				return errors.Wrap(err, "failed to unmarshal genesis state")
 			}
 
-			if bankOnly, _ := cmd.Flags().GetBool(FlagBankOnly); bankOnly {
-				bankGenesis := genesisState[banktypes.ModuleName]
-				genesisState = mbm.DefaultGenesis(cdc)
-				genesisState[banktypes.ModuleName] = bankGenesis
+			modulesCombined, err := cmd.Flags().GetString(FlagModulesOnly)
+			if err != nil {
+				return err
+			}
+			if modulesCombined != "" {
+				newGenesis := mbm.DefaultGenesis(cdc)
+				modules := strings.Split(modulesCombined, ",")
+				for _, module := range modules {
+					moduleGenesis, ok := genesisState[module]
+					if !ok {
+						return errors.New("invalid module")
+					}
+					newGenesis[module] = moduleGenesis
+				}
+				genesisState = newGenesis
 			} else {
-
 				if err = mbm.ValidateGenesis(cdc, txEncCfg, genesisState); err != nil {
 					return errors.Wrap(err, "failed to validate genesis state")
 				}
@@ -270,7 +280,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 		},
 	}
 	cmd.Flags().Bool(FlagJsonMinimize, true, "flag to export genesis in minimized version")
-	cmd.Flags().Bool(FlagBankOnly, false, "flag to derive only bank module")
+	cmd.Flags().String(FlagModulesOnly, "", "flag to derive only specific modules - one of followings auth,bank,customstaking,customslashing,evidence,consensus,params,upgrade,recovery,customgov,spending,distributor,basket,ubi,tokens,custody,multistaking,collectives,layer2")
 
 	return cmd
 }
