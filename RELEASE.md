@@ -1,4 +1,3 @@
 Features:
 
-- Add default denom on AllTokenAliases response
-- Update default_parameters type from bool to uint64 on codec metadata
+- Add flag for filtering only required modules for migration #630
