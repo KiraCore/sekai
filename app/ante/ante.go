@@ -51,16 +51,16 @@ func NewAnteHandler(
 		ante.NewConsumeGasForTxSizeDecorator(ak),
 		// custom fee range validator
 		NewValidateFeeRangeDecorator(sk, cgk, tk, ak),
-		// ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
-		// ante.NewValidateSigCountDecorator(ak),
+		// NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
+		// NewValidateSigCountDecorator(ak),
 		ante.NewDeductFeeDecorator(ak, bk, feegrantKeeper, txFeeChecker),
 		// poor network management decorator
 		NewPoorNetworkManagementDecorator(ak, cgk, sk),
 		NewBlackWhiteTokensCheckDecorator(cgk, sk, tk),
 		// custom execution fee consume decorator
 		NewExecutionFeeRegistrationDecorator(ak, cgk, fk),
-		// ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
-		// ante.NewSigVerificationDecorator(ak, signModeHandler),
+		// NewSigGasConsumeDecorator(ak, sigGasConsumer),
+		// NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
 }
