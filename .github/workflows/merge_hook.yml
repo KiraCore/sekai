@@ -13,16 +13,18 @@ jobs:
     steps:
       - name: Extract Version from Branch Name
         id: version-extract
-        run: echo "version=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/heads/release/v}" >> $GITHUB_ENV
+        env:
+          GITHUB_REF: ${{ github.event.pull_request.head.ref }}
         shell: bash
 
       - name: Trigger Repository Dispatch Event
         env:
-          VERSION: ${{ env.version }}
+          VERSION: ${{ env.VERSION }}
         run: |
-          VERSION=${VERSION#"release/"} 
           curl -X POST -H "Accept: application/vnd.github.v3+json" \
-          -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
-          "https://api.github.com/repos/${{ secrets.DISPATCH_OWNER }}/${{ secrets.DISPATCH_REPO }}/dispatches" \
-          -d "{\"event_type\":\"release_merged\", \"client_payload\": {\"version\":\"${VERSION}\"}}"
+          -H "Authorization: Bearer ${{ secrets.SEKIN_TOKEN }}" \
+          "https://api.github.com/repos/kiracore/sekin/dispatches" \
+          -d "{\"event_type\":\"release_merged\", \"client_payload\": {\"version\":\"${VERSION}\", \"name\":\"sekai\"}}"
 
