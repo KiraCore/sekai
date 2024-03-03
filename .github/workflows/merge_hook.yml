@@ -1,0 +1,43 @@
+
+name: Release Merged Hook
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  trigger-dispatch:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Version from Branch Name
+        id: version-extract
+        run: |
+          VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | sed 's|release/v||')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Trigger Repository Dispatch Event
+        env:
+          VERSION: ${{ env.VERSION }}
+        run: |
+          curl -X POST -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: Bearer ${{ secrets.REPO_ACCESS }}" \
+          "https://api.github.com/repos/KiraCore/sekin/dispatches" \
+          -d @- <<EOF
+          {
+            "event_type": "release_merged",
+            "client_payload": {
+              "version": "${VERSION}",
+              "authors": "KIRA",
+              "url": "https://kira.network",
+              "documentation": "https://docs.kira.network",
+              "source": "https://github.com/KiraCore/sekai",
+              "vendor": "KiraCore",
+              "licenses": "CC BY-NC-SA 4.0",
+              "title": "sekai",
+              "description": "SEKAI, KIRA's blockchain core, enhances Tendermint with Multi-Bonded Proof of Stake for staking diverse assets and KEX. It facilitates transactions and state transitions through Consensus Nodes, supported by off-chain modules like INTERX and RYOKAI for scalable execution and storage. As a hypermodular network hub, SEKAI streamlines user balance settlements, secures RollApp layers, and manages data/token transfers. It simplifies dApp deployment by enabling Consensus Nodes to act as Executors for RollApps, fostering a decentralized verification and execution system incentivized by KIRA’s liquidity protocols."
+            }
+          }
+          EOF
