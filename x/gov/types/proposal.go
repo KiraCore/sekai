@@ -658,11 +658,11 @@ func (m *ProposalSetExecutionFees) ProposalType() string {
 }
 
 func (m *ProposalSetExecutionFees) ProposalPermission() PermValue {
-	return PermCreateJailCouncilorProposal
+	return PermCreateSetExecutionFeesProposal
 }
 
 func (m *ProposalSetExecutionFees) VotePermission() PermValue {
-	return PermVoteJailCouncilorProposal
+	return PermVoteSetExecutionFeesProposal
 }
 
 // ValidateBasic returns basic validation
