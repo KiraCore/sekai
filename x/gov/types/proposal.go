@@ -644,3 +644,28 @@ func (m *ProposalJailCouncilor) VotePermission() PermValue {
 func (m *ProposalJailCouncilor) ValidateBasic() error {
 	return nil
 }
+
+func NewSetExecutionFeesProposal(proposer sdk.AccAddress, description string, executionFees []ExecutionFee) *ProposalSetExecutionFees {
+	return &ProposalSetExecutionFees{
+		Proposer:      proposer,
+		Description:   description,
+		ExecutionFees: executionFees,
+	}
+}
+
+func (m *ProposalSetExecutionFees) ProposalType() string {
+	return kiratypes.ProposalTypeSetExecutionFees
+}
+
+func (m *ProposalSetExecutionFees) ProposalPermission() PermValue {
+	return PermCreateJailCouncilorProposal
+}
+
+func (m *ProposalSetExecutionFees) VotePermission() PermValue {
+	return PermVoteJailCouncilorProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *ProposalSetExecutionFees) ValidateBasic() error {
+	return nil
+}
