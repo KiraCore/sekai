@@ -19,25 +19,31 @@ Login as admin & load environment variables.
 
 sudo -s
 
-Set desired SEKAI release version and binaries repo as env variables within /etc/profile (with bash-utils or manually). Sourcing /etc/profile is necessary.
+Set desired SEKAI release version and binaries repo as env variables within `/etc/profile` (with `bash-utils` or manually). Sourcing `/etc/profile` is necessary.
 Check latest SEKAI release's version [here](https://github.com/KiraCore/sekai/releases).
 
+```bash
 setGlobEnv SEKAI_VERSION "v0.3.39" && \
 setGlobEnv SEKAI_REPO "$HOME/sekai" && \
 setGlobEnv NETWORK_NAME "test" && \
 setGlobEnv SEKAID_HOME "~/.sekaid-$NETWORK_NAME" && \
 loadGlobEnvs
+```
 
 Clone repository and install
 
-rm -fr $SEKAI_REPO && rm -fr $GOBIN/sekaid && mkdir $SEKAI_REPO && cd $SEKAI_REPO && \
+```bash
+rm -rf $SEKAI_REPO && rm -fr $GOBIN/sekaid && mkdir $SEKAI_REPO && cd $SEKAI_REPO && \
 git clone https://github.com/KiraCore/sekai.git -b $SEKAI_VERSION $SEKAI_REPO && \
 chmod -R 777 ./scripts && make install && \
 echo "SUCCESS installed sekaid $(sekaid version)" || echo "FAILED"
+```
 
 Verify successful installation
 
+```bash
 sekaid version --long
+```
 
 ## SEKAI Modules
 
