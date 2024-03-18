@@ -200,6 +200,18 @@ PermCreateJailCouncilorProposal=64
 # permission needed to vote on jail councilors proposal
 PermVoteJailCouncilorProposal=65
 
+# permission needed to create a poll proposal
+PermCreatePollProposal=66
+
+# permission needed to create a dapp proposal without bond
+PermCreateDappProposalWithoutBond=67
+
+# permission needed to create a proposal to set execution fees
+PermCreateSetExecutionFeesProposal=68
+
+# permission needed to vote on set execution fees proposal
+PermVoteSetExecutionFeesProposal=69
+
 ###################################### transaction_types ######################################
 TypeMsgSend="send"
 TypeMsgMultiSend="multisend"

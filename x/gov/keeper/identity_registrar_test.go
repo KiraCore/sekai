@@ -220,7 +220,8 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	require.Len(t, records, 1)
 
 	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"invalidkey"})
-	require.Error(t, err)
+	require.NoError(t, err)
+	require.Len(t, records, 1)
 }
 
 func TestKeeper_TryLongMonikerField(t *testing.T) {

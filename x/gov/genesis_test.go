@@ -114,7 +114,10 @@ func TestSimappExportGenesis(t *testing.T) {
         63,
         64,
         65,
-        66
+        66,
+        67,
+        68,
+        69
       ]
     },
     "2": {
