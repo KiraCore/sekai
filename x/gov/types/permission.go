@@ -398,4 +398,28 @@ var PermMetadata = []PermInfo{
 		Module:      "gov",
 		Description: "the permission needed to vote on jail councilors proposal",
 	},
+	{
+		Id:          int32(PermCreatePollProposal),
+		Name:        "PERMISSION_CREATE_POLL_PROPOSAL",
+		Module:      "gov",
+		Description: "the permission needed to create a poll proposal",
+	},
+	{
+		Id:          int32(PermCreateDappProposalWithoutBond),
+		Name:        "PERMISSION_CREATE_DAPP_PROPOSAL_WITHOUT_BOND",
+		Module:      "gov",
+		Description: "the permission needed to create a dapp proposal without bond",
+	},
+	{
+		Id:          int32(PermCreateSetExecutionFeesProposal),
+		Name:        "PERMISSION_CREATE_SET_EXECUTION_FEES_PROPOSAL",
+		Module:      "gov",
+		Description: "the permission needed to create a proposal to set execution fees",
+	},
+	{
+		Id:          int32(PermVoteSetExecutionFeesProposal),
+		Name:        "PERMISSION_VOTE_SET_EXECUTION_FEES_PROPOSAL",
+		Module:      "gov",
+		Description: "the permission needed to vote on set execution fees proposal",
+	},
 }

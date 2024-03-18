@@ -456,6 +456,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&SetProposalDurationsProposal{},
 		&ProposalResetWholeCouncilorRank{},
 		&ProposalJailCouncilor{},
+		&ProposalSetExecutionFees{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

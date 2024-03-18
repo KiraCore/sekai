@@ -226,4 +226,10 @@ enum PermValue {
 
   // PERMISSION_CREATE_DAPP_PROPOSAL_WITHOUT_BOND defines the permission needed to create a dapp proposal without bond
   PERMISSION_CREATE_DAPP_PROPOSAL_WITHOUT_BOND = 67 [(gogoproto.enumvalue_customname) = "PermCreateDappProposalWithoutBond"];
+
+  // PERMISSION_CREATE_SET_EXECUTION_FEES_PROPOSAL defines the permission needed to create a proposal to set execution fees
+  PERMISSION_CREATE_SET_EXECUTION_FEES_PROPOSAL = 68 [(gogoproto.enumvalue_customname) = "PermCreateSetExecutionFeesProposal"];
+
+  // PERMISSION_VOTE_SET_EXECUTION_FEES_PROPOSAL defines the permission needed to vote on set execution fees proposal
+  PERMISSION_VOTE_SET_EXECUTION_FEES_PROPOSAL = 69 [(gogoproto.enumvalue_customname) = "PermVoteSetExecutionFeesProposal"];
 }
