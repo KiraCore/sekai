@@ -464,3 +464,25 @@ func (a ApplyJailCouncilorProposalHandler) Apply(ctx sdk.Context, proposalID uin
 	}
 	return nil
 }
+
+type ApplySetExecutionFeesHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplySetExecutionFeesProposalHandler(keeper keeper.Keeper) *ApplySetExecutionFeesHandler {
+	return &ApplySetExecutionFeesHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplySetExecutionFeesHandler) ProposalType() string {
+	return kiratypes.ProposalTypeSetExecutionFees
+}
+
+func (a ApplySetExecutionFeesHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
+	p := proposal.(*types.ProposalSetExecutionFees)
+	for _, executionFee := range p.ExecutionFees {
+		a.keeper.SetExecutionFee(ctx, executionFee)
+	}
+	return nil
+}

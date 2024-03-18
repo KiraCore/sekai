@@ -7,6 +7,7 @@ import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 import "kira/gov/role.proto";
 import "kira/gov/permission.proto";
+import "kira/gov/execution_fee.proto";
 import "kira/gov/network_properties.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
@@ -252,4 +253,12 @@ message ProposalJailCouncilor {
   ];
   string description = 2;
   repeated string councilors = 3;
+}
+
+message ProposalSetExecutionFees {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  string description = 2;
+  repeated ExecutionFee execution_fees = 3 [ (gogoproto.nullable) = false ];
 }

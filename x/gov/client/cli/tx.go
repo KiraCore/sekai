@@ -150,6 +150,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
 	proposalCmd.AddCommand(GetTxProposalResetWholeCouncilorRankCmd())
 	proposalCmd.AddCommand(GetTxProposalJailCouncilorCmd())
+	proposalCmd.AddCommand(GetTxProposalSetExecutionFeesCmd())
 
 	proposalCmd.AddCommand(accountProposalCmd)
 	proposalCmd.AddCommand(roleProposalCmd)
@@ -2294,6 +2295,83 @@ func GetTxProposalJailCouncilorCmd() *cobra.Command {
 				title,
 				description,
 				types.NewJailCouncilorProposal(clientCtx.FromAddress, description, councilors),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxProposalSetExecutionFeesCmd implement cli command for ProposalSetExecutionFees
+func GetTxProposalSetExecutionFeesCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-set-execution-fees [txTypes] [executionFees] [failureFees] [timeouts] [defaultParams]",
+		Short: "Create a proposal to set execution fees",
+		Args:  cobra.ExactArgs(5),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			txTypes := strings.Split(args[0], ",")
+			execFeeStrs := strings.Split(args[1], ",")
+			failureFeeStrs := strings.Split(args[2], ",")
+			timeoutStrs := strings.Split(args[3], ",")
+			defaultParamStrs := strings.Split(args[3], ",")
+			executionFees := []types.ExecutionFee{}
+			for i, txType := range txTypes {
+				execFee, err := strconv.Atoi(execFeeStrs[i])
+				if err != nil {
+					return err
+				}
+				failureFee, err := strconv.Atoi(failureFeeStrs[i])
+				if err != nil {
+					return err
+				}
+				timeout, err := strconv.Atoi(timeoutStrs[i])
+				if err != nil {
+					return err
+				}
+				defaultParams, err := strconv.Atoi(defaultParamStrs[i])
+				if err != nil {
+					return err
+				}
+				executionFees = append(executionFees, types.ExecutionFee{
+					TransactionType:   txType,
+					ExecutionFee:      uint64(execFee),
+					FailureFee:        uint64(failureFee),
+					Timeout:           uint64(timeout),
+					DefaultParameters: uint64(defaultParams),
+				})
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewSetExecutionFeesProposal(clientCtx.FromAddress, description, executionFees),
 			)
 			if err != nil {
 				return err
