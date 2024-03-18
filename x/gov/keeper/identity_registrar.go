@@ -315,9 +315,17 @@ func (k Keeper) GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAdd
 		recordId := sdk.BigEndianToUint64(bz)
 		record := k.GetIdentityRecordById(ctx, recordId)
 		if record == nil {
-			return records, sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
+			records = append(records, types.IdentityRecord{
+				Id:        0,
+				Address:   address.String(),
+				Key:       key,
+				Value:     "",
+				Date:      time.Time{},
+				Verifiers: []string{},
+			})
+		} else {
+			records = append(records, *record)
 		}
-		records = append(records, *record)
 	}
 	return records, nil
 }
@@ -485,7 +493,7 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 		}
 	}
 
-	if approve == false {
+	if !approve {
 		k.DeleteIdRecordsVerifyRequest(ctx, requestId)
 		return nil
 	}

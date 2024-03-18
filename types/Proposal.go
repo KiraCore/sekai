@@ -16,6 +16,7 @@ const (
 	ProposalTypeRemoveUBI                          = "RemoveUBI"
 	ProposalTypeResetWholeCouncilorRank            = "ResetWholeCouncilorRank"
 	ProposalTypeJailCouncilor                      = "JailCouncilor"
+	ProposalTypeSetExecutionFees                   = "SetExecutionFees"
 	ProposalTypeWhitelistAccountPermission         = "WhitelistAccountPermission"
 	ProposalTypeBlacklistAccountPermission         = "BlacklistAccountPermission"
 	ProposalTypeRemoveWhitelistedAccountPermission = "RemoveWhitelistedAccountPermission"

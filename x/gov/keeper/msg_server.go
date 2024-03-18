@@ -42,7 +42,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		router := k.keeper.GetProposalRouter()
 		isAllowed := router.IsAllowedAddressDynamicProposal(ctx, msg.Proposer, content)
 		if !isAllowed {
-			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "spending pool permission")
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "not enough permission to create the proposal")
 		}
 	} else {
 		isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, content.ProposalPermission())
@@ -111,7 +111,7 @@ func (k msgServer) VoteProposal(
 		router := k.keeper.GetProposalRouter()
 		isAllowed := router.IsAllowedAddressDynamicProposal(ctx, msg.Voter, content)
 		if !isAllowed {
-			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "spending pool permission")
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "not enough permission to vote on the proposal")
 		}
 	} else {
 		isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, content.VotePermission())
