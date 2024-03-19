@@ -26,3 +26,25 @@ func TestKeeper_SetNetworkProperty(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, uint64(300), savedMinTxFee.Value)
 }
+
+func TestKeeper_EnsureUniqueKeys(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	app.CustomGovKeeper.SetIdentityRecord(ctx, types.IdentityRecord{
+		Id:      1,
+		Address: "addr1",
+		Key:     "nickname",
+		Value:   "jack",
+	})
+	notUniqueKey := app.CustomGovKeeper.EnsureUniqueKeys(ctx, "", "nickname")
+	require.Equal(t, notUniqueKey, "")
+	app.CustomGovKeeper.SetIdentityRecord(ctx, types.IdentityRecord{
+		Id:      2,
+		Address: "addr2",
+		Key:     "nickname",
+		Value:   "jack",
+	})
+	notUniqueKey = app.CustomGovKeeper.EnsureUniqueKeys(ctx, "", "nickname")
+	require.Equal(t, notUniqueKey, "nickname")
+}
