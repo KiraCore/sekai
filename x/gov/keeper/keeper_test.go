@@ -48,3 +48,14 @@ func TestKeeper_EnsureUniqueKeys(t *testing.T) {
 	notUniqueKey = app.CustomGovKeeper.EnsureUniqueKeys(ctx, "", "nickname")
 	require.Equal(t, notUniqueKey, "nickname")
 }
+
+func TestKeeper_EnsureOldUniqueKeysNotRemoved(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	removedOldKey := app.CustomGovKeeper.EnsureOldUniqueKeysNotRemoved(ctx, "", "nickname")
+	require.Equal(t, removedOldKey, "")
+
+	removedOldKey = app.CustomGovKeeper.EnsureOldUniqueKeysNotRemoved(ctx, "nickname", "")
+	require.Equal(t, removedOldKey, "nickname")
+}

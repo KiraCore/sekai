@@ -257,6 +257,28 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	}
 }
 
+func (k Keeper) EnsureOldUniqueKeysNotRemoved(ctx sdk.Context, oldKeys string, newKeys string) string {
+	newKeyMap := make(map[string]bool)
+	newKeyArr := strings.Split(newKeys, ",")
+	if newKeys == "" {
+		newKeyArr = []string{}
+	}
+	for _, newKey := range newKeyArr {
+		newKeyMap[newKey] = true
+	}
+
+	oldKeyArr := strings.Split(oldKeys, ",")
+	if oldKeys == "" {
+		oldKeyArr = []string{}
+	}
+	for _, oldKey := range oldKeyArr {
+		if !newKeyMap[oldKey] {
+			return oldKey
+		}
+	}
+	return ""
+}
+
 func (k Keeper) EnsureUniqueKeys(ctx sdk.Context, oldKeys string, newKeys string) string {
 	oldKeyMap := make(map[string]bool)
 	oldKeyArr := strings.Split(oldKeys, ",")
@@ -341,6 +363,10 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.MinIdentityApprovalTip:
 		properties.MinIdentityApprovalTip = value.Value
 	case types.UniqueIdentityKeys:
+		removedOldKey := k.EnsureOldUniqueKeysNotRemoved(ctx, properties.UniqueIdentityKeys, value.StrValue)
+		if removedOldKey != "" {
+			return fmt.Errorf("already existing key removed: %s", removedOldKey)
+		}
 		notUniqueKey := k.EnsureUniqueKeys(ctx, properties.UniqueIdentityKeys, value.StrValue)
 		if notUniqueKey != "" {
 			return fmt.Errorf("already existing key not unique found: %s", notUniqueKey)
