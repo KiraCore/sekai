@@ -267,12 +267,12 @@ func TestKeeper_TryUniqueIdentityKeysSet(t *testing.T) {
 	// create a new record and check if set correctly
 	now := time.Now().UTC()
 	ctx = ctx.WithBlockTime(now)
-	err := app.CustomGovKeeper.SetNetworkProperty(ctx, types.UniqueIdentityKeys, types.NetworkPropertyValue{StrValue: "moniker,email"})
+	err := app.CustomGovKeeper.SetNetworkProperty(ctx, types.UniqueIdentityKeys, types.NetworkPropertyValue{StrValue: "moniker,username,email"})
 	require.NoError(t, err)
 	networkProperties := app.CustomGovKeeper.GetNetworkProperties(ctx)
 	require.NotNil(t, networkProperties)
 
-	require.Equal(t, networkProperties.UniqueIdentityKeys, "moniker,email")
+	require.Equal(t, networkProperties.UniqueIdentityKeys, "moniker,username,email")
 }
 
 // func TestKeeper_IdentityKeysManagement(t *testing.T) {
