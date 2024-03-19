@@ -3,6 +3,7 @@ package keeper
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -256,6 +257,42 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	}
 }
 
+func (k Keeper) EnsureUniqueKeys(ctx sdk.Context, oldKeys string, newKeys string) string {
+	oldKeyMap := make(map[string]bool)
+	oldKeyArr := strings.Split(oldKeys, ",")
+	if oldKeys == "" {
+		oldKeyArr = []string{}
+	}
+	for _, oldKey := range oldKeyArr {
+		oldKeyMap[oldKey] = true
+	}
+
+	newKeyMap := make(map[string]bool)
+	newKeyArr := strings.Split(newKeys, ",")
+	if newKeys == "" {
+		newKeyArr = []string{}
+	}
+	for _, newKey := range newKeyArr {
+		if !oldKeyMap[newKey] {
+			newKeyMap[newKey] = true
+		}
+	}
+
+	keyCountMap := make(map[string]int64)
+	records := k.GetAllIdentityRecords(ctx)
+	for _, record := range records {
+		if newKeyMap[record.Key] {
+			key := strings.Join([]string{record.Key, record.Value}, ":")
+			if keyCountMap[key] > 0 {
+				return record.Key
+			}
+			keyCountMap[key] = 1
+		}
+	}
+
+	return ""
+}
+
 // SetNetworkProperty set single network property by key
 func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProperty, value types.NetworkPropertyValue) error {
 	properties := k.GetNetworkProperties(ctx)
@@ -304,6 +341,10 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.MinIdentityApprovalTip:
 		properties.MinIdentityApprovalTip = value.Value
 	case types.UniqueIdentityKeys:
+		notUniqueKey := k.EnsureUniqueKeys(ctx, properties.UniqueIdentityKeys, value.StrValue)
+		if notUniqueKey != "" {
+			return fmt.Errorf("already existing key not unique found: %s", notUniqueKey)
+		}
 		properties.UniqueIdentityKeys = value.StrValue
 	case types.UbiHardcap:
 		properties.UbiHardcap = value.Value
