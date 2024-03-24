@@ -1,0 +1,41 @@
+syntax = "proto3";
+package kira.bridge;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/bridge/types";
+
+message ChangeCosmosEthereumRecord {
+  bytes from = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string to = 2;
+
+  repeated cosmos.base.v1beta1.Coin in_amount = 3
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+
+  int64 out_amount = 4;
+}
+
+message ChangeEthereumCosmosRecord {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string from = 2;
+
+  bytes to = 3 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  int64 in_amount = 4;
+
+  repeated cosmos.base.v1beta1.Coin out_amount = 5
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+}

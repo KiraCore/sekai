@@ -1,0 +1,67 @@
+syntax = "proto3";
+package kira.bridge;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "kira/bridge/bridge.proto";
+import "kira/bridge/tx.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/bridge/types";
+
+// Query defines the gRPC querier service
+service Query {
+  rpc ChangeCosmosEthereumByAddress (ChangeCosmosEthereumByAddressRequest) returns (ChangeCosmosEthereumByAddressResponse) {
+    option (google.api.http).get = "/kira/bridge/cosmos_ethereum/{addr}";
+  }
+  rpc ChangeEthereumCosmosByAddress (ChangeEthereumCosmosByAddressRequest) returns (ChangeEthereumCosmosByAddressResponse) {
+    option (google.api.http).get = "/kira/bridge/ethereum_cosmos/{addr}";
+  }
+}
+
+message ChangeCosmosEthereumByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message ChangeEthereumCosmosByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message ChangeCosmosEthereumByAddressResponse {
+  bytes from = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string to = 2;
+
+  repeated cosmos.base.v1beta1.Coin in_amount = 3
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+
+  int64 out_amount = 4;
+}
+
+message ChangeEthereumCosmosByAddressResponse {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string from = 2;
+
+  bytes to = 3 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  int64 in_amount = 4;
+
+  repeated cosmos.base.v1beta1.Coin out_amount = 5
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+}

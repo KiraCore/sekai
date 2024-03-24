@@ -158,63 +158,66 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						RolePermissions:    govGenesisV01228.Permissions,
 						NetworkActors:      govGenesisV01228.NetworkActors,
 						NetworkProperties: &govtypes.NetworkProperties{
-							MinTxFee:                        govGenesisV01228.NetworkProperties.MinTxFee,
-							MaxTxFee:                        govGenesisV01228.NetworkProperties.MaxTxFee,
-							VoteQuorum:                      govGenesisV01228.NetworkProperties.VoteQuorum,
-							MinimumProposalEndTime:          govGenesisV01228.NetworkProperties.ProposalEndTime,
-							ProposalEnactmentTime:           govGenesisV01228.NetworkProperties.ProposalEnactmentTime,
-							MinProposalEndBlocks:            govGenesisV01228.NetworkProperties.MinProposalEndBlocks,
-							MinProposalEnactmentBlocks:      govGenesisV01228.NetworkProperties.MinProposalEnactmentBlocks,
-							EnableForeignFeePayments:        govGenesisV01228.NetworkProperties.EnableForeignFeePayments,
-							MischanceRankDecreaseAmount:     govGenesisV01228.NetworkProperties.MischanceRankDecreaseAmount,
-							MaxMischance:                    govGenesisV01228.NetworkProperties.MaxMischance,
-							MischanceConfidence:             govGenesisV01228.NetworkProperties.MischanceConfidence,
-							InactiveRankDecreasePercent:     sdk.NewDecWithPrec(int64(govGenesisV01228.NetworkProperties.InactiveRankDecreasePercent), 2),
-							MinValidators:                   govGenesisV01228.NetworkProperties.MinValidators,
-							PoorNetworkMaxBankSend:          govGenesisV01228.NetworkProperties.PoorNetworkMaxBankSend,
-							UnjailMaxTime:                   govGenesisV01228.NetworkProperties.JailMaxTime,
-							EnableTokenWhitelist:            govGenesisV01228.NetworkProperties.EnableTokenWhitelist,
-							EnableTokenBlacklist:            govGenesisV01228.NetworkProperties.EnableTokenBlacklist,
-							MinIdentityApprovalTip:          govGenesisV01228.NetworkProperties.MinIdentityApprovalTip,
-							UniqueIdentityKeys:              govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
-							UbiHardcap:                      6000_000,
-							ValidatorsFeeShare:              sdk.NewDecWithPrec(50, 2), // 50%
-							InflationRate:                   sdk.NewDecWithPrec(18, 2), // 18%
-							InflationPeriod:                 31557600,                  // 1 year
-							UnstakingPeriod:                 2629800,                   // 1 month
-							MaxDelegators:                   100,
-							MinDelegationPushout:            10,
-							SlashingPeriod:                  3600,
-							MaxJailedPercentage:             sdk.NewDecWithPrec(25, 2),
-							MaxSlashingPercentage:           sdk.NewDecWithPrec(1, 2),
-							MinCustodyReward:                200,
-							MaxCustodyTxSize:                8192,
-							MaxCustodyBufferSize:            10,
-							AbstentionRankDecreaseAmount:    1,
-							MaxAbstention:                   2,
-							MinCollectiveBond:               100_000, // in KEX
-							MinCollectiveBondingTime:        86400,   // in seconds
-							MaxCollectiveOutputs:            10,
-							MinCollectiveClaimPeriod:        14400,  // 4hrs
-							ValidatorRecoveryBond:           300000, // 300k KEX
-							MaxAnnualInflation:              sdk.NewDecWithPrec(35, 2),
-							MaxProposalTitleSize:            128,
-							MaxProposalDescriptionSize:      1024,
-							MaxProposalPollOptionSize:       64,
-							MaxProposalPollOptionCount:      128,
-							MinDappBond:                     1000000,
-							MaxDappBond:                     10000000,
-							DappBondDuration:                604800,
-							DappVerifierBond:                sdk.NewDecWithPrec(1, 3), //0.1%
-							DappAutoDenounceTime:            60,                       // 60s
-							DappMischanceRankDecreaseAmount: 1,
-							DappMaxMischance:                10,
-							DappInactiveRankDecreasePercent: 10,
-							DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
-							MintingFtFee:                    100_000_000_000_000,
-							MintingNftFee:                   100_000_000_000_000,
-							VetoThreshold:                   sdk.NewDecWithPrec(3340, 2), //33.40%
-							AutocompoundIntervalNumBlocks:   17280,
+							MinTxFee:                         govGenesisV01228.NetworkProperties.MinTxFee,
+							MaxTxFee:                         govGenesisV01228.NetworkProperties.MaxTxFee,
+							VoteQuorum:                       govGenesisV01228.NetworkProperties.VoteQuorum,
+							MinimumProposalEndTime:           govGenesisV01228.NetworkProperties.ProposalEndTime,
+							ProposalEnactmentTime:            govGenesisV01228.NetworkProperties.ProposalEnactmentTime,
+							MinProposalEndBlocks:             govGenesisV01228.NetworkProperties.MinProposalEndBlocks,
+							MinProposalEnactmentBlocks:       govGenesisV01228.NetworkProperties.MinProposalEnactmentBlocks,
+							EnableForeignFeePayments:         govGenesisV01228.NetworkProperties.EnableForeignFeePayments,
+							MischanceRankDecreaseAmount:      govGenesisV01228.NetworkProperties.MischanceRankDecreaseAmount,
+							MaxMischance:                     govGenesisV01228.NetworkProperties.MaxMischance,
+							MischanceConfidence:              govGenesisV01228.NetworkProperties.MischanceConfidence,
+							InactiveRankDecreasePercent:      sdk.NewDecWithPrec(int64(govGenesisV01228.NetworkProperties.InactiveRankDecreasePercent), 2),
+							MinValidators:                    govGenesisV01228.NetworkProperties.MinValidators,
+							PoorNetworkMaxBankSend:           govGenesisV01228.NetworkProperties.PoorNetworkMaxBankSend,
+							UnjailMaxTime:                    govGenesisV01228.NetworkProperties.JailMaxTime,
+							EnableTokenWhitelist:             govGenesisV01228.NetworkProperties.EnableTokenWhitelist,
+							EnableTokenBlacklist:             govGenesisV01228.NetworkProperties.EnableTokenBlacklist,
+							MinIdentityApprovalTip:           govGenesisV01228.NetworkProperties.MinIdentityApprovalTip,
+							UniqueIdentityKeys:               govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
+							UbiHardcap:                       6000_000,
+							ValidatorsFeeShare:               sdk.NewDecWithPrec(50, 2), // 50%
+							InflationRate:                    sdk.NewDecWithPrec(18, 2), // 18%
+							InflationPeriod:                  31557600,                  // 1 year
+							UnstakingPeriod:                  2629800,                   // 1 month
+							MaxDelegators:                    100,
+							MinDelegationPushout:             10,
+							SlashingPeriod:                   3600,
+							MaxJailedPercentage:              sdk.NewDecWithPrec(25, 2),
+							MaxSlashingPercentage:            sdk.NewDecWithPrec(1, 2),
+							MinCustodyReward:                 200,
+							MaxCustodyTxSize:                 8192,
+							MaxCustodyBufferSize:             10,
+							AbstentionRankDecreaseAmount:     1,
+							MaxAbstention:                    2,
+							MinCollectiveBond:                100_000, // in KEX
+							MinCollectiveBondingTime:         86400,   // in seconds
+							MaxCollectiveOutputs:             10,
+							MinCollectiveClaimPeriod:         14400,  // 4hrs
+							ValidatorRecoveryBond:            300000, // 300k KEX
+							MaxAnnualInflation:               sdk.NewDecWithPrec(35, 2),
+							MaxProposalTitleSize:             128,
+							MaxProposalDescriptionSize:       1024,
+							MaxProposalPollOptionSize:        64,
+							MaxProposalPollOptionCount:       128,
+							MinDappBond:                      1000000,
+							MaxDappBond:                      10000000,
+							DappBondDuration:                 604800,
+							DappVerifierBond:                 sdk.NewDecWithPrec(1, 3), //0.1%
+							DappAutoDenounceTime:             60,                       // 60s
+							DappMischanceRankDecreaseAmount:  1,
+							DappMaxMischance:                 10,
+							DappInactiveRankDecreasePercent:  10,
+							DappPoolSlippageDefault:          sdk.NewDecWithPrec(1, 1), // 10%
+							MintingFtFee:                     100_000_000_000_000,
+							MintingNftFee:                    100_000_000_000_000,
+							VetoThreshold:                    sdk.NewDecWithPrec(3340, 2), //33.40%
+							AutocompoundIntervalNumBlocks:    17280,
+							BridgeAddress:                    "test",
+							BridgeCosmosEthereumExchangeRate: sdk.NewDec(10),
+							BridgeEthereumCosmosExchangeRate: sdk.NewDecWithPrec(1, 1),
 						},
 						ExecutionFees:               govGenesisV01228.ExecutionFees,
 						PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

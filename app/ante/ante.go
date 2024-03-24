@@ -4,9 +4,11 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	bridgetypes "github.com/KiraCore/sekai/x/bridge/types"
 	"time"
 
 	kiratypes "github.com/KiraCore/sekai/types"
+	bridgekeeper "github.com/KiraCore/sekai/x/bridge/keeper"
 	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
@@ -34,6 +36,7 @@ func NewAnteHandler(
 	ak keeper.AccountKeeper,
 	bk types.BankKeeper,
 	ck custodykeeper.Keeper,
+	brk bridgekeeper.Keeper,
 	feegrantKeeper ante.FeegrantKeeper,
 	extensionOptionChecker ante.ExtensionOptionChecker,
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
@@ -42,6 +45,7 @@ func NewAnteHandler(
 ) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		NewBridgeDecorator(brk, cgk),
 		NewCustodyDecorator(ck, cgk),
 		NewZeroGasMeterDecorator(),
 		ante.NewExtensionOptionsDecorator(extensionOptionChecker),
@@ -63,6 +67,43 @@ func NewAnteHandler(
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
+}
+
+type BridgeDecorator struct {
+	brk bridgekeeper.Keeper
+	gk  customgovkeeper.Keeper
+}
+
+func NewBridgeDecorator(brk bridgekeeper.Keeper, gk customgovkeeper.Keeper) BridgeDecorator {
+	return BridgeDecorator{
+		brk: brk,
+		gk:  gk,
+	}
+}
+
+func (bd BridgeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	feeTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
+
+	properties := bd.gk.GetNetworkProperties(ctx)
+
+	for _, msg := range feeTx.GetMsgs() {
+		switch kiratypes.MsgType(msg) {
+		case kiratypes.MsgTypeChangeEthereumCosmos:
+			msg, ok := msg.(*bridgetypes.MsgChangeEthereumCosmos)
+			if !ok {
+				return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgChangeEthereumCosmos")
+			}
+
+			if msg.Addr.String() != properties.BridgeAddress {
+				return ctx, sdkerrors.Wrap(bridgetypes.ErrWrongBridgeAddr, "Bridge module")
+			}
+		}
+	}
+
+	return next(ctx, tx, simulate)
 }
 
 type CustodyDecorator struct {

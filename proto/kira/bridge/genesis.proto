@@ -1,0 +1,9 @@
+syntax = "proto3";
+package kira.bridge;
+
+import "gogoproto/gogo.proto";
+import "kira/bridge/bridge.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/bridge/types";
+
+message GenesisState { }

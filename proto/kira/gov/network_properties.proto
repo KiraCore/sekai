@@ -76,6 +76,9 @@ enum NetworkProperty {
     MINTING_NFT_FEE = 58 [ (gogoproto.enumvalue_customname) = "MintingNftFee" ];
     VETO_THRESHOLD = 59 [ (gogoproto.enumvalue_customname) = "VetoThreshold" ];
     AUTOCOMPOUND_INTERVAL_NUM_BLOCKS = 60 [ (gogoproto.enumvalue_customname) = "AutocompoundIntervalNumBlocks" ];
+    BRIDGE_ADDRESS = 61 [ (gogoproto.enumvalue_customname) = "BridgeAddress" ];
+    BRIDGE_COSMOS_ETHEREUM_EXCHANGE_RATE = 62 [ (gogoproto.enumvalue_customname) = "BridgeCosmosEthereumExchangeRate" ];
+    BRIDGE_ETHEREUM_COSMOS_EXCHANGE_RATE = 63 [ (gogoproto.enumvalue_customname) = "BridgeEthereumCosmosExchangeRate" ];
 }
 
 message NetworkPropertyValue {
@@ -174,4 +177,13 @@ message NetworkProperties {
         (gogoproto.nullable) = false
     ];
     uint64 autocompound_interval_num_blocks = 61; // default 17280 - once per day
+    string bridge_address = 62;
+    string bridge_cosmos_ethereum_exchange_rate = 63 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    string bridge_ethereum_cosmos_exchange_rate = 64 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
 }

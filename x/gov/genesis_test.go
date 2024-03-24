@@ -186,7 +186,10 @@ func TestSimappExportGenesis(t *testing.T) {
     "minting_ft_fee": "100000000000000",
     "minting_nft_fee": "100000000000000",
     "veto_threshold": "33.400000000000000000",
-    "autocompound_interval_num_blocks": "17280"
+    "autocompound_interval_num_blocks": "17280",
+	"bridge_address": "test",
+    "bridge_cosmos_ethereum_exchange_rate": 10,
+    "bridge_ethereum_cosmos_exchange_rate": 0.100000000000000000,
   },
   "execution_fees": [
     {
@@ -342,61 +345,64 @@ func TestExportInitGenesis(t *testing.T) {
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &types.NetworkProperties{
-			MinTxFee:                        100,
-			MaxTxFee:                        1000000,
-			VoteQuorum:                      33,
-			MinimumProposalEndTime:          300, // 300 seconds / 5 mins
-			ProposalEnactmentTime:           300, // 300 seconds / 5 mins
-			MinProposalEndBlocks:            2,
-			MinProposalEnactmentBlocks:      1,
-			MischanceRankDecreaseAmount:     1,
-			MaxMischance:                    1,
-			InactiveRankDecreasePercent:     sdk.NewDecWithPrec(2, 2),
-			MinValidators:                   1,
-			PoorNetworkMaxBankSend:          1,
-			EnableForeignFeePayments:        true,
-			MinIdentityApprovalTip:          200,
-			UniqueIdentityKeys:              "moniker,username",
-			UbiHardcap:                      6000_000,
-			ValidatorsFeeShare:              sdk.NewDecWithPrec(50, 2), // 50%
-			InflationRate:                   sdk.NewDecWithPrec(18, 2), // 18%
-			InflationPeriod:                 31557600,                  // 1 year
-			UnstakingPeriod:                 2629800,                   // 1 month
-			MaxDelegators:                   100,
-			MinDelegationPushout:            10,
-			SlashingPeriod:                  3600,
-			MaxJailedPercentage:             sdk.NewDecWithPrec(25, 2),
-			MaxSlashingPercentage:           sdk.NewDecWithPrec(1, 2),
-			MinCustodyReward:                200,
-			MaxCustodyBufferSize:            10,
-			MaxCustodyTxSize:                8192,
-			AbstentionRankDecreaseAmount:    1,
-			MaxAbstention:                   2,
-			MinCollectiveBond:               100_000, // in KEX
-			MinCollectiveBondingTime:        86400,   // in seconds
-			MaxCollectiveOutputs:            10,
-			MinCollectiveClaimPeriod:        14400,                     // 4hrs
-			ValidatorRecoveryBond:           300000,                    // 300k KEX
-			MaxAnnualInflation:              sdk.NewDecWithPrec(35, 2), // 35%
-			MaxProposalTitleSize:            128,
-			MaxProposalDescriptionSize:      1024,
-			MaxProposalPollOptionSize:       64,
-			MaxProposalPollOptionCount:      128,
-			MaxProposalReferenceSize:        512,
-			MaxProposalChecksumSize:         128,
-			MinDappBond:                     1000000,
-			MaxDappBond:                     10000000,
-			DappBondDuration:                604800,
-			DappVerifierBond:                sdk.NewDecWithPrec(1, 3), //0.1%
-			DappAutoDenounceTime:            60,                       // 60s
-			DappMischanceRankDecreaseAmount: 1,
-			DappMaxMischance:                10,
-			DappInactiveRankDecreasePercent: 10,
-			DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
-			MintingFtFee:                    100_000_000_000_000,
-			MintingNftFee:                   100_000_000_000_000,
-			VetoThreshold:                   sdk.NewDecWithPrec(3340, 2), // 33.40%
-			AutocompoundIntervalNumBlocks:   17280,
+			MinTxFee:                         100,
+			MaxTxFee:                         1000000,
+			VoteQuorum:                       33,
+			MinimumProposalEndTime:           300, // 300 seconds / 5 mins
+			ProposalEnactmentTime:            300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:             2,
+			MinProposalEnactmentBlocks:       1,
+			MischanceRankDecreaseAmount:      1,
+			MaxMischance:                     1,
+			InactiveRankDecreasePercent:      sdk.NewDecWithPrec(2, 2),
+			MinValidators:                    1,
+			PoorNetworkMaxBankSend:           1,
+			EnableForeignFeePayments:         true,
+			MinIdentityApprovalTip:           200,
+			UniqueIdentityKeys:               "moniker,username",
+			UbiHardcap:                       6000_000,
+			ValidatorsFeeShare:               sdk.NewDecWithPrec(50, 2), // 50%
+			InflationRate:                    sdk.NewDecWithPrec(18, 2), // 18%
+			InflationPeriod:                  31557600,                  // 1 year
+			UnstakingPeriod:                  2629800,                   // 1 month
+			MaxDelegators:                    100,
+			MinDelegationPushout:             10,
+			SlashingPeriod:                   3600,
+			MaxJailedPercentage:              sdk.NewDecWithPrec(25, 2),
+			MaxSlashingPercentage:            sdk.NewDecWithPrec(1, 2),
+			MinCustodyReward:                 200,
+			MaxCustodyBufferSize:             10,
+			MaxCustodyTxSize:                 8192,
+			AbstentionRankDecreaseAmount:     1,
+			MaxAbstention:                    2,
+			MinCollectiveBond:                100_000, // in KEX
+			MinCollectiveBondingTime:         86400,   // in seconds
+			MaxCollectiveOutputs:             10,
+			MinCollectiveClaimPeriod:         14400,                     // 4hrs
+			ValidatorRecoveryBond:            300000,                    // 300k KEX
+			MaxAnnualInflation:               sdk.NewDecWithPrec(35, 2), // 35%
+			MaxProposalTitleSize:             128,
+			MaxProposalDescriptionSize:       1024,
+			MaxProposalPollOptionSize:        64,
+			MaxProposalPollOptionCount:       128,
+			MaxProposalReferenceSize:         512,
+			MaxProposalChecksumSize:          128,
+			MinDappBond:                      1000000,
+			MaxDappBond:                      10000000,
+			DappBondDuration:                 604800,
+			DappVerifierBond:                 sdk.NewDecWithPrec(1, 3), //0.1%
+			DappAutoDenounceTime:             60,                       // 60s
+			DappMischanceRankDecreaseAmount:  1,
+			DappMaxMischance:                 10,
+			DappInactiveRankDecreasePercent:  10,
+			DappPoolSlippageDefault:          sdk.NewDecWithPrec(1, 1), // 10%
+			MintingFtFee:                     100_000_000_000_000,
+			MintingNftFee:                    100_000_000_000_000,
+			VetoThreshold:                    sdk.NewDecWithPrec(3340, 2), // 33.40%
+			AutocompoundIntervalNumBlocks:    17280,
+			BridgeAddress:                    "test",
+			BridgeCosmosEthereumExchangeRate: sdk.NewDec(10),
+			BridgeEthereumCosmosExchangeRate: sdk.NewDecWithPrec(1, 1),
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -514,7 +520,10 @@ func TestExportInitGenesis(t *testing.T) {
     "minting_ft_fee": "100000000000000",
     "minting_nft_fee": "100000000000000",
     "veto_threshold": "33.400000000000000000",
-    "autocompound_interval_num_blocks": "17280"
+    "autocompound_interval_num_blocks": "17280",
+	"bridge_address": "test",
+    "bridge_cosmos_ethereum_exchange_rate": 10,
+    "bridge_ethereum_cosmos_exchange_rate": 0.100000000000000000,
   },	
   "execution_fees": [	
     {	
