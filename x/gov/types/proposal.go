@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	errorsmod "cosmossdk.io/errors"
 	kiratypes "github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types"
@@ -25,7 +26,7 @@ func NewProposal(
 ) (Proposal, error) {
 	msg, ok := content.(proto.Message)
 	if !ok {
-		return Proposal{}, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("%T does not implement proto.Message", content))
+		return Proposal{}, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("%T does not implement proto.Message", content))
 	}
 
 	any, err := codectypes.NewAnyWithValue(msg)
