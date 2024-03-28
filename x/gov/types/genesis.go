@@ -162,6 +162,7 @@ func DefaultGenesis() *GenesisState {
 			MintingNftFee:                   100_000_000_000_000,
 			VetoThreshold:                   sdk.NewDecWithPrec(3340, 2), // 33.40%
 			AutocompoundIntervalNumBlocks:   17280,
+			DowntimeInactiveDuration:        600,
 		},
 		ExecutionFees: []ExecutionFee{
 			{
