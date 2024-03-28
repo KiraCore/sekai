@@ -144,6 +144,32 @@ func (k Keeper) DeleteIdentityRecordById(ctx sdk.Context, recordId uint64) {
 	prefix.NewStore(ctx.KVStore(k.storeKey), types.IdentityRecordByAddressPrefix(record.Address)).Delete(sdk.Uint64ToBigEndian(recordId))
 }
 
+func (k Keeper) CancelInvalidIdentityRecordVerifyRequests(ctx sdk.Context, address sdk.AccAddress, recordIds []uint64) error {
+	recordIdMap := make(map[uint64]bool)
+	for _, recordId := range recordIds {
+		recordIdMap[recordId] = true
+	}
+	// if record value's updated after requesting verification, cancels verification request automatically
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.IdRecordVerifyRequestByRequesterPrefix(address.String()))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		requestId := sdk.BigEndianToUint64(iterator.Value())
+		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
+		for _, reqRecordId := range request.RecordIds {
+			if recordIdMap[reqRecordId] {
+				err := k.CancelIdentityRecordsVerifyRequest(ctx, address, requestId)
+				if err != nil {
+					return err
+				}
+				break
+			}
+		}
+	}
+	return nil
+}
+
 // RegisterIdentityRecord defines a method to register identity records for an address
 func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress, infos []types.IdentityInfoEntry) error {
 	// validate key and set the key to non case-sensitive
@@ -187,12 +213,16 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 		}
 	}
 
+	recordIdsAffected := []uint64{}
 	for _, info := range infos {
 		// use existing record id if it already exists
 		recordId := k.GetIdentityRecordIdByAddressKey(ctx, address, info.Key)
+		record := k.GetIdentityRecordById(ctx, recordId)
 		if recordId == 0 {
 			recordId = k.GetLastIdentityRecordId(ctx) + 1
 			k.SetLastIdentityRecordId(ctx, recordId)
+		} else if record == nil || record.Value != info.Info {
+			recordIdsAffected = append(recordIdsAffected, recordId)
 		}
 		// create or update identity record
 		k.SetIdentityRecord(ctx, types.IdentityRecord{
@@ -204,7 +234,7 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 			Verifiers: []string{},
 		})
 	}
-	return nil
+	return k.CancelInvalidIdentityRecordVerifyRequests(ctx, address, recordIdsAffected)
 }
 
 // DeleteIdentityRecords defines a method to delete identity records owned by an address
@@ -253,27 +283,7 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 		k.DeleteIdentityRecordById(ctx, recordId)
 	}
 
-	// remove record ids from verification request list
-	requests := k.GetIdRecordsVerifyRequestsByRequester(ctx, address)
-	for _, request := range requests {
-		recordIds := []uint64{}
-		for _, recordid := range request.RecordIds {
-			if !recordIdMap[recordid] {
-				recordIds = append(recordIds, recordid)
-			}
-		}
-
-		if len(recordIds) == 0 {
-			err := k.CancelIdentityRecordsVerifyRequest(ctx, sdk.MustAccAddressFromBech32(request.Address), request.Id)
-			if err != nil {
-				return err
-			}
-		} else {
-			request.RecordIds = recordIds
-			k.SetIdentityRecordsVerifyRequest(ctx, request)
-		}
-	}
-	return nil
+	return k.CancelInvalidIdentityRecordVerifyRequests(ctx, address, recordIds)
 }
 
 // GetAllIdentityRecords query all identity records
