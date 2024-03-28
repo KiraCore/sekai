@@ -76,6 +76,7 @@ enum NetworkProperty {
     MINTING_NFT_FEE = 58 [ (gogoproto.enumvalue_customname) = "MintingNftFee" ];
     VETO_THRESHOLD = 59 [ (gogoproto.enumvalue_customname) = "VetoThreshold" ];
     AUTOCOMPOUND_INTERVAL_NUM_BLOCKS = 60 [ (gogoproto.enumvalue_customname) = "AutocompoundIntervalNumBlocks" ];
+    DOWNTIME_INACTIVE_DURATION = 61 [ (gogoproto.enumvalue_customname) = "DowntimeInactiveDuration" ];
 }
 
 message NetworkPropertyValue {
@@ -174,4 +175,5 @@ message NetworkProperties {
         (gogoproto.nullable) = false
     ];
     uint64 autocompound_interval_num_blocks = 61; // default 17280 - once per day
+    uint64 downtime_inactive_duration = 62; // default 600s - 10min
 }

@@ -1,6 +1,7 @@
 package posthandler
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	kiratypes "github.com/KiraCore/sekai/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
@@ -27,7 +28,7 @@ func NewExecutionDecorator(
 func (d ExecutionDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, simulate, success bool, next sdk.PostHandler) (sdk.Context, error) {
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
+		return ctx, errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
 	// execution fee should be prepaid

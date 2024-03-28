@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -635,6 +636,7 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgPollCreate creates a new MsgPollCreate.
+//
 //nolint:interfacer
 func NewMsgPollCreate(creator sdk.AccAddress, title, description string, reference string, checksum string, pollValues []string, roles []string, valueCount uint64, valueType string, possibleChoices uint64, duration string) *MsgPollCreate {
 	m := &MsgPollCreate{
@@ -667,7 +669,7 @@ func (m MsgPollCreate) Type() string { return types.MsgTypeCreatePoll }
 // ValidateBasic implements Msg
 func (m MsgPollCreate) ValidateBasic() error {
 	if m.Creator.Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Creator.String())
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, m.Creator.String())
 	}
 
 	return nil
@@ -902,6 +904,7 @@ func (m *MsgCancelIdentityRecordsVerifyRequest) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgSubmitProposal creates a new MsgSubmitProposal.
+//
 //nolint:interfacer
 func NewMsgSubmitProposal(proposer sdk.AccAddress, title, description string, content Content) (*MsgSubmitProposal, error) {
 	m := &MsgSubmitProposal{
@@ -950,12 +953,12 @@ func (m MsgSubmitProposal) Type() string { return types.MsgTypeSubmitProposal }
 // ValidateBasic implements Msg
 func (m MsgSubmitProposal) ValidateBasic() error {
 	if m.Proposer.Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Proposer.String())
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, m.Proposer.String())
 	}
 
 	content := m.GetContent()
 	if content == nil {
-		return sdkerrors.Wrap(ErrInvalidProposalContent, "missing content")
+		return errorsmod.Wrap(ErrInvalidProposalContent, "missing content")
 	}
 	if err := content.ValidateBasic(); err != nil {
 		return err

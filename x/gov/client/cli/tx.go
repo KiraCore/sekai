@@ -57,6 +57,11 @@ const (
 	FlagPollReference     = "poll-reference"
 	FlagPollChecksum      = "poll-checksum"
 	FlagCustomPollValue   = "poll-custom-value"
+	FlagTxTypes           = "tx-types"
+	FlagExecutionFees     = "execution-fees"
+	FlagFailureFees       = "failure-fees"
+	FlagTimeouts          = "timeouts"
+	FlagDefaultParams     = "default-params"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -225,6 +230,9 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 		Short: "Assign permission to a kira address whitelist",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			perm, err := cmd.Flags().GetUint32(FlagPermission)
 			if err != nil {
@@ -260,6 +268,9 @@ func GetTxRemoveWhitelistedPermissions() *cobra.Command {
 		Short: "Remove whitelisted permission from an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			perm, err := cmd.Flags().GetUint32(FlagPermission)
 			if err != nil {
@@ -2318,9 +2329,10 @@ func GetTxProposalJailCouncilorCmd() *cobra.Command {
 // GetTxProposalSetExecutionFeesCmd implement cli command for ProposalSetExecutionFees
 func GetTxProposalSetExecutionFeesCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "proposal-set-execution-fees [txTypes] [executionFees] [failureFees] [timeouts] [defaultParams]",
-		Short: "Create a proposal to set execution fees",
-		Args:  cobra.ExactArgs(5),
+		Use:     "proposal-set-execution-fees",
+		Short:   "Create a proposal to set execution fees",
+		Example: `proposal-set-execution-fees --tx-types=[txTypes] --execution-fees=[executionFees] --failure-fees=[failureFees] --timeouts=[timeouts] --default-params=[defaultParams]`,
+		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -2335,11 +2347,36 @@ func GetTxProposalSetExecutionFeesCmd() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			txTypes := strings.Split(args[0], ",")
-			execFeeStrs := strings.Split(args[1], ",")
-			failureFeeStrs := strings.Split(args[2], ",")
-			timeoutStrs := strings.Split(args[3], ",")
-			defaultParamStrs := strings.Split(args[3], ",")
+			txTypesStr, err := cmd.Flags().GetString(FlagTxTypes)
+			if err != nil {
+				return fmt.Errorf("invalid tx types: %w", err)
+			}
+
+			execFeesStr, err := cmd.Flags().GetString(FlagExecutionFees)
+			if err != nil {
+				return fmt.Errorf("invalid execution fees: %w", err)
+			}
+
+			failureFeesStr, err := cmd.Flags().GetString(FlagFailureFees)
+			if err != nil {
+				return fmt.Errorf("invalid failure fees: %w", err)
+			}
+
+			timeoutsStr, err := cmd.Flags().GetString(FlagTimeouts)
+			if err != nil {
+				return fmt.Errorf("invalid timeouts: %w", err)
+			}
+
+			defaultParamsStr, err := cmd.Flags().GetString(FlagTimeouts)
+			if err != nil {
+				return fmt.Errorf("invalid default params: %w", err)
+			}
+
+			txTypes := strings.Split(txTypesStr, ",")
+			execFeeStrs := strings.Split(execFeesStr, ",")
+			failureFeeStrs := strings.Split(failureFeesStr, ",")
+			timeoutStrs := strings.Split(timeoutsStr, ",")
+			defaultParamStrs := strings.Split(defaultParamsStr, ",")
 			executionFees := []types.ExecutionFee{}
 			for i, txType := range txTypes {
 				execFee, err := strconv.Atoi(execFeeStrs[i])
@@ -2385,6 +2422,11 @@ func GetTxProposalSetExecutionFeesCmd() *cobra.Command {
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
+	cmd.Flags().String(FlagTxTypes, "", "Transaction types to set execution fees")
+	cmd.Flags().String(FlagExecutionFees, "", "Execution fees")
+	cmd.Flags().String(FlagFailureFees, "", "Failure fees")
+	cmd.Flags().String(FlagTimeouts, "", "Timeouts")
+	cmd.Flags().String(FlagDefaultParams, "", "Default params")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

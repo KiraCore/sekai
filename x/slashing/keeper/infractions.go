@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cometbft/cometbft/crypto"
 
@@ -91,7 +92,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 			),
 		)
 		k.sk.Inactivate(ctx, validator.ValKey)
-		signInfo.InactiveUntil = ctx.BlockHeader().Time.Add(k.DowntimeInactiveDuration(ctx))
+		signInfo.InactiveUntil = ctx.BlockHeader().Time.Add(time.Second * time.Duration(properties.DowntimeInactiveDuration))
 	}
 
 	// Set the updated signing info

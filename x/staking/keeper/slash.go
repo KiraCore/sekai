@@ -3,11 +3,11 @@ package keeper
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Activate a validator
@@ -18,15 +18,15 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	}
 
 	if validator.IsPaused() {
-		return sdkerrors.Wrap(stakingtypes.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause")
+		return errorsmod.Wrap(stakingtypes.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause")
 	}
 
 	if validator.IsJailed() {
-		return sdkerrors.Wrap(stakingtypes.ErrValidatorJailed, "Can NOT activate jailed validator, you must unjail via proposal")
+		return errorsmod.Wrap(stakingtypes.ErrValidatorJailed, "Can NOT activate jailed validator, you must unjail via proposal")
 	}
 
 	if validator.IsActive() {
-		return sdkerrors.Wrap(stakingtypes.ErrValidatorActive, "Can NOT activate already active validator")
+		return errorsmod.Wrap(stakingtypes.ErrValidatorActive, "Can NOT activate already active validator")
 	}
 
 	k.setStatusToValidator(ctx, validator, stakingtypes.Active)

@@ -202,7 +202,7 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	records = app.CustomGovKeeper.GetAllIdentityRecords(ctx)
 	require.Len(t, records, 2)
 	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr1)
-	require.NotNil(t, record)
+	require.NotNil(t, records)
 	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr2)
 	require.Len(t, records, 0)
 
@@ -566,6 +566,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 
 	// try deleting request after request creation
 	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(appparams.DefaultDenom, 200))
+	require.NoError(t, err)
 	require.Equal(t, reqId, uint64(7))
 	app.CustomGovKeeper.DeleteIdRecordsVerifyRequest(ctx, 7)
 	request = app.CustomGovKeeper.GetIdRecordsVerifyRequest(ctx, 7)
@@ -575,22 +576,20 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	requests = app.CustomGovKeeper.GetIdRecordsVerifyRequestsByApprover(ctx, addr3)
 	require.Len(t, requests, 0)
 
-	// check automatic reject if record is edited after raising verification request
+	// check automatic cancel of request if record is edited after raising verification request
 	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr4, []uint64{2}, sdk.NewInt64Coin(appparams.DefaultDenom, 200))
+	require.NoError(t, err)
 	require.Equal(t, reqId, uint64(8))
 	ctx = ctx.WithBlockTime(now.Add(time.Second))
-	app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr2, types.WrapInfos(infos))
-	ctx, _ = ctx.CacheContext()
-	err = app.CustomGovKeeper.HandleIdentityRecordsVerifyRequest(ctx, addr4, 8, true)
+	infos["key"] = "value2"
+	err = app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr2, types.WrapInfos(infos))
 	require.NoError(t, err)
-	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 2)
-	require.NotNil(t, record)
-	require.False(t, keeper.CheckIfWithinStringArray(addr4.String(), record.Verifiers))
-	coins = app.BankKeeper.GetAllBalances(ctx, addr4)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(appparams.DefaultDenom, 200)})
+	req := app.CustomGovKeeper.GetIdRecordsVerifyRequest(ctx, 8)
+	require.Nil(t, req)
 
 	// try deleting id record after request creation
 	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(appparams.DefaultDenom, 200))
+	require.NoError(t, err)
 	require.Equal(t, reqId, uint64(9))
 	app.CustomGovKeeper.DeleteIdentityRecords(ctx, addr2, []string{})
 	cacheCtx, _ = ctx.CacheContext()

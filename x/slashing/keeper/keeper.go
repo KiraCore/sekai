@@ -17,29 +17,22 @@ import (
 
 // Keeper of the slashing store
 type Keeper struct {
-	storeKey   storetypes.StoreKey
-	cdc        codec.BinaryCodec
-	sk         types.StakingKeeper
-	gk         types.GovKeeper
-	msk        types.MultiStakingKeeper
-	paramspace types.ParamSubspace
-	hooks      types.SlashingHooks
+	storeKey storetypes.StoreKey
+	cdc      codec.BinaryCodec
+	sk       types.StakingKeeper
+	gk       types.GovKeeper
+	msk      types.MultiStakingKeeper
+	hooks    types.SlashingHooks
 }
 
 // NewKeeper creates a slashing keeper
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, sk types.StakingKeeper, msk types.MultiStakingKeeper, gk types.GovKeeper, paramspace types.ParamSubspace) Keeper {
-	// set KeyTable if it has not already been set
-	if !paramspace.HasKeyTable() {
-		paramspace = paramspace.WithKeyTable(types.ParamKeyTable())
-	}
-
+func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, sk types.StakingKeeper, msk types.MultiStakingKeeper, gk types.GovKeeper) Keeper {
 	return Keeper{
-		storeKey:   key,
-		cdc:        cdc,
-		sk:         sk,
-		msk:        msk,
-		gk:         gk,
-		paramspace: paramspace,
+		storeKey: key,
+		cdc:      cdc,
+		sk:       sk,
+		msk:      msk,
+		gk:       gk,
 	}
 }
 

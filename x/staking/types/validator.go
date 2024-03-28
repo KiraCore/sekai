@@ -1,6 +1,7 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	tmprotocrypto "github.com/cometbft/cometbft/proto/tendermint/crypto"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -81,7 +82,7 @@ func (v Validator) GetConsPubKey() cryptotypes.PubKey {
 func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
 	pk, ok := v.PubKey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
+		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
 	}
 
 	return pk, nil

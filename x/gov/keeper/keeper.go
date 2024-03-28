@@ -251,6 +251,8 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{StrValue: properties.VetoThreshold.String()}, nil
 	case types.AutocompoundIntervalNumBlocks:
 		return types.NetworkPropertyValue{Value: properties.AutocompoundIntervalNumBlocks}, nil
+	case types.DowntimeInactiveDuration:
+		return types.NetworkPropertyValue{Value: properties.DowntimeInactiveDuration}, nil
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
@@ -403,9 +405,10 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 			return err
 		}
 		properties.VetoThreshold = decValue
-
 	case types.AutocompoundIntervalNumBlocks:
 		properties.AutocompoundIntervalNumBlocks = value.Value
+	case types.DowntimeInactiveDuration:
+		properties.DowntimeInactiveDuration = value.Value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

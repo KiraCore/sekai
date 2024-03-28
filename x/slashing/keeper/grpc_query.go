@@ -17,17 +17,6 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
-	if req == nil {
-		return nil, status.Errorf(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	params := k.GetParams(ctx)
-
-	return &types.QueryParamsResponse{Params: params}, nil
-}
-
 func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoRequest) (*types.QuerySigningInfoResponse, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")

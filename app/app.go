@@ -278,7 +278,6 @@ func NewInitApp(
 		&customStakingKeeper,
 		multiStakingKeeper,
 		app.CustomGovKeeper,
-		app.GetSubspace(slashingtypes.ModuleName),
 	)
 
 	app.BasketKeeper = basketkeeper.NewKeeper(

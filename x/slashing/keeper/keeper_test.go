@@ -10,7 +10,6 @@ import (
 
 	simapp "github.com/KiraCore/sekai/app"
 	appparams "github.com/KiraCore/sekai/app/params"
-	"github.com/KiraCore/sekai/x/slashing/testslashing"
 	"github.com/KiraCore/sekai/x/staking"
 	"github.com/KiraCore/sekai/x/staking/teststaking"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -214,7 +213,10 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// initial setup
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	app.CustomSlashingKeeper.SetParams(ctx, testslashing.TestParams())
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.DowntimeInactiveDuration = 60 * 60
+	err := app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+	require.NoError(t, err)
 
 	power := int64(100)
 
@@ -279,7 +281,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	ctx = ctx.WithBlockHeight(height)
 
 	// Try pausing on inactive node here, should fail
-	err := app.CustomSlashingKeeper.Pause(ctx, valAddr)
+	err = app.CustomSlashingKeeper.Pause(ctx, valAddr)
 	require.Error(t, err)
 
 	// validator rejoins and starts signing again
@@ -358,8 +360,11 @@ func TestValidatorLifecycle(t *testing.T) {
 	// initial setup
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	app.CustomSlashingKeeper.SetParams(ctx, testslashing.TestParams())
+
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.DowntimeInactiveDuration = 60 * 60
+	err := app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+	require.NoError(t, err)
 
 	power := int64(100)
 
@@ -538,7 +543,7 @@ func TestValidatorLifecycle(t *testing.T) {
 	require.True(t, found)
 	require.Equal(t, consAddr.String(), signInfo.Address)
 	require.Equal(t, int64(0), signInfo.StartHeight)
-	require.Equal(t, ctx.BlockTime().Add(app.CustomSlashingKeeper.DowntimeInactiveDuration(ctx)).String(), signInfo.InactiveUntil.String())
+	require.Equal(t, ctx.BlockTime().Add(time.Second*time.Duration(properties.DowntimeInactiveDuration)).String(), signInfo.InactiveUntil.String())
 	require.Equal(t, int64(0), signInfo.MischanceConfidence)
 	require.Equal(t, int64(0), signInfo.Mischance)
 	require.Equal(t, int64(5000), signInfo.LastPresentBlock)
@@ -563,7 +568,7 @@ func TestValidatorLifecycle(t *testing.T) {
 	require.True(t, found)
 	require.Equal(t, consAddr.String(), signInfo.Address)
 	require.Equal(t, int64(0), signInfo.StartHeight)
-	require.Equal(t, ctx.BlockTime().Add(app.CustomSlashingKeeper.DowntimeInactiveDuration(ctx)).String(), signInfo.InactiveUntil.String())
+	require.Equal(t, ctx.BlockTime().Add(time.Second*time.Duration(properties.DowntimeInactiveDuration)).String(), signInfo.InactiveUntil.String())
 	require.Equal(t, int64(10), signInfo.MischanceConfidence)
 	require.Equal(t, int64(111), signInfo.Mischance)
 	require.Equal(t, int64(5000), signInfo.LastPresentBlock)
@@ -571,7 +576,7 @@ func TestValidatorLifecycle(t *testing.T) {
 	require.Equal(t, int64(101), signInfo.ProducedBlocksCounter)
 
 	// Unjail and check changes
-	unjailTime := ctx.BlockTime().Add(app.CustomSlashingKeeper.DowntimeInactiveDuration(ctx))
+	unjailTime := ctx.BlockTime().Add(time.Second * time.Duration(properties.DowntimeInactiveDuration))
 	app.CustomStakingKeeper.Unjail(ctx, valAddr)
 	tstaking.CheckValidator(valAddr, stakingtypes.Inactive)
 	signInfo, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
