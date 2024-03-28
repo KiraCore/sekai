@@ -40,7 +40,7 @@ func (s IntegrationTestSuite) TestTxRegisterIdentityRecords() {
 	fmt.Println("out", out)
 }
 
-func (s IntegrationTestSuite) TestTxEditIdentityRecord() {
+func (s IntegrationTestSuite) TestTxDeleteIdentityRecord() {
 	val := s.network.Validators[0]
 	cmd := cli.GetTxDeleteIdentityRecords()
 
