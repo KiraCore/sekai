@@ -3,6 +3,7 @@ package keeper
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -66,46 +67,66 @@ func (k Keeper) ValidateNetworkProperties(ctx sdk.Context, properties *types.Net
 	if properties.MaxTxFee < properties.MinTxFee {
 		return fmt.Errorf("max_tx_fee should not be lower than min_tx_fee")
 	}
-	// TODO: for now skipping few of validations
-	// if properties.VoteQuorum == 0 {
-	// 	return fmt.Errorf("vote_quorum should not be zero")
-	// }
-	// if properties.ProposalEndTime == 0 {
-	// 	return fmt.Errorf("proposal_end_time should not be zero")
-	// }
-	// if properties.ProposalEnactmentTime == 0 {
-	// 	return fmt.Errorf("proposal_enactment_time should not be zero")
-	// }
-	// if properties.MinProposalEndBlocks == 0 {
-	// 	return fmt.Errorf("min_proposal_end_blocks should not be zero")
-	// }
-	// if properties.MinProposalEnactmentBlocks == 0 {
-	// 	return fmt.Errorf("min_proposal_enactment_blocks should not be zero")
-	// }
-	// if properties.MischanceRankDecreaseAmount == 0 {
-	// 	return fmt.Errorf("mischance_rank_decrease_amount should not be zero")
-	// }
-	// if properties.MaxMischance == 0 {
-	// 	return fmt.Errorf("max_mischance should not be zero")
-	// }
-	// if properties.InactiveRankDecreasePercent == 0 {
-	// 	return fmt.Errorf("inactive_rank_decrease_percent should not be zero")
-	// }
-	// if properties.InactiveRankDecreasePercent == 0 {
-	// 	return fmt.Errorf("inactive_rank_decrease_percent should not be zero")
-	// }
-	if !properties.InactiveRankDecreasePercent.IsNil() && properties.InactiveRankDecreasePercent.GT(sdk.OneDec()) {
-		return fmt.Errorf("inactive_rank_decrease_percent should not be lower than 100%%")
+	if properties.VoteQuorum.IsNil() || properties.VoteQuorum.IsNegative() || properties.VoteQuorum.GT(sdk.OneDec()) {
+		return fmt.Errorf("vote_quorum should be between 0-1")
 	}
-	// if properties.MinValidators == 0 {
-	// 	return fmt.Errorf("min_validators should not be zero")
-	// }
-	// if properties.PoorNetworkMaxBankSend == 0 {
-	// 	return fmt.Errorf("min_validators should not be zero")
-	// }
-	// if properties.UnjailMaxTime == 0 {
-	// 	return fmt.Errorf("unjail_max_time should not be zero")
-	// }
+	if properties.VetoThreshold.IsNil() || properties.VetoThreshold.IsNegative() || properties.VetoThreshold.GT(sdk.OneDec()) {
+		return fmt.Errorf("veto_threshold should be between 0-1")
+	}
+	if properties.MinimumProposalEndTime == 0 {
+		return fmt.Errorf("minimum_proposal_end_time should not be zero")
+	}
+	if properties.ProposalEnactmentTime == 0 {
+		return fmt.Errorf("proposal_enactment_time should not be zero")
+	}
+	if properties.MinProposalEndBlocks == 0 {
+		return fmt.Errorf("min_proposal_end_blocks should not be zero")
+	}
+	if properties.MinProposalEnactmentBlocks == 0 {
+		return fmt.Errorf("min_proposal_enactment_blocks should not be zero")
+	}
+	if properties.MischanceRankDecreaseAmount == 0 {
+		return fmt.Errorf("mischance_rank_decrease_amount should not be zero")
+	}
+	if properties.MaxMischance == 0 {
+		return fmt.Errorf("max_mischance should not be zero")
+	}
+	if properties.InactiveRankDecreasePercent.IsNil() || properties.InactiveRankDecreasePercent.IsNegative() || properties.InactiveRankDecreasePercent.GT(sdk.OneDec()) {
+		return fmt.Errorf("inactive_rank_decrease_percent should be between 0-1")
+	}
+	if properties.ValidatorsFeeShare.IsNil() || properties.ValidatorsFeeShare.IsNegative() || properties.ValidatorsFeeShare.GT(sdk.NewDecWithPrec(5, 1)) {
+		return fmt.Errorf("validators_fee_share should be between 0-0.5")
+	}
+	if properties.InflationRate.IsNil() || properties.InflationRate.IsNegative() || properties.InflationRate.GT(sdk.NewDecWithPrec(5, 1)) {
+		return fmt.Errorf("inflation_rate should be between 0-0.5")
+	}
+	if properties.MaxJailedPercentage.IsNil() || properties.MaxJailedPercentage.IsNegative() || properties.MaxJailedPercentage.GT(sdk.OneDec()) {
+		return fmt.Errorf("max_jailed_percentage should be between 0-1")
+	}
+	if properties.MaxSlashingPercentage.IsNil() || properties.MaxSlashingPercentage.IsNegative() || properties.MaxSlashingPercentage.GT(sdk.OneDec()) {
+		return fmt.Errorf("max_slashing_percentage should be between 0-1")
+	}
+	if properties.MaxAnnualInflation.IsNil() || properties.MaxAnnualInflation.IsNegative() {
+		return fmt.Errorf("max_slashing_percentage should not be negative")
+	}
+	if properties.DappVerifierBond.IsNil() || properties.DappVerifierBond.IsNegative() || properties.DappVerifierBond.GT(sdk.OneDec()) {
+		return fmt.Errorf("dapp_verifier_bond should be between 0-1")
+	}
+	if properties.DappPoolSlippageDefault.IsNil() || properties.DappPoolSlippageDefault.IsNegative() || properties.DappPoolSlippageDefault.GT(sdk.OneDec()) {
+		return fmt.Errorf("dapp_pool_slippage_default should be between 0-1")
+	}
+	if properties.DappInactiveRankDecreasePercent.IsNil() || properties.DappInactiveRankDecreasePercent.IsNegative() || properties.DappInactiveRankDecreasePercent.GT(sdk.OneDec()) {
+		return fmt.Errorf("dapp_inactive_rank_decrease_percent should be between 0-1")
+	}
+	if properties.MinValidators == 0 {
+		return fmt.Errorf("min_validators should not be zero")
+	}
+	if properties.PoorNetworkMaxBankSend == 0 {
+		return fmt.Errorf("poor_network_bank_send should not be zero")
+	}
+	if properties.UnjailMaxTime == 0 {
+		return fmt.Errorf("unjail_max_time should not be zero")
+	}
 	// fee := k.GetExecutionFee(ctx, (&types.MsgHandleIdentityRecordsVerifyRequest{}).Type())
 	// maxFee := properties.MinTxFee
 	// if fee != nil {
@@ -119,25 +140,44 @@ func (k Keeper) ValidateNetworkProperties(ctx sdk.Context, properties *types.Net
 	// if properties.MinIdentityApprovalTip < maxFee*2 {
 	// 	return fmt.Errorf("min_identity_approval_tip should not be bigger or equal than 2x approval fee")
 	// }
-	// if properties.UniqueIdentityKeys == "" {
-	// 	return fmt.Errorf("unique_identity_keys should not be empty")
-	// }
-	// monikerExists := false
-	// if properties.UniqueIdentityKeys != FormalizeIdentityRecordKey(properties.UniqueIdentityKeys) {
-	// 	return fmt.Errorf("unique identity keys on network property should be formailzed with lowercase keys")
-	// }
-	// uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
-	// for _, key := range uniqueKeys {
-	// 	if !ValidateIdentityRecordKey(key) {
-	// 		return fmt.Errorf("invalid identity record key exists, key=%s", key)
-	// 	}
-	// 	if key == "moniker" {
-	// 		monikerExists = true
-	// 	}
-	// }
-	// if !monikerExists {
-	// 	return fmt.Errorf("moniker should be exist in unique keys list")
-	// }
+	if properties.UniqueIdentityKeys == "" {
+		return fmt.Errorf("unique_identity_keys should not be empty")
+	}
+	monikerExists := false
+	if properties.UniqueIdentityKeys != FormalizeIdentityRecordKey(properties.UniqueIdentityKeys) {
+		return fmt.Errorf("unique identity keys on network property should be formailzed with lowercase keys")
+	}
+	uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
+	for _, key := range uniqueKeys {
+		if !ValidateIdentityRecordKey(key) {
+			return fmt.Errorf("invalid identity record key exists, key=%s", key)
+		}
+		if key == "moniker" {
+			monikerExists = true
+		}
+	}
+	if !monikerExists {
+		return fmt.Errorf("moniker should be exist in unique keys list")
+	}
+	if properties.InflationPeriod < 2629800 || properties.InflationPeriod > 31557600 {
+		return fmt.Errorf("inflation_period should be between 2629800 and 31557600")
+	}
+	if properties.UnstakingPeriod < 604800 || properties.UnstakingPeriod > 31557600 {
+		return fmt.Errorf("unstaking_period should be between 604800 and 31557600")
+	}
+	if properties.UnstakingPeriod > properties.SlashingPeriod {
+		return fmt.Errorf("unstaking_period should be lower than slashing_period")
+	}
+	if properties.SlashingPeriod <= 0 {
+		return fmt.Errorf("slashing_period should be positive")
+	}
+	if properties.MaxJailedPercentage.GTE(sdk.OneDec().QuoInt64(3)) {
+		return fmt.Errorf("max_jailed_percentage should be less than 1/3")
+	}
+	if properties.UnjailMaxTime > properties.SlashingPeriod {
+		return fmt.Errorf("unjail_max_time should be strictly less than slashing_period")
+	}
+
 	return nil
 }
 
@@ -150,7 +190,7 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.MaxTxFee:
 		return types.NetworkPropertyValue{Value: properties.MaxTxFee}, nil
 	case types.VoteQuorum:
-		return types.NetworkPropertyValue{Value: properties.VoteQuorum}, nil
+		return types.NetworkPropertyValue{StrValue: properties.VoteQuorum.String()}, nil
 	case types.MinimumProposalEndTime:
 		return types.NetworkPropertyValue{Value: properties.MinimumProposalEndTime}, nil
 	case types.ProposalEnactmentTime:
@@ -240,7 +280,7 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.DappMaxMischance:
 		return types.NetworkPropertyValue{Value: properties.DappMaxMischance}, nil
 	case types.DappInactiveRankDecreasePercent:
-		return types.NetworkPropertyValue{Value: properties.DappInactiveRankDecreasePercent}, nil
+		return types.NetworkPropertyValue{StrValue: properties.DappInactiveRankDecreasePercent.String()}, nil
 	case types.DappPoolSlippageDefault:
 		return types.NetworkPropertyValue{StrValue: properties.DappPoolSlippageDefault.String()}, nil
 	case types.MintingFtFee:
@@ -267,7 +307,11 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.MaxTxFee:
 		properties.MaxTxFee = value.Value
 	case types.VoteQuorum:
-		properties.VoteQuorum = value.Value
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.VoteQuorum = decValue
 	case types.MinimumProposalEndTime:
 		properties.MinimumProposalEndTime = value.Value
 	case types.ProposalEnactmentTime:
@@ -388,7 +432,11 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.DappMaxMischance:
 		properties.DappMaxMischance = value.Value
 	case types.DappInactiveRankDecreasePercent:
-		properties.DappInactiveRankDecreasePercent = value.Value
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.DappInactiveRankDecreasePercent = decValue
 	case types.DappPoolSlippageDefault:
 		decValue, err := sdk.NewDecFromStr(value.StrValue)
 		if err != nil {

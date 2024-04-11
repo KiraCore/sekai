@@ -10,7 +10,7 @@ func NewMsgCreateSpendingPool(
 	claimStart uint64,
 	claimEnd uint64,
 	rates sdk.DecCoins,
-	voteQuorum uint64,
+	voteQuorum sdk.Dec,
 	votePeriod uint64,
 	voteEnactment uint64,
 	owners PermInfo,

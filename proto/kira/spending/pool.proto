@@ -57,7 +57,10 @@ message SpendingPool {
     (gogoproto.nullable) = false
   ];
   // pool specific % of owner accounts that must vote YES or NO for any of the pool proposals to be valid.
-  uint64 vote_quorum = 6; // percentage, # default: 51%
+  string vote_quorum = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // percentage, # default: 51%
   // period of time in seconds that any of the pool proposals must last before passing or being rejected
   uint64 vote_period = 7; // seconds, # default: 600s
   // period of time that must pass before any of the pool proposal is enacted

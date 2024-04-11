@@ -14,7 +14,7 @@ func DefaultGenesis() *GenesisState {
 				ClaimStart:    0,
 				ClaimEnd:      0,
 				Rates:         sdk.DecCoins{sdk.NewDecCoin("ukex", sdk.NewInt(385))}, // 1k KEX per month per validator
-				VoteQuorum:    33,
+				VoteQuorum:    sdk.NewDecWithPrec(33, 2),
 				VotePeriod:    300, // 300s
 				VoteEnactment: 300, // 300s
 				Owners:        &PermInfo{OwnerRoles: []uint64{govtypes.RoleValidator}},

@@ -264,6 +264,10 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 	sudoAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
+	networkProperties := types.DefaultGenesis().NetworkProperties
+	networkProperties.MinTxFee = 100
+	networkProperties.MaxTxFee = 1000
+
 	tests := []struct {
 		name       string
 		msg        sdk.Msg
@@ -272,22 +276,16 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 		{
 			name: "Success run with ChangeTxFee permission",
 			msg: &types.MsgSetNetworkProperties{
-				NetworkProperties: &types.NetworkProperties{
-					MinTxFee: 100,
-					MaxTxFee: 1000,
-				},
-				Proposer: changeFeeAddr,
+				NetworkProperties: networkProperties,
+				Proposer:          changeFeeAddr,
 			},
 			desiredErr: "",
 		},
 		{
 			name: "Failure run without ChangeTxFee permission",
 			msg: &types.MsgSetNetworkProperties{
-				NetworkProperties: &types.NetworkProperties{
-					MinTxFee: 100,
-					MaxTxFee: 1000,
-				},
-				Proposer: sudoAddr,
+				NetworkProperties: networkProperties,
+				Proposer:          sudoAddr,
 			},
 			desiredErr: "not enough permissions",
 		},

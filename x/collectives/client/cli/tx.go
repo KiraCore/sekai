@@ -178,7 +178,7 @@ func GetTxCreateCollectiveCmd() *cobra.Command {
 				ownerWhitelist,
 				weightedSpendingPools,
 				claimStart, claimPeriod, claimEnd,
-				voteQuorum, votePeriod, voteEnactment,
+				sdk.NewDecWithPrec(int64(voteQuorum), 2), votePeriod, voteEnactment,
 			)
 
 			err = msg.ValidateBasic()
@@ -589,7 +589,7 @@ func GetTxProposalCollectiveUpdateCmd() *cobra.Command {
 					ownerWhitelist,
 					weightedSpendingPools,
 					claimStart, claimPeriod, claimEnd,
-					voteQuorum, votePeriod, voteEnactment,
+					sdk.NewDecWithPrec(int64(voteQuorum), 2), votePeriod, voteEnactment,
 				),
 			)
 			if err != nil {
