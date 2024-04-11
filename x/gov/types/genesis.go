@@ -131,7 +131,7 @@ func DefaultGenesis() *GenesisState {
 			MinDelegationPushout:            10,
 			SlashingPeriod:                  2629800,
 			MaxJailedPercentage:             sdk.NewDecWithPrec(25, 2),
-			MaxSlashingPercentage:           sdk.NewDecWithPrec(1, 2),
+			MaxSlashingPercentage:           sdk.NewDecWithPrec(5, 3), // 0.5%
 			MinCustodyReward:                200,
 			MaxCustodyTxSize:                8192,
 			MaxCustodyBufferSize:            10,

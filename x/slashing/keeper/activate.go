@@ -84,7 +84,7 @@ func (k Keeper) Unpause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 
 	// cannot be unpaused if not paused
 	if !validator.IsPaused() {
-		return errorsmod.Wrap(types.ErrValidatorNotPaused, "Can NOT pause inactivated validator")
+		return errorsmod.Wrap(types.ErrValidatorNotPaused, "Can NOT unpause NOT paused validator")
 	}
 
 	k.sk.Unpause(ctx, validator.ValKey)
