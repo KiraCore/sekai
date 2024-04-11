@@ -45,7 +45,7 @@ func (r ProposalRouter) AllowedAddressesDynamicProposal(ctx sdk.Context, proposa
 	return dh.AllowedAddresses(ctx, proposal)
 }
 
-func (r ProposalRouter) QuorumDynamicProposal(ctx sdk.Context, proposal Content) uint64 {
+func (r ProposalRouter) QuorumDynamicProposal(ctx sdk.Context, proposal Content) sdk.Dec {
 	h, ok := r.routes[proposal.ProposalType()]
 	if !ok {
 		panic("invalid proposal type")
@@ -53,7 +53,7 @@ func (r ProposalRouter) QuorumDynamicProposal(ctx sdk.Context, proposal Content)
 
 	dh, ok := h.(DynamicVoterProposalHandler)
 	if !ok {
-		return 0
+		return sdk.ZeroDec()
 	}
 	return dh.Quorum(ctx, proposal)
 }
@@ -108,7 +108,7 @@ type ProposalHandler interface {
 type DynamicVoterProposalHandler interface {
 	ProposalType() string
 	IsAllowedAddress(ctx sdk.Context, addr sdk.AccAddress, proposal Content) bool
-	Quorum(ctx sdk.Context, proposal Content) uint64
+	Quorum(ctx sdk.Context, proposal Content) sdk.Dec
 	VotePeriod(ctx sdk.Context, proposal Content) uint64
 	VoteEnactment(ctx sdk.Context, proposal Content) uint64
 	AllowedAddresses(ctx sdk.Context, proposal Content) []string

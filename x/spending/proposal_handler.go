@@ -45,12 +45,12 @@ func (a ApplyUpdateSpendingPoolProposalHandler) AllowedAddresses(ctx sdk.Context
 	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
 }
 
-func (a ApplyUpdateSpendingPoolProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplyUpdateSpendingPoolProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.UpdateSpendingPoolProposal)
 
 	pool := a.keeper.GetSpendingPool(ctx, p.Name)
 	if pool == nil {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return pool.VoteQuorum
@@ -142,12 +142,12 @@ func (a ApplySpendingPoolDistributionProposalHandler) AllowedAddresses(ctx sdk.C
 	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
 }
 
-func (a ApplySpendingPoolDistributionProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplySpendingPoolDistributionProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.SpendingPoolDistributionProposal)
 
 	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
 	if pool == nil {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return pool.VoteQuorum
@@ -256,12 +256,12 @@ func (a ApplySpendingPoolWithdrawProposalHandler) AllowedAddresses(ctx sdk.Conte
 	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
 }
 
-func (a ApplySpendingPoolWithdrawProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplySpendingPoolWithdrawProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.SpendingPoolWithdrawProposal)
 
 	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
 	if pool == nil {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return pool.VoteQuorum

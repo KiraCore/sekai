@@ -126,7 +126,7 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 
 			msg := types.NewMsgCreateSpendingPool(
 				name, uint64(claimStart), uint64(claimEnd), rates,
-				uint64(voteQuorum), uint64(votePeriod), uint64(voteEnactment),
+				sdk.NewDecWithPrec(int64(voteQuorum), 2), uint64(votePeriod), uint64(voteEnactment),
 				types.PermInfo{
 					OwnerRoles:    ownerRoles,
 					OwnerAccounts: ownerAccounts,
@@ -380,7 +380,7 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 				description,
 				types.NewUpdateSpendingPoolProposal(
 					name, uint64(claimStart), uint64(claimEnd), rates,
-					uint64(voteQuorum), uint64(votePeriod), uint64(voteEnactment),
+					sdk.NewDecWithPrec(int64(voteQuorum), 2), uint64(votePeriod), uint64(voteEnactment),
 					types.PermInfo{
 						OwnerRoles:    ownerRoles,
 						OwnerAccounts: ownerAccounts,

@@ -1,10 +1,6 @@
 package types
 
-import (
-	"github.com/cosmos/cosmos-sdk/types"
-	"math/big"
-	"strconv"
-)
+import sdk "github.com/cosmos/cosmos-sdk/types"
 
 type PollVotes []PollVote
 
@@ -49,14 +45,8 @@ func (c CalculatedPollVotes) VetoVotes() uint64 {
 
 func (c CalculatedPollVotes) ProcessResult(properties *NetworkProperties) PollResult {
 	if c.actorsWithVeto != 0 {
-		resString := strconv.FormatFloat(float64(c.votes[PollOptionNoWithVeto.String()])/float64(c.actorsWithVeto)*100, 'f', -1, 64)
+		percentageActorsWithVeto := sdk.NewDec(int64(c.votes[PollOptionNoWithVeto.String()])).Quo(sdk.NewDec(int64(c.actorsWithVeto)))
 
-		resBig, success := new(big.Int).SetString(resString, 10)
-		if !success {
-			return PollUnknown
-		}
-
-		percentageActorsWithVeto := types.NewDecFromBigIntWithPrec(resBig, 0)
 		if properties.VetoThreshold.LTE(percentageActorsWithVeto) {
 			return PollRejectedWithVeto
 		}

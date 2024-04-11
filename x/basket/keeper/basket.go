@@ -1,9 +1,9 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"github.com/KiraCore/sekai/x/basket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) GetLastBasketId(ctx sdk.Context) uint64 {
@@ -25,7 +25,7 @@ func (k Keeper) GetBasketById(ctx sdk.Context, id uint64) (types.Basket, error) 
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(append(types.PrefixBasketKey, sdk.Uint64ToBigEndian(id)...))
 	if bz == nil {
-		return types.Basket{}, sdkerrors.Wrapf(types.ErrBasketDoesNotExist, "basket: %d does not exist", id)
+		return types.Basket{}, errorsmod.Wrapf(types.ErrBasketDoesNotExist, "basket: %d does not exist", id)
 	}
 	basket := types.Basket{}
 	k.cdc.MustUnmarshal(bz, &basket)
@@ -36,7 +36,7 @@ func (k Keeper) GetBasketByDenom(ctx sdk.Context, denom string) (types.Basket, e
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(append(types.PrefixBasketByDenomKey, denom...))
 	if bz == nil {
-		return types.Basket{}, sdkerrors.Wrapf(types.ErrBasketDoesNotExist, "basket: %s does not exist", denom)
+		return types.Basket{}, errorsmod.Wrapf(types.ErrBasketDoesNotExist, "basket: %s does not exist", denom)
 	}
 	id := sdk.BigEndianToUint64(bz)
 	return k.GetBasketById(ctx, id)
