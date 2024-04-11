@@ -1,6 +1,8 @@
 Features:
 
-- Docs update
-- Set execution fees proposal
-- Proper error handling for non existing identity records key from an address
-- Fix usage of native cosmos staking module msg to custom staking module msg
+- Unique identity keys
+- Genesis init fix
+- CLI to use flags for execution fees proposal
+- Slashing module params to gov module properties
+- Identity record verification bug fix
+- Network properties handling fix
