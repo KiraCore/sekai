@@ -1,6 +1,7 @@
 package recovery
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"github.com/KiraCore/sekai/x/recovery/keeper"
 	"github.com/KiraCore/sekai/x/recovery/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,7 +38,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			res, err := msgServer.RotateValidatorByHalfRRTokenHolder(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		default:
-			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
+			return nil, errorsmod.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
 }

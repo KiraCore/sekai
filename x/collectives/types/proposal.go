@@ -41,8 +41,9 @@ func NewProposalCollectiveUpdate(
 	depositWhitelist DepositWhitelist,
 	ownersWhitelist OwnersWhitelist,
 	weightedSpendingPool []WeightedSpendingPool,
-	claimStart, claimPeriod, claimEnd,
-	voteQuorum, votePeriod, voteEnactment uint64,
+	claimStart, claimPeriod, claimEnd uint64,
+	voteQuorum sdk.Dec,
+	votePeriod, voteEnactment uint64,
 ) *ProposalCollectiveUpdate {
 	return &ProposalCollectiveUpdate{
 		Name:             name,

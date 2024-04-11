@@ -35,7 +35,10 @@ message ProposalCollectiveUpdate {
   uint64 claim_start = 7; // (optional) timestamp defining when rewards claiming should start
   uint64 claim_period = 8; // (optional) period in seconds defining every what period of time reward claim should be triggered
   uint64 claim_end = 9;    // (optional) timestamp defining when rewards claiming should end
-  uint64 vote_quorum = 10; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  string vote_quorum = 10 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
   uint64 vote_period = 11; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
   uint64 vote_enactment = 12; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
 }

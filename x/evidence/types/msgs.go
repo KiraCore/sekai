@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -18,6 +19,7 @@ var (
 )
 
 // NewMsgSubmitEvidence returns a new MsgSubmitEvidence with a signer/submitter.
+//
 //nolint:interfacer
 func NewMsgSubmitEvidence(s sdk.AccAddress, evi exported.Evidence) (*MsgSubmitEvidence, error) {
 	msg, ok := evi.(proto.Message)
@@ -40,12 +42,12 @@ func (m MsgSubmitEvidence) Type() string { return kiratypes.TypeMsgSubmitEvidenc
 // ValidateBasic performs basic (non-state-dependant) validation on a MsgSubmitEvidence.
 func (m MsgSubmitEvidence) ValidateBasic() error {
 	if m.Submitter == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Submitter)
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, m.Submitter)
 	}
 
 	evi := m.GetEvidence()
 	if evi == nil {
-		return sdkerrors.Wrap(ErrInvalidEvidence, "missing evidence")
+		return errorsmod.Wrap(ErrInvalidEvidence, "missing evidence")
 	}
 	if err := evi.ValidateBasic(); err != nil {
 		return err

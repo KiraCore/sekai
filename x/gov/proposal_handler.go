@@ -3,6 +3,7 @@ package gov
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -29,7 +30,7 @@ func (a ApplyWhitelistAccountPermissionProposalHandler) Apply(ctx sdk.Context, p
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
 	if found {
 		if actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
-			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already whitelisted")
+			return errorsmod.Wrap(types.ErrWhitelisting, "permission already whitelisted")
 		}
 	} else {
 		actor = types.NewDefaultActor(p.Address)
@@ -56,7 +57,7 @@ func (a ApplyBlacklistAccountPermissionProposalHandler) Apply(ctx sdk.Context, p
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
 	if found {
 		if actor.Permissions.IsBlacklisted(types.PermValue(p.Permission)) {
-			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already blacklisted")
+			return errorsmod.Wrap(types.ErrWhitelisting, "permission already blacklisted")
 		}
 	} else {
 		actor = types.NewDefaultActor(p.Address)
@@ -83,7 +84,7 @@ func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) Apply(ctx sdk.Co
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
 	if found {
 		if !actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
-			return sdkerrors.Wrap(types.ErrWhitelisting, "whitelisted permission does not exist")
+			return errorsmod.Wrap(types.ErrWhitelisting, "whitelisted permission does not exist")
 		}
 	} else {
 		actor = types.NewDefaultActor(p.Address)
@@ -111,7 +112,7 @@ func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) Apply(ctx sdk.Co
 	fmt.Println("actor", actor)
 	if found {
 		if !actor.Permissions.IsBlacklisted(types.PermValue(p.Permission)) {
-			return sdkerrors.Wrap(types.ErrWhitelisting, "blacklisted permission does not exist")
+			return errorsmod.Wrap(types.ErrWhitelisting, "blacklisted permission does not exist")
 		}
 	} else {
 		actor = types.NewDefaultActor(p.Address)
@@ -184,10 +185,10 @@ func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposalI
 
 	property, err := a.keeper.GetNetworkProperty(ctx, p.NetworkProperty)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 	if property == p.Value {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "network property already set as proposed value")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "network property already set as proposed value")
 	}
 
 	return a.keeper.SetNetworkProperty(ctx, p.NetworkProperty, p.Value)
