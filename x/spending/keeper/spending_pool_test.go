@@ -19,7 +19,7 @@ func (suite *KeeperTestSuite) TestSpendingPoolSetGet() {
 			ClaimStart:    0,
 			ClaimEnd:      0,
 			Rates:         sdk.NewDecCoins(sdk.NewDecCoin("ukex", sdk.NewInt(1))),
-			VoteQuorum:    30,
+			VoteQuorum:    sdk.NewDecWithPrec(30, 2),
 			VotePeriod:    3000,
 			VoteEnactment: 1000,
 			Owners: &types.PermInfo{
@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestSpendingPoolSetGet() {
 			ClaimStart:    0,
 			ClaimEnd:      0,
 			Rates:         sdk.NewDecCoins(sdk.NewDecCoin("ukex", sdk.NewInt(1))),
-			VoteQuorum:    30,
+			VoteQuorum:    sdk.NewDecWithPrec(30, 2),
 			VotePeriod:    3000,
 			VoteEnactment: 1000,
 			Owners: &types.PermInfo{

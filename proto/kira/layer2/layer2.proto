@@ -79,7 +79,10 @@ message Dapp {
   ]; // total bonds put on the dapp
   uint64 creation_time = 17; // dapp creation time
   DappStatus status = 18; // dapp status
-  uint64 vote_quorum = 19; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  string vote_quorum = 19 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
   uint64 vote_period = 20; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
   uint64 vote_enactment = 21; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
   uint64 liquidation_start = 22; // liquidation start time

@@ -160,7 +160,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						NetworkProperties: &govtypes.NetworkProperties{
 							MinTxFee:                        govGenesisV01228.NetworkProperties.MinTxFee,
 							MaxTxFee:                        govGenesisV01228.NetworkProperties.MaxTxFee,
-							VoteQuorum:                      govGenesisV01228.NetworkProperties.VoteQuorum,
+							VoteQuorum:                      sdk.NewDecWithPrec(int64(govGenesisV01228.NetworkProperties.VoteQuorum), 2),
 							MinimumProposalEndTime:          govGenesisV01228.NetworkProperties.ProposalEndTime,
 							ProposalEnactmentTime:           govGenesisV01228.NetworkProperties.ProposalEnactmentTime,
 							MinProposalEndBlocks:            govGenesisV01228.NetworkProperties.MinProposalEndBlocks,
@@ -186,7 +186,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 							MinDelegationPushout:            10,
 							SlashingPeriod:                  3600,
 							MaxJailedPercentage:             sdk.NewDecWithPrec(25, 2),
-							MaxSlashingPercentage:           sdk.NewDecWithPrec(1, 2),
+							MaxSlashingPercentage:           sdk.NewDecWithPrec(5, 3), // 0.5%
 							MinCustodyReward:                200,
 							MaxCustodyTxSize:                8192,
 							MaxCustodyBufferSize:            10,
@@ -209,12 +209,15 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 							DappAutoDenounceTime:            60,                       // 60s
 							DappMischanceRankDecreaseAmount: 1,
 							DappMaxMischance:                10,
-							DappInactiveRankDecreasePercent: 10,
+							DappInactiveRankDecreasePercent: sdk.NewDecWithPrec(10, 2),
 							DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
+							DappLiquidationThreshold:        100_000_000_000,          // default 100’000 KEX
+							DappLiquidationPeriod:           2419200,                  // default 2419200, ~28d
 							MintingFtFee:                    100_000_000_000_000,
 							MintingNftFee:                   100_000_000_000_000,
-							VetoThreshold:                   sdk.NewDecWithPrec(3340, 2), //33.40%
+							VetoThreshold:                   sdk.NewDecWithPrec(3340, 4), //33.40%
 							AutocompoundIntervalNumBlocks:   17280,
+							DowntimeInactiveDuration:        600,
 						},
 						ExecutionFees:               govGenesisV01228.ExecutionFees,
 						PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

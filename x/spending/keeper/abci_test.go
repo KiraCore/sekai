@@ -25,7 +25,8 @@ func (suite *KeeperTestSuite) TestEndBlocker() {
 		"spendingpool1",
 		0, 0,
 		sdk.NewDecCoins(sdk.NewDecCoin("ukex", sdk.NewInt(1))),
-		30, 86400, 3000,
+		sdk.NewDecWithPrec(30, 2),
+		86400, 3000,
 		types.PermInfo{
 			OwnerRoles:    []uint64{1},
 			OwnerAccounts: []string{addr1.String()},

@@ -76,6 +76,7 @@ enum NetworkProperty {
     MINTING_NFT_FEE = 58 [ (gogoproto.enumvalue_customname) = "MintingNftFee" ];
     VETO_THRESHOLD = 59 [ (gogoproto.enumvalue_customname) = "VetoThreshold" ];
     AUTOCOMPOUND_INTERVAL_NUM_BLOCKS = 60 [ (gogoproto.enumvalue_customname) = "AutocompoundIntervalNumBlocks" ];
+    DOWNTIME_INACTIVE_DURATION = 61 [ (gogoproto.enumvalue_customname) = "DowntimeInactiveDuration" ];
 }
 
 message NetworkPropertyValue {
@@ -88,7 +89,10 @@ message NetworkPropertyValue {
 message NetworkProperties {
     uint64 min_tx_fee = 1; // minimum transaction fee
     uint64 max_tx_fee = 2; // maximum transaction fee
-    uint64 vote_quorum = 3; // vote quorum to reach to move to enactment
+    string vote_quorum = 3 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // vote quorum to reach to move to enactment
     uint64 minimum_proposal_end_time = 4; // the minimum duration to start processing the proposal
     uint64 proposal_enactment_time = 5; // the duration to wait for enactment after proposal processing
     uint64 min_proposal_end_blocks = 6; // minimum blocks required for proposal voting
@@ -162,7 +166,10 @@ message NetworkProperties {
     uint64 dapp_auto_denounce_time = 53; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
     uint64 dapp_mischance_rank_decrease_amount = 54;
     uint64 dapp_max_mischance = 55;
-    uint64 dapp_inactive_rank_decrease_percent = 56;
+    string dapp_inactive_rank_decrease_percent = 56 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];
     string dapp_pool_slippage_default = 57 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
@@ -174,4 +181,5 @@ message NetworkProperties {
         (gogoproto.nullable) = false
     ];
     uint64 autocompound_interval_num_blocks = 61; // default 17280 - once per day
+    uint64 downtime_inactive_duration = 62; // default 600s - 10min
 }

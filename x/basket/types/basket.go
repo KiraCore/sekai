@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (b Basket) GetBasketDenom() string {
@@ -92,7 +92,7 @@ func (b Basket) ValidateTokensCap() error {
 
 	for _, token := range b.Tokens {
 		if sdk.NewDecFromInt(token.Amount).Mul(token.Weight).GT(totalTokens.Mul(b.TokensCap)) {
-			return sdkerrors.Wrap(ErrTokenExceedingCap, fmt.Sprintf("denom=%s", token.Denom))
+			return errorsmod.Wrap(ErrTokenExceedingCap, fmt.Sprintf("denom=%s", token.Denom))
 		}
 	}
 	return nil
