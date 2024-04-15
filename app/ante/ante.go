@@ -1,8 +1,6 @@
 package ante
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"time"
 
@@ -96,15 +94,8 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
-					hash := sha256.Sum256([]byte(msg.OldKey))
-					hashString := hex.EncodeToString(hash[:])
-
 					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
 						return ctx, errorsmod.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
-					}
-
-					if hashString != settings.Key {
-						return ctx, errorsmod.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
 				}
 			case kiratypes.MsgTypeAddToCustodyWhiteList:
@@ -114,15 +105,8 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
-					hash := sha256.Sum256([]byte(msg.OldKey))
-					hashString := hex.EncodeToString(hash[:])
-
 					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
 						return ctx, errorsmod.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
-					}
-
-					if hashString != settings.Key {
-						return ctx, errorsmod.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
 				}
 			case kiratypes.MsgTypeAddToCustodyCustodians:
@@ -132,15 +116,8 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
-					hash := sha256.Sum256([]byte(msg.OldKey))
-					hashString := hex.EncodeToString(hash[:])
-
 					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
 						return ctx, errorsmod.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
-					}
-
-					if hashString != settings.Key {
-						return ctx, errorsmod.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
 				}
 			case kiratypes.MsgTypeRemoveFromCustodyCustodians:
@@ -150,15 +127,8 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
-					hash := sha256.Sum256([]byte(msg.OldKey))
-					hashString := hex.EncodeToString(hash[:])
-
 					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
 						return ctx, errorsmod.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
-					}
-
-					if hashString != settings.Key {
-						return ctx, errorsmod.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
 				}
 			case kiratypes.MsgTypeDropCustodyCustodians:
@@ -168,15 +138,8 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
-					hash := sha256.Sum256([]byte(msg.OldKey))
-					hashString := hex.EncodeToString(hash[:])
-
 					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
 						return ctx, errorsmod.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
-					}
-
-					if hashString != settings.Key {
-						return ctx, errorsmod.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
 				}
 			case kiratypes.MsgTypeRemoveFromCustodyWhiteList:
@@ -186,15 +149,8 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
-					hash := sha256.Sum256([]byte(msg.OldKey))
-					hashString := hex.EncodeToString(hash[:])
-
 					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
 						return ctx, errorsmod.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
-					}
-
-					if hashString != settings.Key {
-						return ctx, errorsmod.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
 				}
 			case kiratypes.MsgTypeDropCustodyWhiteList:
@@ -204,15 +160,8 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
-					hash := sha256.Sum256([]byte(msg.OldKey))
-					hashString := hex.EncodeToString(hash[:])
-
 					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
 						return ctx, errorsmod.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
-					}
-
-					if hashString != settings.Key {
-						return ctx, errorsmod.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
 				}
 			case kiratypes.MsgTypeSend:

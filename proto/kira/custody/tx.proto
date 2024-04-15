@@ -40,15 +40,12 @@ message MsgCreateCustodyRecord {
 
   CustodySettings custody_settings = 2 [ (gogoproto.nullable) = false ];
 
-  string old_key = 3;
-  string new_key = 4;
-
-  string next_address   = 5 ;
-  string target_address = 6 ;
+  string next_address   = 3;
+  string target_address = 4;
 }
 
 message MsgDisableCustodyRecord {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   bytes address = 1 [
@@ -56,15 +53,12 @@ message MsgDisableCustodyRecord {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 2;
-  string new_key = 3;
-
-  string next_address   = 4;
-  string target_address = 5;
+  string next_address   = 2;
+  string target_address = 3;
 }
 
 message MsgDropCustodyRecord {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   bytes address = 1 [
@@ -72,8 +66,7 @@ message MsgDropCustodyRecord {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 2;
-  string target_address = 3 ;
+  string target_address = 2;
 }
 
 message MsgAddToCustodyCustodians {
@@ -90,11 +83,8 @@ message MsgAddToCustodyCustodians {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 3;
-  string new_key = 4;
-
-  string next_address   = 5 ;
-  string target_address = 6 ;
+  string next_address   = 3;
+  string target_address = 4;
 }
 
 message MsgRemoveFromCustodyCustodians {
@@ -111,15 +101,12 @@ message MsgRemoveFromCustodyCustodians {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 3;
-  string new_key = 4;
-
-  string next_address   = 5 ;
-  string target_address = 6 ;
+  string next_address   = 3;
+  string target_address = 4;
 }
 
 message MsgDropCustodyCustodians {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   bytes address = 1 [
@@ -127,15 +114,12 @@ message MsgDropCustodyCustodians {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 2;
-  string new_key = 3;
-
-  string next_address   = 4 ;
-  string target_address = 5 ;
+  string next_address   = 2;
+  string target_address = 3;
 }
 
 message MsgAddToCustodyWhiteList {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   bytes address = 1 [
@@ -148,11 +132,8 @@ message MsgAddToCustodyWhiteList {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 3;
-  string new_key = 4;
-
-  string next_address   = 5 ;
-  string target_address = 6 ;
+  string next_address   = 3;
+  string target_address = 4;
 }
 
 message MsgRemoveFromCustodyWhiteList {
@@ -169,15 +150,12 @@ message MsgRemoveFromCustodyWhiteList {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 3;
-  string new_key = 4;
-
-  string next_address   = 5 ;
-  string target_address = 6 ;
+  string next_address   = 3;
+  string target_address = 4;
 }
 
 message MsgDropCustodyWhiteList {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   bytes address = 1 [
@@ -185,15 +163,12 @@ message MsgDropCustodyWhiteList {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 3;
-  string new_key = 4;
-
-  string next_address   = 5 ;
-  string target_address = 6 ;
+  string next_address   = 2;
+  string target_address = 3;
 }
 
 message MsgAddToCustodyLimits {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   bytes address = 1 [
@@ -201,14 +176,12 @@ message MsgAddToCustodyLimits {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string denom   = 2;
-  uint64 amount  = 3;
-  string limit   = 4;
-  string old_key = 5;
-  string new_key = 6;
+  string denom  = 2;
+  uint64 amount = 3;
+  string limit  = 4;
 
-  string next_address   = 7;
-  string target_address = 8;
+  string next_address   = 5;
+  string target_address = 6;
 }
 
 message MsgRemoveFromCustodyLimits {
@@ -220,12 +193,10 @@ message MsgRemoveFromCustodyLimits {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string denom   = 2;
-  string old_key = 3;
-  string new_key = 4;
+  string denom = 2;
 
-  string next_address   = 5 ;
-  string target_address = 6 ;
+  string next_address   = 3;
+  string target_address = 4;
 }
 
 message MsgDropCustodyLimits {
@@ -237,11 +208,8 @@ message MsgDropCustodyLimits {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 2;
-  string new_key = 3;
-
-  string next_address   = 4 ;
-  string target_address = 5 ;
+  string next_address   = 2;
+  string target_address = 3;
 }
 
 message MsgApproveCustodyTransaction {
