@@ -28,8 +28,9 @@ func (q Querier) FeesTreasury(c context.Context, request *types.QueryFeesTreasur
 func (q Querier) SnapshotPeriod(c context.Context, request *types.QuerySnapshotPeriodRequest) (*types.QuerySnapshotPeriodResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	numActiveValidators := q.keeper.sk.GetNumberOfActiveValidators(ctx)
 	return &types.QuerySnapshotPeriodResponse{
-		SnapshotPeriod: q.keeper.GetSnapPeriod(ctx),
+		SnapshotPeriod: numActiveValidators,
 	}, nil
 }
 
@@ -42,8 +43,13 @@ func (q Querier) SnapshotPeriodPerformance(c context.Context, request *types.Que
 	}
 
 	performance, err := q.keeper.GetValidatorPerformance(ctx, valAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	numActiveValidators := q.keeper.sk.GetNumberOfActiveValidators(ctx)
 	return &types.QuerySnapshotPeriodPerformanceResponse{
-		SnapshotPeriod: q.keeper.GetSnapPeriod(ctx),
+		SnapshotPeriod: numActiveValidators,
 		Performance:    performance,
 	}, nil
 }

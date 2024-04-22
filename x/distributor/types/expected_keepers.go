@@ -28,6 +28,8 @@ type AccountKeeper interface {
 type StakingKeeper interface {
 	GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) (stakingtypes.Validator, error)
 	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)
+	GetNumberOfActiveValidators(ctx sdk.Context) int64
+	MaxValidators(sdk.Context) uint32
 }
 
 type MultiStakingKeeper interface {
