@@ -3,6 +3,6 @@ package types
 const (
 	// we set page iteration limit for safety
 	PageIterationLimit = 512
-	SekaiVersion  = "v0.3.34"
-	CosmosVersion = "v0.47.5"
+	SekaiVersion       = "v0.3.35"
+	CosmosVersion      = "v0.47.5"
 )
