@@ -65,7 +65,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 		}
 	}`)
 
-	cdc.RegisterConcrete(&MsgUpsertTokenRate{}, "kiraHub/MsgEthereumTx", nil)
+	cdc.RegisterConcrete(&MsgEthereumTx{}, "kiraHub/MsgEthereumTx", nil)
 	functionmeta.AddNewFunction((&MsgEthereumTx{}).Type(), `{
 		"description": "MsgUpsertTokenRate represents a message to register token rate.",
 		"parameters": {
