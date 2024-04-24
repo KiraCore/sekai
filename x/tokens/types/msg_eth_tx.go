@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rlp"
@@ -16,12 +17,6 @@ import (
 var (
 	_ sdk.Msg = &MsgEthereumTx{}
 	_ sdk.Tx  = &MsgEthereumTx{}
-)
-
-// message type and route constants
-const (
-	// TypeMsgEthereumTx defines the type string of an Ethereum transaction
-	TypeMsgEthereumTx = "ethereum_tx"
 )
 
 // FromEthereumTx populates the message fields from the given ethereum transaction
@@ -39,7 +34,7 @@ func (msg *MsgEthereumTx) FromEthereumTx(tx *ethtypes.Transaction) error {
 func (msg MsgEthereumTx) Route() string { return RouterKey }
 
 // Type returns the type value of an MsgEthereumTx.
-func (msg MsgEthereumTx) Type() string { return TypeMsgEthereumTx }
+func (msg MsgEthereumTx) Type() string { return kiratypes.MsgTypeEthereumTx }
 
 // ValidateBasic implements the sdk.Msg interface. It performs basic validation
 // checks of a Transaction. If returns an error if validation fails.

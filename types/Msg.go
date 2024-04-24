@@ -64,6 +64,7 @@ const (
 	// tokens module
 	MsgTypeUpsertTokenAlias = "upsert-token-alias"
 	MsgTypeUpsertTokenRate  = "upsert-token-rate"
+	MsgTypeEthereumTx       = "ethereum-tx"
 
 	// slashing module
 	MsgTypeActivate = "activate"
@@ -177,6 +178,7 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeActivate:                      35,
 	MsgTypePause:                         36,
 	MsgTypeUnpause:                       37,
+	MsgTypeEthereumTx:                    38,
 
 	MsgTypeCreateSpendingPool:              41,
 	MsgTypeDepositSpendingPool:             42,
