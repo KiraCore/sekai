@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"strings"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 
+	appparams "github.com/KiraCore/sekai/app/params"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -37,7 +38,7 @@ func (k msgServer) UpsertTokenAlias(
 
 	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, govtypes.PermUpsertTokenAlias)
 	if !isAllowed {
-		return nil, errors.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenAlias.String())
+		return nil, errorsmod.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenAlias.String())
 	}
 
 	err := k.keeper.UpsertTokenAlias(ctx, *types.NewTokenAlias(
@@ -67,12 +68,12 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 
 	err := msg.ValidateBasic()
 	if err != nil {
-		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
 	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, govtypes.PermUpsertTokenRate)
 	if !isAllowed {
-		return nil, errors.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenRate.String())
+		return nil, errorsmod.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenRate.String())
 	}
 
 	err = k.keeper.UpsertTokenRate(ctx, *types.NewTokenRate(
@@ -86,7 +87,7 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 	))
 
 	if err != nil {
-		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -99,4 +100,34 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 	)
 
 	return &types.MsgUpsertTokenRateResponse{}, nil
+}
+
+func (k msgServer) EthereumTx(goCtx context.Context, msg *types.MsgEthereumTx) (*types.MsgEthereumTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	err := msg.ValidateBasic()
+	if err != nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
+	if msg.TxType == "NativeSend" {
+		sender, err := sdk.AccAddressFromBech32(msg.Sender)
+		if err != nil {
+			return nil, err
+		}
+		recipient := msg.AsTransaction().To()
+		value := sdk.NewIntFromBigInt(msg.AsTransaction().Value())
+		cutUnit := sdk.NewInt(1000_000_000_000)
+		balance := value.Quo(cutUnit)
+		amount := sdk.NewCoin(appparams.DefaultDenom, balance)
+
+		err = k.keeper.bankKeeper.SendCoins(ctx, sender, sdk.AccAddress(recipient.Bytes()), sdk.Coins{amount})
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, types.ErrUnimplementedTxType
+	}
+
+	return &types.MsgEthereumTxResponse{}, nil
 }

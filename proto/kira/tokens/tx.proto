@@ -16,7 +16,17 @@ service Msg {
     rpc UpsertTokenAlias(MsgUpsertTokenAlias) returns (MsgUpsertTokenAliasResponse);
     // UpsertTokenRate defines a method to upsert token rate
     rpc UpsertTokenRate(MsgUpsertTokenRate) returns (MsgUpsertTokenRateResponse);
+    // EthereumTx defines a method to send ethereum transaction
+    rpc EthereumTx(MsgEthereumTx) returns (MsgEthereumTxResponse);
 }
 
 message MsgUpsertTokenAliasResponse {}
 message MsgUpsertTokenRateResponse {}
+
+message MsgEthereumTx {
+  string tx_type = 1;
+  string sender = 2;
+  string hash = 3;
+  bytes data = 4;
+}
+message MsgEthereumTxResponse {}
