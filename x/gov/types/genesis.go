@@ -287,5 +287,14 @@ func GetBech32PrefixAndDefaultDenomFromAppState(appState map[string]json.RawMess
 	if err != nil {
 		panic(err)
 	}
-	return genesisState["bech32_prefix"].(string), genesisState["default_denom"].(string)
+	bech32Prefix, ok := genesisState["bech32_prefix"].(string)
+	if !ok || bech32Prefix == "" {
+		bech32Prefix = appparams.AccountAddressPrefix
+	}
+	defaultDenom, ok := genesisState["default_denom"].(string)
+	if !ok || defaultDenom == "" {
+		defaultDenom = appparams.DefaultDenom
+	}
+
+	return bech32Prefix, defaultDenom
 }
