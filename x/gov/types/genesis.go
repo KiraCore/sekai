@@ -252,7 +252,7 @@ func DefaultGenesis() *GenesisState {
 				kiratypes.MsgTypePause,
 				kiratypes.MsgTypeUnpause,
 				kiratypes.MsgTypeRegisterIdentityRecords,
-				kiratypes.MsgTypeDeleteIdentityRecord,
+				kiratypes.MsgTypeDeleteIdentityRecords,
 				kiratypes.MsgTypeRequestIdentityRecordsVerify,
 				kiratypes.MsgTypeHandleIdentityRecordsVerifyRequest,
 				kiratypes.MsgTypeCancelIdentityRecordsVerifyRequest,

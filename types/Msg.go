@@ -11,36 +11,36 @@ const (
 	TypeMsgSubmitEvidence = "submit_evidence"
 
 	// governance
-	MsgTypeSubmitProposal = "submit-proposal"
-	MsgTypeVoteProposal   = "vote-proposal"
-	MsgTypeCreatePoll     = "create-poll"
-	MsgTypeVotePoll       = "vote-poll"
-	MsgTypeAddressPoll    = "address-poll"
+	MsgTypeSubmitProposal = "submit_proposal"
+	MsgTypeVoteProposal   = "vote_proposal"
+	MsgTypeCreatePoll     = "create_poll"
+	MsgTypeVotePoll       = "vote_poll"
+	MsgTypeAddressPoll    = "address_poll"
 
-	MsgTypeWhitelistPermissions = "whitelist-permissions"
-	MsgTypeBlacklistPermissions = "blacklist-permissions"
+	MsgTypeWhitelistPermissions = "whitelist_permissions"
+	MsgTypeBlacklistPermissions = "blacklist_permissions"
 
-	MsgTypeClaimCouncilor       = "claim-councilor"
-	MsgTypeSetNetworkProperties = "set-network-properties"
-	MsgTypeSetExecutionFee      = "set-execution-fee"
+	MsgTypeClaimCouncilor       = "claim_councilor"
+	MsgTypeSetNetworkProperties = "set_network_properties"
+	MsgTypeSetExecutionFee      = "set_execution_fee"
 
-	MsgTypeCreateRole   = "create-role"
-	MsgTypeAssignRole   = "assign-role"
-	MsgTypeUnassignRole = "unassign-role"
+	MsgTypeCreateRole   = "create_role"
+	MsgTypeAssignRole   = "assign_role"
+	MsgTypeUnassignRole = "unassign_role"
 
-	MsgTypeWhitelistRolePermission       = "whitelist-role-permission"
-	MsgTypeBlacklistRolePermission       = "blacklist-role-permission"
-	MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
-	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
+	MsgTypeWhitelistRolePermission       = "whitelist_role_permission"
+	MsgTypeBlacklistRolePermission       = "blacklist_role_permission"
+	MsgTypeRemoveWhitelistRolePermission = "remove_whitelist_role_permission"
+	MsgTypeRemoveBlacklistRolePermission = "remove_blacklist_role_permission"
 
-	MsgTypeRegisterIdentityRecords            = "register-identity-records"
-	MsgTypeDeleteIdentityRecord               = "delete-identity-record"
-	MsgTypeRequestIdentityRecordsVerify       = "request-identity-records-verify"
-	MsgTypeHandleIdentityRecordsVerifyRequest = "handle-identity-records-verify-request"
-	MsgTypeCancelIdentityRecordsVerifyRequest = "cancel-identity-records-verify-request"
+	MsgTypeRegisterIdentityRecords            = "register_identity_records"
+	MsgTypeDeleteIdentityRecords              = "delete_identity_records"
+	MsgTypeRequestIdentityRecordsVerify       = "request_identity_records_verify"
+	MsgTypeHandleIdentityRecordsVerifyRequest = "handle_identity_records_verify_request"
+	MsgTypeCancelIdentityRecordsVerifyRequest = "cancel_identity_records_verify_request"
 
 	// staking module
-	MsgTypeClaimValidator = "claim-validator"
+	MsgTypeClaimValidator = "claim_validator"
 
 	// multistaking module
 	MsgTypeUpsertStakingPool         = "upsert_staking_pool"
@@ -53,18 +53,18 @@ const (
 	MsgTypeRegisterDelegator         = "register_delegator"
 
 	// basket module
-	MsgTypeDisableBasketDeposits  = "disable-basket-deposits"
-	MsgTypeDisableBasketWithdraws = "disable-basket-withdraws"
-	MsgTypeDisableBasketSwaps     = "disable-basket-swaps"
-	MsgTypeBasketTokenMint        = "basket-token-mint"
-	MsgTypeBasketTokenBurn        = "basket-token-burn"
-	MsgTypeBasketTokenSwap        = "basket-token-swap"
-	MsgTypeBasketClaimRewards     = "basket-claim-rewards"
+	MsgTypeDisableBasketDeposits  = "disable_basket_deposits"
+	MsgTypeDisableBasketWithdraws = "disable_basket_withdraws"
+	MsgTypeDisableBasketSwaps     = "disable_basket_swaps"
+	MsgTypeBasketTokenMint        = "basket_token_mint"
+	MsgTypeBasketTokenBurn        = "basket_token_burn"
+	MsgTypeBasketTokenSwap        = "basket_token_swap"
+	MsgTypeBasketClaimRewards     = "basket_claim_rewards"
 
 	// tokens module
-	MsgTypeUpsertTokenAlias = "upsert-token-alias"
-	MsgTypeUpsertTokenRate  = "upsert-token-rate"
-	MsgTypeEthereumTx       = "ethereum-tx"
+	MsgTypeUpsertTokenAlias = "upsert_token_alias"
+	MsgTypeUpsertTokenRate  = "upsert_token_rate"
+	MsgTypeEthereumTx       = "ethereum_tx"
 
 	// slashing module
 	MsgTypeActivate = "activate"
@@ -72,69 +72,69 @@ const (
 	MsgTypeUnpause  = "unpause"
 
 	// recovery module
-	MsgTypeRegisterRecoverySecret             = "register-recovery-secret"
-	MsgTypeRotateRecoveryAddress              = "rotate-recovery-address"
-	MsgTypeIssueRecoveryTokens                = "issue-recovery-tokens"
-	MsgTypeBurnRecoveryTokens                 = "burn-recovery-tokens"
-	MsgTypeRegisterRRTokenHolder              = "register-rrtoken-holder"
-	MsgTypeClaimRRHolderRewards               = "claim-rrholder-rewards"
-	MsgTypeRotateValidatorByHalfRRTokenHolder = "rotate-validator-by-half-rr-token-holder"
+	MsgTypeRegisterRecoverySecret             = "register_recovery_secret"
+	MsgTypeRotateRecoveryAddress              = "rotate_recovery_address"
+	MsgTypeIssueRecoveryTokens                = "issue_recovery_tokens"
+	MsgTypeBurnRecoveryTokens                 = "burn_recovery_tokens"
+	MsgTypeRegisterRRTokenHolder              = "register_rrtoken_holder"
+	MsgTypeClaimRRHolderRewards               = "claim_rrholder_rewards"
+	MsgTypeRotateValidatorByHalfRRTokenHolder = "rotate_validator_by_half_rr_token_holder"
 
 	//upgrade module
 
 	// spending module
-	MsgTypeCreateSpendingPool              = "create-spending-pool"
-	MsgTypeDepositSpendingPool             = "deposit-spending-pool"
-	MsgTypeRegisterSpendingPoolBeneficiary = "register-spending-pool-beneficiary"
-	MsgTypeClaimSpendingPool               = "claim-spending-pool"
+	MsgTypeCreateSpendingPool              = "create_spending_pool"
+	MsgTypeDepositSpendingPool             = "deposit_spending_pool"
+	MsgTypeRegisterSpendingPoolBeneficiary = "register_spending_pool_beneficiary"
+	MsgTypeClaimSpendingPool               = "claim_spending_pool"
 
 	// custody module
-	MsgTypeCreateCustody               = "create-custody"
-	MsgTypeDisableCustody              = "disable-custody"
-	MsgTypeDropCustody                 = "drop-custody"
-	MsgTypeAddToCustodyWhiteList       = "add-to-custody-whitelist"
-	MsgTypeAddToCustodyCustodians      = "add-to-custody-custodians"
-	MsgTypeRemoveFromCustodyCustodians = "remove-from-custody-custodians"
-	MsgTypeDropCustodyCustodians       = "drop-custody-custodians"
-	MsgTypeRemoveFromCustodyWhiteList  = "remove-from-custody-whitelist"
-	MsgTypeDropCustodyWhiteList        = "drop-custody-whitelist"
-	MsgApproveCustodyTransaction       = "approve-custody-transaction"
-	MsgDeclineCustodyTransaction       = "decline-custody-transaction"
-	MsgPasswordConfirmTransaction      = "password-confirm-transaction"
-	MsgTypeSend                        = "custody-send"
+	MsgTypeCreateCustody               = "create_custody"
+	MsgTypeDisableCustody              = "disable_custody"
+	MsgTypeDropCustody                 = "drop_custody"
+	MsgTypeAddToCustodyWhiteList       = "add_to_custody_whitelist"
+	MsgTypeAddToCustodyCustodians      = "add_to_custody_custodians"
+	MsgTypeRemoveFromCustodyCustodians = "remove_from_custody_custodians"
+	MsgTypeDropCustodyCustodians       = "drop_custody_custodians"
+	MsgTypeRemoveFromCustodyWhiteList  = "remove_from_custody_whitelist"
+	MsgTypeDropCustodyWhiteList        = "drop_custody_whitelist"
+	MsgApproveCustodyTransaction       = "approve_custody_transaction"
+	MsgDeclineCustodyTransaction       = "decline_custody_transaction"
+	MsgPasswordConfirmTransaction      = "password_confirm_transaction"
+	MsgTypeSend                        = "custody_send"
 
 	// collectives module
-	MsgTypeCreateCollective   = "create-collective"
-	MsgTypeBondCollective     = "bond-collective"
-	MsgTypeDonateCollective   = "donate-collective"
-	MsgTypeWithdrawCollective = "withdraw-collective"
+	MsgTypeCreateCollective   = "create_collective"
+	MsgTypeBondCollective     = "bond_collective"
+	MsgTypeDonateCollective   = "donate_collective"
+	MsgTypeWithdrawCollective = "withdraw_collective"
 
 	// layer2 module
-	MsgTypeCreateDappProposal       = "create-dapp-proposal"
-	MsgTypeBondDappProposal         = "bond-dapp-proposal"
-	MsgTypeReclaimDappBondProposal  = "reclaim-dapp-bond-proposal"
-	MsgTypeJoinDappVerifierWithBond = "join-dapp-verifier-with-bond"
-	MsgTypeExitDapp                 = "exit-dapp"
-	MsgTypeVoteDappOperatorTx       = "vote-dapp-operator-tx"
-	MsgTypeRedeemDappPoolTx         = "redeem-dapp-pool-tx"
-	MsgTypeSwapDappPoolTx           = "swap-dapp-pool-tx"
-	MsgTypeConvertDappPoolTx        = "convert-dapp-pool-tx"
-	MsgTypePauseDappTx              = "pause-dapp-tx"
-	MsgTypeUnPauseDappTx            = "unpause-dapp-tx"
-	MsgTypeReactivateDappTx         = "reactivate-dapp-tx"
-	MsgTypeExecuteDappTx            = "execute-dapp-tx"
-	MsgTypeDenounceLeaderTx         = "denounce-leader-tx"
-	MsgTypeTransitionDappTx         = "transition-dapp-tx"
-	MsgTypeApproveDappTransitionTx  = "approve-dapp-transition-tx"
-	MsgTypeRejectDappTransitionTx   = "reject-dapp-transition-tx"
-	MsgTypeUpsertDappProposalTx     = "upsert-dapp-proposal-tx"
-	MsgTypeVoteUpsertDappProposalTx = "vote-upsert-dapp-proposal-tx"
-	MsgTypeTransferDappTx           = "transfer-dapp-tx"
-	MsgTypeAckTransferDappTx        = "ack-transfer-dapp-tx"
-	MsgTypeMintCreateFtTx           = "mint-create-ft-tx"
-	MsgTypeMintCreateNftTx          = "mint-create-nft-tx"
-	MsgTypeMintIssueTx              = "mint-issue-tx"
-	MsgTypeMintBurnTx               = "mint-burn-tx"
+	MsgTypeCreateDappProposal       = "create_dapp_proposal"
+	MsgTypeBondDappProposal         = "bond_dapp_proposal"
+	MsgTypeReclaimDappBondProposal  = "reclaim_dapp_bond_proposal"
+	MsgTypeJoinDappVerifierWithBond = "join_dapp_verifier_with_bond"
+	MsgTypeExitDapp                 = "exit_dapp"
+	MsgTypeVoteDappOperatorTx       = "vote_dapp_operator_tx"
+	MsgTypeRedeemDappPoolTx         = "redeem_dapp_pool_tx"
+	MsgTypeSwapDappPoolTx           = "swap_dapp_pool_tx"
+	MsgTypeConvertDappPoolTx        = "convert_dapp_pool_tx"
+	MsgTypePauseDappTx              = "pause_dapp_tx"
+	MsgTypeUnPauseDappTx            = "unpause_dapp_tx"
+	MsgTypeReactivateDappTx         = "reactivate_dapp_tx"
+	MsgTypeExecuteDappTx            = "execute_dapp_tx"
+	MsgTypeDenounceLeaderTx         = "denounce_leader_tx"
+	MsgTypeTransitionDappTx         = "transition_dapp_tx"
+	MsgTypeApproveDappTransitionTx  = "approve_dapp_transition_tx"
+	MsgTypeRejectDappTransitionTx   = "reject_dapp_transition_tx"
+	MsgTypeUpsertDappProposalTx     = "upsert_dapp_proposal_tx"
+	MsgTypeVoteUpsertDappProposalTx = "vote_upsert_dapp_proposal_tx"
+	MsgTypeTransferDappTx           = "transfer_dapp_tx"
+	MsgTypeAckTransferDappTx        = "ack_transfer_dapp_tx"
+	MsgTypeMintCreateFtTx           = "mint_create_ft_tx"
+	MsgTypeMintCreateNftTx          = "mint_create_nft_tx"
+	MsgTypeMintIssueTx              = "mint_issue_tx"
+	MsgTypeMintBurnTx               = "mint_burn_tx"
 )
 
 // Msg defines the interface a transaction message must fulfill.
@@ -155,7 +155,7 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeSubmitProposal:                     10,
 	MsgTypeVoteProposal:                       11,
 	MsgTypeRegisterIdentityRecords:            12,
-	MsgTypeDeleteIdentityRecord:               13,
+	MsgTypeDeleteIdentityRecords:              13,
 	MsgTypeRequestIdentityRecordsVerify:       14,
 	MsgTypeHandleIdentityRecordsVerifyRequest: 15,
 	MsgTypeCancelIdentityRecordsVerifyRequest: 16,

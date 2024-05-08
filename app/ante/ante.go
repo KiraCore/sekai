@@ -14,6 +14,7 @@ import (
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -39,6 +40,7 @@ func NewAnteHandler(
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
 	signModeHandler signing.SignModeHandler,
 	txFeeChecker ante.TxFeeChecker,
+	interfaceRegistry codectypes.InterfaceRegistry,
 ) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
@@ -60,7 +62,7 @@ func NewAnteHandler(
 		// custom execution fee consume decorator
 		NewExecutionFeeRegistrationDecorator(ak, cgk, fk),
 		// NewSigGasConsumeDecorator(ak, sigGasConsumer),
-		NewSigVerificationDecorator(ak, signModeHandler),
+		NewSigVerificationDecorator(ak, signModeHandler, interfaceRegistry),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
 }

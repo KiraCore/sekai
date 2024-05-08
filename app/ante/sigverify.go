@@ -1,12 +1,15 @@
 package ante
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 
+	kiratypes "github.com/KiraCore/sekai/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -22,7 +25,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/ethereum/go-ethereum/accounts"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/ethereum/go-ethereum/common"
 	ethmath "github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -34,6 +37,7 @@ var (
 	key                = make([]byte, secp256k1.PubKeySize)
 	simSecp256k1Pubkey = &secp256k1.PubKey{Key: key}
 	simSecp256k1Sig    [64]byte
+	EthChainID         = uint64(8789)
 )
 
 func init() {
@@ -138,14 +142,16 @@ type SignatureVerificationGasConsumer = func(meter sdk.GasMeter, sig signing.Sig
 // CONTRACT: Pubkeys are set in context for all signers before this decorator runs
 // CONTRACT: Tx must implement SigVerifiableTx interface
 type SigVerificationDecorator struct {
-	ak              ante.AccountKeeper
-	signModeHandler authsigning.SignModeHandler
+	ak                ante.AccountKeeper
+	signModeHandler   authsigning.SignModeHandler
+	interfaceRegistry codectypes.InterfaceRegistry
 }
 
-func NewSigVerificationDecorator(ak ante.AccountKeeper, signModeHandler authsigning.SignModeHandler) SigVerificationDecorator {
+func NewSigVerificationDecorator(ak ante.AccountKeeper, signModeHandler authsigning.SignModeHandler, interfaceRegistry codectypes.InterfaceRegistry) SigVerificationDecorator {
 	return SigVerificationDecorator{
-		ak:              ak,
-		signModeHandler: signModeHandler,
+		ak:                ak,
+		signModeHandler:   signModeHandler,
+		interfaceRegistry: interfaceRegistry,
 	}
 }
 
@@ -224,15 +230,18 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 		}
 
 		if !simulate {
-			err := authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
-			if err != nil {
-				// try verifying signature with etherum
-				if ethErr := VerifyEthereumSignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx); ethErr == nil {
+			if !bytes.Equal(pubKey.Address(), acc.GetAddress()) {
+				// try verifying ethereum signature
+				if ethErr := VerifyEthereumSignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx, svd.interfaceRegistry); ethErr == nil {
 					return next(ctx, tx, simulate)
 				} else {
-					fmt.Printf("ethereum signature verification failed; %s", ethErr.Error())
+					errMsg := fmt.Sprintf("ethereum signature verification failed; %s", ethErr.Error())
+					return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
 				}
+			}
 
+			err := authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
+			if err != nil {
 				var errMsg string
 				if OnlyLegacyAminoSigners(sig.Data) {
 					// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
@@ -249,7 +258,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	return next(ctx, tx, simulate)
 }
 
-func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.SignerData, sigData signing.SignatureData, handler authsigning.SignModeHandler, tx sdk.Tx) error {
+func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.SignerData, sigData signing.SignatureData, handler authsigning.SignModeHandler, tx sdk.Tx, interfaceRegistry codectypes.InterfaceRegistry) error {
 	switch data := sigData.(type) {
 	case *signing.SingleSignatureData:
 		signBytes, err := handler.GetSignBytes(data.SignMode, signerData, tx)
@@ -257,8 +266,6 @@ func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.S
 			return err
 		}
 
-		fmt.Println("data.SignMode", data.SignMode)
-		fmt.Println("defaultSignBytes", string(signBytes))
 		if data.SignMode == signing.SignMode_SIGN_MODE_DIRECT {
 			signDoc := sdktx.SignDoc{}
 			err = signDoc.Unmarshal(signBytes)
@@ -287,55 +294,33 @@ func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.S
 				return errors.New("only one message's enabled for EIP712 signature")
 			}
 			msg := signDocMetamask.Body.Messages[0]
+			err := signDocMetamask.Body.UnpackInterfaces(interfaceRegistry)
+			if err != nil {
+				return err
+			}
+
 			switch msg.TypeUrl {
-			case "/kira.custody.MsgCreateCustodyRecord":
-				signBytes, err = GenerateSignBytes()
-				if err != nil {
-					return err
+			case "/kira.tokens.MsgEthereumTx":
+				msg := msg.GetCachedValue().(*tokenstypes.MsgEthereumTx)
+				tx := msg.AsTransaction()
+				if signerData.Sequence != tx.Nonce() {
+					return sdkerrors.Wrapf(
+						sdkerrors.ErrWrongSequence,
+						"ethereum account sequence mismatch, expected %d, got %d", signerData.Sequence, tx.Nonce(),
+					)
 				}
-			case "/kira.spending.MsgCreateSpendingPool":
-				signBytes, err = GenerateSignBytes()
-				if err != nil {
-					return err
+
+				if EthChainID != tx.ChainId().Uint64() {
+					return fmt.Errorf("invalid ethereum chain ID, expected %d, got %d", EthChainID, tx.ChainId().Uint64())
 				}
-			case "/kira.multistaking.MsgDelegate":
-				signBytes, err = GenerateSignBytes()
-				if err != nil {
-					return err
-				}
-			case "/kira.gov.MsgRegisterIdentityRecords":
-				signBytes, err = GenerateSignBytes()
-				if err != nil {
-					return err
-				}
-			case "/kira.gov.MsgRequestIdentityRecordsVerify":
-				signBytes, err = GenerateSignBytes()
-				if err != nil {
-					return err
-				}
-			case "/kira.gov.MsgSetNetworkProperties":
-				signBytes, err = GenerateSignBytes()
-				if err != nil {
-					return err
-				}
-			case "/kira.evidence.MsgSubmitEvidence":
-				signBytes, err = GenerateSignBytes()
-				if err != nil {
-					return err
-				}
-			case "/kira.tokens.MsgUpsertTokenAlias":
-				signBytes, err = GenerateSignBytes()
-				if err != nil {
-					return err
-				}
+				return msg.ValidateBasic()
 			default:
-				signBytes, err = json.Marshal(&signDocMetamask)
+				msg := msg.GetCachedValue().(sdk.Msg)
+				signBytes, err = GenEIP712SignBytesFromMsg(msg, signerData.Sequence)
 				if err != nil {
 					return err
 				}
 			}
-
-			fmt.Println("signBytes", string(signBytes))
 		}
 
 		signatureData := data.Signature
@@ -343,7 +328,7 @@ func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.S
 			return fmt.Errorf("not a correct ethereum signature")
 		}
 		signatureData[crypto.RecoveryIDOffset] -= 27 // Transform yellow paper V from 27/28 to 0/1
-		recovered, err := crypto.SigToPub(accounts.TextHash(signBytes), signatureData)
+		recovered, err := crypto.SigToPub(signBytes, signatureData)
 		if err != nil {
 			return err
 		}
@@ -370,19 +355,27 @@ func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.S
 	}
 }
 
-func GenerateSignBytes() ([]byte, error) {
+func GenEIP712SignBytesFromMsg(msg sdk.Msg, nonce uint64) ([]byte, error) {
+	msgName := kiratypes.MsgType(msg)
+	msgData, err := json.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+
 	types := apitypes.Types{
 		"EIP712Domain": {
 			{Name: "name", Type: "string"},
 			{Name: "version", Type: "string"},
 			{Name: "chainId", Type: "uint256"},
 		},
-		"delegate": {
+		msgName: {
 			{Name: "param", Type: "string"},
+			{Name: "nonce", Type: "uint256"},
 		},
 	}
 
-	chainId := ethmath.NewHexOrDecimal256(8789)
+	chainId := ethmath.NewHexOrDecimal256(int64(EthChainID))
+	nonceEth := ethmath.NewHexOrDecimal256(int64(nonce))
 
 	domain := apitypes.TypedDataDomain{
 		Name:    "Kira",
@@ -393,11 +386,11 @@ func GenerateSignBytes() ([]byte, error) {
 
 	typedData := apitypes.TypedData{
 		Types:       types,
-		PrimaryType: "delegate",
+		PrimaryType: msgName,
 		Domain:      domain,
 		Message: apitypes.TypedDataMessage{
-			"amount": "100000000ukex",
-			"to":     "kiravaloper13j3w9pdc47e54z2gj4uh37rnnfwxcfcmjh4ful",
+			"param": string(msgData),
+			"nonce": nonceEth,
 		},
 	}
 

@@ -531,6 +531,7 @@ func NewInitApp(
 			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 			nil,
+			encodingConfig.InterfaceRegistry,
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)
