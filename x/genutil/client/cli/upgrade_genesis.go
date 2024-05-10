@@ -14,6 +14,7 @@ import (
 	tmos "github.com/cometbft/cometbft/libs/os"
 	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/pkg/errors"
@@ -105,70 +106,76 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 					newGenesis[module] = moduleGenesis
 				}
 				genesisState = newGenesis
-			} else {
-				upgradeGenesisV03123 := v0317upgradetypes.GenesisStateV0317{}
-				err = cdc.UnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesisV03123)
-				if err == nil { // which means old upgrade genesis
-					upgradeGenesis := upgradetypes.GenesisState{
-						Version:     "v0.3.45",
-						CurrentPlan: upgradedPlan(upgradeGenesisV03123.CurrentPlan),
-						NextPlan:    upgradedPlan(upgradeGenesisV03123.NextPlan),
-					}
-					genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
-				} else {
-					fmt.Println("error exists v0.3.17 upgrade genesis parsing", err)
+			}
+
+			upgradeGenesisV03123 := v0317upgradetypes.GenesisStateV0317{}
+			err = cdc.UnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesisV03123)
+			if err == nil { // which means old upgrade genesis
+				upgradeGenesis := upgradetypes.GenesisState{
+					Version:     "v0.3.45",
+					CurrentPlan: upgradedPlan(upgradeGenesisV03123.CurrentPlan),
+					NextPlan:    upgradedPlan(upgradeGenesisV03123.NextPlan),
 				}
-
-				upgradeGenesis := upgradetypes.GenesisState{}
-				cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
-				if upgradeGenesis.Version == "" {
-					upgradeGenesis.Version = "v0.3.45"
-					fmt.Println("upgraded the upgrade module genesis to v0.3.45")
-				}
-
-				if upgradeGenesis.NextPlan == nil {
-					return fmt.Errorf("next plan is not available")
-				}
-
-				if genDoc.ChainID != upgradeGenesis.NextPlan.OldChainId {
-					return fmt.Errorf("next plan has different oldchain id, current chain_id=%s, next_plan.old_chain_id=%s", genDoc.ChainID, upgradeGenesis.NextPlan.OldChainId)
-				}
-
-				genDoc.ChainID = upgradeGenesis.NextPlan.NewChainId
-				upgradeGenesis.CurrentPlan = upgradeGenesis.NextPlan
-				upgradeGenesis.NextPlan = nil
-
 				genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
+			} else {
+				fmt.Println("error exists v0.3.17 upgrade genesis parsing", err)
+			}
 
-				// upgrade gov genesis for more role permissions
-				govGenesis := govtypes.GenesisState{}
-				err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesis)
-				if err == nil {
-					if govGenesis.DefaultDenom == "" {
-						govGenesis.DefaultDenom = appparams.DefaultDenom
-					}
-					if govGenesis.Bech32Prefix == "" {
-						govGenesis.Bech32Prefix = appparams.AccountAddressPrefix
-					}
-					genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
-				} else {
-					fmt.Println("parse error for latest gov genesis", err)
-					fmt.Println("trying to parse v0.3.17 gov genesis for following error on genesis parsing")
-					govGenesisV0317 := make(map[string]interface{})
-					err = json.Unmarshal(genesisState[govtypes.ModuleName], &govGenesisV0317)
-					if err != nil {
-						panic(err)
-					}
+			upgradeGenesis := upgradetypes.GenesisState{}
+			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+			if upgradeGenesis.Version == "" {
+				upgradeGenesis.Version = "v0.3.45"
+				fmt.Println("upgraded the upgrade module genesis to v0.3.45")
+			}
 
-					fmt.Println("Setting default gov data", appparams.DefaultDenom, appparams.AccountAddressPrefix)
-					govGenesisV0317["default_denom"] = appparams.DefaultDenom
-					govGenesisV0317["bech32_prefix"] = appparams.AccountAddressPrefix
-					bz, err := json.Marshal(&govGenesisV0317)
-					if err != nil {
-						panic(err)
-					}
-					genesisState[govtypes.ModuleName] = bz
+			// if upgradeGenesis.NextPlan == nil {
+			// 	return fmt.Errorf("next plan is not available")
+			// }
+
+			// if genDoc.ChainID != upgradeGenesis.NextPlan.OldChainId {
+			// 	return fmt.Errorf("next plan has different oldchain id, current chain_id=%s, next_plan.old_chain_id=%s", genDoc.ChainID, upgradeGenesis.NextPlan.OldChainId)
+			// }
+			if upgradeGenesis.NextPlan != nil {
+				genDoc.ChainID = upgradeGenesis.NextPlan.NewChainId
+			}
+
+			upgradeGenesis.CurrentPlan = upgradeGenesis.NextPlan
+			upgradeGenesis.NextPlan = nil
+
+			genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
+
+			// upgrade gov genesis for more role permissions
+			govGenesis := govtypes.GenesisState{}
+			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesis)
+			if err == nil {
+				if govGenesis.DefaultDenom == "" {
+					govGenesis.DefaultDenom = appparams.DefaultDenom
 				}
+				if govGenesis.Bech32Prefix == "" {
+					govGenesis.Bech32Prefix = appparams.AccountAddressPrefix
+				}
+				govGenesis.NetworkProperties.VoteQuorum = sdk.NewDecWithPrec(33, 2)                     // 33%
+				govGenesis.NetworkProperties.VetoThreshold = sdk.NewDecWithPrec(3340, 4)                // 33.4%
+				govGenesis.NetworkProperties.DappInactiveRankDecreasePercent = sdk.NewDecWithPrec(1, 1) // 10%
+				govGenesis.NetworkProperties.SlashingPeriod = 2629800
+				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
+			} else {
+				fmt.Println("parse error for latest gov genesis", err)
+				fmt.Println("trying to parse v0.3.17 gov genesis for following error on genesis parsing")
+				govGenesisV0317 := make(map[string]interface{})
+				err = json.Unmarshal(genesisState[govtypes.ModuleName], &govGenesisV0317)
+				if err != nil {
+					panic(err)
+				}
+
+				fmt.Println("Setting default gov data", appparams.DefaultDenom, appparams.AccountAddressPrefix)
+				govGenesisV0317["default_denom"] = appparams.DefaultDenom
+				govGenesisV0317["bech32_prefix"] = appparams.AccountAddressPrefix
+				bz, err := json.Marshal(&govGenesisV0317)
+				if err != nil {
+					panic(err)
+				}
+				genesisState[govtypes.ModuleName] = bz
 			}
 
 			appState, err := json.MarshalIndent(genesisState, "", " ")
@@ -177,6 +184,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			genDoc.AppState = appState
+			genDoc.InitialHeight = 0
 
 			if jsonMinimize, _ := cmd.Flags().GetBool(FlagJsonMinimize); jsonMinimize {
 				genDocBytes, err := tmjson.Marshal(genDoc)
