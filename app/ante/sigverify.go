@@ -10,12 +10,8 @@ import (
 
 	kiratypes "github.com/KiraCore/sekai/types"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256r1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
@@ -36,7 +32,6 @@ var (
 	// simulation signature values used to estimate gas consumption
 	key                = make([]byte, secp256k1.PubKeySize)
 	simSecp256k1Pubkey = &secp256k1.PubKey{Key: key}
-	simSecp256k1Sig    [64]byte
 	EthChainID         = uint64(8789)
 )
 
@@ -399,69 +394,6 @@ func GenEIP712SignBytesFromMsg(msg sdk.Msg, nonce uint64) ([]byte, error) {
 	return hashBytes, nil
 }
 
-// DefaultSigVerificationGasConsumer is the default implementation of SignatureVerificationGasConsumer. It consumes gas
-// for signature verification based upon the public key type. The cost is fetched from the given params and is matched
-// by the concrete type.
-func DefaultSigVerificationGasConsumer(
-	meter sdk.GasMeter, sig signing.SignatureV2, params types.Params,
-) error {
-	pubkey := sig.PubKey
-	switch pubkey := pubkey.(type) {
-	case *ed25519.PubKey:
-		meter.ConsumeGas(params.SigVerifyCostED25519, "ante verify: ed25519")
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "ED25519 public keys are unsupported")
-
-	case *secp256k1.PubKey:
-		meter.ConsumeGas(params.SigVerifyCostSecp256k1, "ante verify: secp256k1")
-		return nil
-
-	case *secp256r1.PubKey:
-		meter.ConsumeGas(params.SigVerifyCostSecp256r1(), "ante verify: secp256r1")
-		return nil
-
-	case multisig.PubKey:
-		multisignature, ok := sig.Data.(*signing.MultiSignatureData)
-		if !ok {
-			return fmt.Errorf("expected %T, got, %T", &signing.MultiSignatureData{}, sig.Data)
-		}
-		err := ConsumeMultisignatureVerificationGas(meter, multisignature, pubkey, params, sig.Sequence)
-		if err != nil {
-			return err
-		}
-		return nil
-
-	default:
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "unrecognized public key type: %T", pubkey)
-	}
-}
-
-// ConsumeMultisignatureVerificationGas consumes gas from a GasMeter for verifying a multisig pubkey signature
-func ConsumeMultisignatureVerificationGas(
-	meter sdk.GasMeter, sig *signing.MultiSignatureData, pubkey multisig.PubKey,
-	params types.Params, accSeq uint64,
-) error {
-	size := sig.BitArray.Count()
-	sigIndex := 0
-
-	for i := 0; i < size; i++ {
-		if !sig.BitArray.GetIndex(i) {
-			continue
-		}
-		sigV2 := signing.SignatureV2{
-			PubKey:   pubkey.GetPubKeys()[i],
-			Data:     sig.Signatures[sigIndex],
-			Sequence: accSeq,
-		}
-		err := DefaultSigVerificationGasConsumer(meter, sigV2, params)
-		if err != nil {
-			return err
-		}
-		sigIndex++
-	}
-
-	return nil
-}
-
 // GetSignerAcc returns an account for a given address that is expected to sign
 // a transaction.
 func GetSignerAcc(ctx sdk.Context, ak ante.AccountKeeper, addr sdk.AccAddress) (types.AccountI, error) {
@@ -470,21 +402,6 @@ func GetSignerAcc(ctx sdk.Context, ak ante.AccountKeeper, addr sdk.AccAddress) (
 	}
 
 	return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "account %s does not exist", addr)
-}
-
-// CountSubKeys counts the total number of keys for a multi-sig public key.
-func CountSubKeys(pub cryptotypes.PubKey) int {
-	v, ok := pub.(*kmultisig.LegacyAminoPubKey)
-	if !ok {
-		return 1
-	}
-
-	numKeys := 0
-	for _, subkey := range v.GetPubKeys() {
-		numKeys += CountSubKeys(subkey)
-	}
-
-	return numKeys
 }
 
 // signatureDataToBz converts a SignatureData into raw bytes signature.
