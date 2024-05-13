@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/KiraCore/sekai/app/ante"
 	ethmath "github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 	apitypes "github.com/ethereum/go-ethereum/signer/core/apitypes"
@@ -21,7 +22,7 @@ func GenerateEIP712SignBytes() ([]byte, error) {
 		},
 	}
 
-	chainId := ethmath.NewHexOrDecimal256(int64(EthChainID))
+	chainId := ethmath.NewHexOrDecimal256(int64(ante.EthChainID))
 
 	domain := apitypes.TypedDataDomain{
 		Name:    "Kira",
@@ -51,7 +52,6 @@ func GenerateEIP712SignBytes() ([]byte, error) {
 
 	rawData := []byte(fmt.Sprintf("\x19\x01%s%s", string(domainSeparator), string(typedDataHash)))
 	hashBytes := crypto.Keccak256(rawData)
-	// hash := common.BytesToHash(hashBytes)
 
 	return hashBytes, nil
 }

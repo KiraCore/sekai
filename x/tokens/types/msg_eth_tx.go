@@ -5,7 +5,6 @@ import (
 	"math/big"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	kiratypes "github.com/KiraCore/sekai/types"
@@ -19,7 +18,6 @@ var (
 	_ sdk.Tx  = &MsgEthereumTx{}
 )
 
-// FromEthereumTx populates the message fields from the given ethereum transaction
 func (msg *MsgEthereumTx) FromEthereumTx(tx *ethtypes.Transaction) error {
 	data, err := rlp.EncodeToBytes(tx)
 	if err != nil {
@@ -30,14 +28,10 @@ func (msg *MsgEthereumTx) FromEthereumTx(tx *ethtypes.Transaction) error {
 	return nil
 }
 
-// Route returns the route value of an MsgEthereumTx.
 func (msg MsgEthereumTx) Route() string { return RouterKey }
 
-// Type returns the type value of an MsgEthereumTx.
 func (msg MsgEthereumTx) Type() string { return kiratypes.MsgTypeEthereumTx }
 
-// ValidateBasic implements the sdk.Msg interface. It performs basic validation
-// checks of a Transaction. If returns an error if validation fails.
 func (msg MsgEthereumTx) ValidateBasic() error {
 	if msg.Sender != "" {
 		if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
@@ -62,10 +56,6 @@ func (msg *MsgEthereumTx) GetMsgs() []sdk.Msg {
 	return []sdk.Msg{msg}
 }
 
-// GetSigners returns the expected signers for an Ethereum transaction message.
-// For such a message, there should exist only a single 'signer'.
-//
-// NOTE: This method panics if 'Sign' hasn't been called first.
 func (msg *MsgEthereumTx) GetSigners() []sdk.AccAddress {
 	signer := sdk.MustAccAddressFromBech32(msg.Sender)
 	return []sdk.AccAddress{signer}
@@ -78,35 +68,6 @@ func (msg *MsgEthereumTx) GetSigners() []sdk.AccAddress {
 // to sign over. Use 'RLPSignBytes' instead.
 func (msg MsgEthereumTx) GetSignBytes() []byte {
 	panic("must use 'RLPSignBytes' with a chain ID to get the valid bytes to sign")
-}
-
-// Sign calculates a secp256k1 ECDSA signature and signs the transaction. It
-// takes a keyring signer and the chainID to sign an Ethereum transaction according to
-// EIP155 standard.
-// This method mutates the transaction as it populates the V, R, S
-// fields of the Transaction's Signature.
-// The function will fail if the sender address is not defined for the msg or if
-// the sender is not registered on the keyring
-func (msg *MsgEthereumTx) Sign(ethSigner ethtypes.Signer, keyringSigner keyring.Signer) error {
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return err
-	}
-
-	tx := msg.AsTransaction()
-	txHash := ethSigner.Hash(tx)
-
-	sig, _, err := keyringSigner.SignByAddress(sender, txHash.Bytes())
-	if err != nil {
-		return err
-	}
-
-	tx, err = tx.WithSignature(ethSigner, sig)
-	if err != nil {
-		return err
-	}
-
-	return msg.FromEthereumTx(tx)
 }
 
 func (msg *MsgEthereumTx) GetEthSender(chainID *big.Int) (common.Address, error) {
@@ -124,7 +85,6 @@ func (msg *MsgEthereumTx) AsMessage() (ethtypes.Message, error) {
 	return tx.AsMessage(ethtypes.NewEIP155Signer(tx.ChainId()), big.NewInt(1))
 }
 
-// AsTransaction creates an Ethereum Transaction type from the msg fields
 func (msg MsgEthereumTx) AsTransaction() *ethtypes.Transaction {
 	tx := new(ethtypes.Transaction)
 	rlp.DecodeBytes(msg.Data, &tx)

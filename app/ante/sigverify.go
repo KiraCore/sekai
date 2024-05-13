@@ -273,28 +273,17 @@ func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.S
 				return err
 			}
 
-			signDocMetamask := SignDocForMetamask{
-				Body:          &sdktx.TxBody{},
-				AuthInfo:      &sdktx.AuthInfo{},
-				ChainId:       signerData.ChainID,
-				AccountNumber: signerData.AccountNumber,
-			}
-
-			err = proto.Unmarshal(signDoc.BodyBytes, signDocMetamask.Body)
+			txBody := &sdktx.TxBody{}
+			err = proto.Unmarshal(signDoc.BodyBytes, txBody)
 			if err != nil {
 				return err
 			}
 
-			err = proto.Unmarshal(signDoc.AuthInfoBytes, signDocMetamask.AuthInfo)
-			if err != nil {
-				return err
-			}
-
-			if len(signDocMetamask.Body.Messages) != 1 {
+			if len(txBody.Messages) != 1 {
 				return errors.New("only one message's enabled for EIP712 signature")
 			}
-			msg := signDocMetamask.Body.Messages[0]
-			err := signDocMetamask.Body.UnpackInterfaces(interfaceRegistry)
+			msg := txBody.Messages[0]
+			err := txBody.UnpackInterfaces(interfaceRegistry)
 			if err != nil {
 				return err
 			}
@@ -406,7 +395,6 @@ func GenEIP712SignBytesFromMsg(msg sdk.Msg, nonce uint64) ([]byte, error) {
 
 	rawData := []byte(fmt.Sprintf("\x19\x01%s%s", string(domainSeparator), string(typedDataHash)))
 	hashBytes := crypto.Keccak256(rawData)
-	// hash := common.BytesToHash(hashBytes)
 
 	return hashBytes, nil
 }
