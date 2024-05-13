@@ -44,12 +44,12 @@ func (a ApplyCollectiveSendDonationProposalHandler) AllowedAddresses(ctx sdk.Con
 	return a.keeper.AllowedAddresses(ctx, collective.OwnersWhitelist)
 }
 
-func (a ApplyCollectiveSendDonationProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplyCollectiveSendDonationProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.ProposalCollectiveSendDonation)
 
 	collective := a.keeper.GetCollective(ctx, p.Name)
 	if collective.Name == "" {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return collective.VoteQuorum
@@ -123,12 +123,12 @@ func (a ApplyCollectiveUpdateProposalHandler) AllowedAddresses(ctx sdk.Context, 
 	return a.keeper.AllowedAddresses(ctx, collective.OwnersWhitelist)
 }
 
-func (a ApplyCollectiveUpdateProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplyCollectiveUpdateProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.ProposalCollectiveUpdate)
 
 	collective := a.keeper.GetCollective(ctx, p.Name)
 	if collective.Name == "" {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return collective.VoteQuorum
@@ -216,12 +216,12 @@ func (a ApplyCollectiveRemoveProposalHandler) AllowedAddresses(ctx sdk.Context, 
 	return a.keeper.AllowedAddresses(ctx, collective.OwnersWhitelist)
 }
 
-func (a ApplyCollectiveRemoveProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplyCollectiveRemoveProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.ProposalCollectiveRemove)
 
 	collective := a.keeper.GetCollective(ctx, p.Name)
 	if collective.Name == "" {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return collective.VoteQuorum

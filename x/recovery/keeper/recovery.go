@@ -1,16 +1,16 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"github.com/KiraCore/sekai/x/recovery/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) GetRecoveryRecord(ctx sdk.Context, address string) (types.RecoveryRecord, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.RecoveryRecordKey(address))
 	if bz == nil {
-		return types.RecoveryRecord{}, sdkerrors.Wrapf(types.ErrRecoveryRecordDoesNotExist, "RecoveryRecord: %s does not exist", address)
+		return types.RecoveryRecord{}, errorsmod.Wrapf(types.ErrRecoveryRecordDoesNotExist, "RecoveryRecord: %s does not exist", address)
 	}
 	record := types.RecoveryRecord{}
 	k.cdc.MustUnmarshal(bz, &record)
@@ -58,7 +58,7 @@ func (k Keeper) GetRecoveryToken(ctx sdk.Context, address string) (types.Recover
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.RecoveryTokenKey(address))
 	if bz == nil {
-		return types.RecoveryToken{}, sdkerrors.Wrapf(types.ErrRecoveryTokenDoesNotExist, "RecoveryToken: %s does not exist", address)
+		return types.RecoveryToken{}, errorsmod.Wrapf(types.ErrRecoveryTokenDoesNotExist, "RecoveryToken: %s does not exist", address)
 	}
 	recovery := types.RecoveryToken{}
 	k.cdc.MustUnmarshal(bz, &recovery)
@@ -69,7 +69,7 @@ func (k Keeper) GetRecoveryTokenByDenom(ctx sdk.Context, denom string) (types.Re
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.RecoveryTokenByDenomKey(denom))
 	if bz == nil {
-		return types.RecoveryToken{}, sdkerrors.Wrapf(types.ErrRecoveryTokenDoesNotExist, "RecoveryTokenByDenom: %s does not exist", denom)
+		return types.RecoveryToken{}, errorsmod.Wrapf(types.ErrRecoveryTokenDoesNotExist, "RecoveryTokenByDenom: %s does not exist", denom)
 	}
 	address := string(bz)
 	return k.GetRecoveryToken(ctx, address)

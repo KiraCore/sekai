@@ -25,7 +25,6 @@ func GetQueryCmd() *cobra.Command {
 
 	slashingQueryCmd.AddCommand(
 		GetCmdQuerySigningInfo(),
-		GetCmdQueryParams(),
 		GetCmdQuerySigningInfos(),
 		GetCmdQuerySlashProposals(),
 		GetCmdQuerySlashedStakingPools(),
@@ -99,36 +98,6 @@ $ <appd> query slashing signing-infos
 
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "signing infos")
-
-	return cmd
-}
-
-// GetCmdQueryParams implements a command to fetch slashing parameters.
-func GetCmdQueryParams() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "params",
-		Short: "Query the current slashing parameters",
-		Args:  cobra.NoArgs,
-		Long: strings.TrimSpace(`Query genesis parameters for the slashing module:
-
-$ <appd> query slashing params
-`),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryParamsRequest{}
-			res, err := queryClient.Params(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(&res.Params)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }

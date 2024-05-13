@@ -15,8 +15,9 @@ func NewMsgCreateCollective(
 	depositWhitelist DepositWhitelist,
 	ownersWhitelist OwnersWhitelist,
 	weightedSpendingPool []WeightedSpendingPool,
-	claimStart, claimPeriod, claimEnd,
-	voteQuorum, votePeriod, voteEnactment uint64,
+	claimStart, claimPeriod, claimEnd uint64,
+	voteQuorum sdk.Dec,
+	votePeriod, voteEnactment uint64,
 ) *MsgCreateCollective {
 	return &MsgCreateCollective{
 		Sender:           proposer.String(),
@@ -75,7 +76,7 @@ func (m *MsgCreateCollective) ValidateBasic() error {
 	if m.ClaimPeriod == 0 {
 		return ErrInvalidClaimPeriod
 	}
-	if m.VoteQuorum == 0 {
+	if m.VoteQuorum.IsZero() {
 		return ErrInvalidVoteQuorum
 	}
 	if m.VotePeriod == 0 {

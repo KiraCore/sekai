@@ -1,6 +1,6 @@
 DOCKER := $(shell which docker)
 
-.PHONY: all install go.sum test test-local lint proto-gen proto-gen-local build start publish
+.PHONY: all install go.sum test test-local lint proto-gen proto-gen-local build build-static start publish
 
 all: install
 install:
@@ -53,6 +53,9 @@ proto-check-breaking:
 
 build:
 	./scripts/build.sh
+
+build-static:
+	./scripts/sbuild.sh
 
 start:
 	go run ./cmd/sekaid/main.go

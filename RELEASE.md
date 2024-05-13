@@ -1,3 +1,8 @@
 Features:
 
-- Upgrade Cosmos SDK version to v0.47.6
+- Unique identity keys
+- Genesis init fix
+- CLI to use flags for execution fees proposal
+- Slashing module params to gov module properties
+- Identity record verification bug fix
+- Network properties handling fix

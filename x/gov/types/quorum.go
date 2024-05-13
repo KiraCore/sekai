@@ -2,18 +2,19 @@ package types
 
 import (
 	"fmt"
-	"math"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func IsQuorum(percentage, votes, totalVoters uint64) (bool, error) {
+func IsQuorum(percentage sdk.Dec, votes, totalVoters uint64) (bool, error) {
 	if votes > totalVoters {
 		return false, fmt.Errorf("there is more votes than voters: %d > %d", votes, totalVoters)
 	}
 
-	if percentage > 100 {
-		return false, fmt.Errorf("quorum cannot be bigger than 100: %d", percentage)
+	if percentage.GT(sdk.OneDec()) {
+		return false, fmt.Errorf("quorum cannot be bigger than 1.00: %d", percentage)
 	}
 
-	necessaryApproval := uint64(math.Ceil(float64(totalVoters*percentage) / 100.0))
-	return votes >= necessaryApproval, nil
+	necessaryApproval := sdk.NewDec(int64(totalVoters)).Mul(percentage)
+	return sdk.NewDec(int64(votes)).GTE(necessaryApproval), nil
 }

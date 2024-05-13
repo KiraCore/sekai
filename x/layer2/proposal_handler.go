@@ -43,12 +43,12 @@ func (a ApplyJoinDappProposalHandler) AllowedAddresses(ctx sdk.Context, proposal
 	return a.keeper.AllowedAddresses(ctx, dapp.Controllers)
 }
 
-func (a ApplyJoinDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplyJoinDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.ProposalJoinDapp)
 
 	dapp := a.keeper.GetDapp(ctx, p.DappName)
 	if dapp.Name == "" {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return dapp.VoteQuorum
@@ -118,12 +118,12 @@ func (a ApplyUpsertDappProposalHandler) AllowedAddresses(ctx sdk.Context, propos
 	return a.keeper.AllowedAddresses(ctx, dapp.Controllers)
 }
 
-func (a ApplyUpsertDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplyUpsertDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.ProposalUpsertDapp)
 
 	dapp := a.keeper.GetDapp(ctx, p.Dapp.Name)
 	if dapp.Name == "" {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return dapp.VoteQuorum

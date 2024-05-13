@@ -278,7 +278,6 @@ func NewInitApp(
 		&customStakingKeeper,
 		multiStakingKeeper,
 		app.CustomGovKeeper,
-		app.GetSubspace(slashingtypes.ModuleName),
 	)
 
 	app.BasketKeeper = basketkeeper.NewKeeper(
@@ -370,6 +369,7 @@ func NewInitApp(
 			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyResetWholeCouncilorRankProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyJailCouncilorProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplySetExecutionFeesProposalHandler(app.CustomGovKeeper),
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),

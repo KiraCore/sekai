@@ -95,6 +95,9 @@ func DefaultGenesis() *GenesisState {
 				PermCreateJailCouncilorProposal,
 				PermVoteJailCouncilorProposal,
 				PermCreatePollProposal,
+				PermCreateDappProposalWithoutBond,
+				PermCreateSetExecutionFeesProposal,
+				PermVoteSetExecutionFeesProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
@@ -102,9 +105,9 @@ func DefaultGenesis() *GenesisState {
 		NetworkProperties: &NetworkProperties{
 			MinTxFee:                        100,
 			MaxTxFee:                        1000000,
-			VoteQuorum:                      33,
-			MinimumProposalEndTime:          300, // 300 seconds / 5 mins
-			ProposalEnactmentTime:           300, // 300 seconds / 5 mins
+			VoteQuorum:                      sdk.NewDecWithPrec(33, 2), // 33%
+			MinimumProposalEndTime:          300,                       // 300 seconds / 5 mins
+			ProposalEnactmentTime:           300,                       // 300 seconds / 5 mins
 			MinProposalEndBlocks:            2,
 			MinProposalEnactmentBlocks:      1,
 			EnableForeignFeePayments:        true,
@@ -126,9 +129,9 @@ func DefaultGenesis() *GenesisState {
 			UnstakingPeriod:                 2629800,                   // 1 month
 			MaxDelegators:                   100,
 			MinDelegationPushout:            10,
-			SlashingPeriod:                  3600,
+			SlashingPeriod:                  2629800,
 			MaxJailedPercentage:             sdk.NewDecWithPrec(25, 2),
-			MaxSlashingPercentage:           sdk.NewDecWithPrec(1, 2),
+			MaxSlashingPercentage:           sdk.NewDecWithPrec(5, 3), // 0.5%
 			MinCustodyReward:                200,
 			MaxCustodyTxSize:                8192,
 			MaxCustodyBufferSize:            10,
@@ -153,12 +156,15 @@ func DefaultGenesis() *GenesisState {
 			DappAutoDenounceTime:            60,                       // 60s
 			DappMischanceRankDecreaseAmount: 1,
 			DappMaxMischance:                10,
-			DappInactiveRankDecreasePercent: 10,
-			DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
+			DappInactiveRankDecreasePercent: sdk.NewDecWithPrec(10, 2), // 10%
+			DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1),  // 10%
+			DappLiquidationThreshold:        100_000_000_000,           // default 100’000 KEX
+			DappLiquidationPeriod:           2419200,                   // default 2419200, ~28d
 			MintingFtFee:                    100_000_000_000_000,
 			MintingNftFee:                   100_000_000_000_000,
-			VetoThreshold:                   sdk.NewDecWithPrec(3340, 2), // 33.40%
+			VetoThreshold:                   sdk.NewDecWithPrec(3340, 4), // 33.40%
 			AutocompoundIntervalNumBlocks:   17280,
+			DowntimeInactiveDuration:        600,
 		},
 		ExecutionFees: []ExecutionFee{
 			{

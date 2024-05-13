@@ -8,9 +8,9 @@ import (
 	tmos "github.com/cometbft/cometbft/libs/os"
 	tmtypes "github.com/cometbft/cometbft/types"
 
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 // NewGenesisState creates a new GenesisState object
@@ -110,10 +110,9 @@ func ValidateGenesis(genesisState *GenesisState, txJSONDecoder sdk.TxDecoder) er
 				"must provide genesis Tx with exactly 1 CreateValidator message")
 		}
 
-		// TODO: abstract back to staking
-		if _, ok := msgs[0].(*stakingtypes.MsgCreateValidator); !ok {
+		if _, ok := msgs[0].(*stakingtypes.MsgClaimValidator); !ok {
 			return fmt.Errorf(
-				"genesis transaction %v does not contain a MsgCreateValidator", i)
+				"genesis transaction %v does not contain a MsgClaimValidator", i)
 		}
 	}
 	return nil
