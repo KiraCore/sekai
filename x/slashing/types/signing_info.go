@@ -9,6 +9,7 @@ import (
 )
 
 // NewValidatorSigningInfo creates a new ValidatorSigningInfo instance
+//
 //nolint:interfacer
 func NewValidatorSigningInfo(
 	consAddr sdk.ConsAddress, startHeight int64,

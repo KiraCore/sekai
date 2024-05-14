@@ -765,7 +765,7 @@ func (m *MsgDeleteIdentityRecords) Route() string {
 }
 
 func (m *MsgDeleteIdentityRecords) Type() string {
-	return types.MsgTypeEditIdentityRecord
+	return types.MsgTypeDeleteIdentityRecords
 }
 
 func (m *MsgDeleteIdentityRecords) ValidateBasic() error {
