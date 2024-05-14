@@ -29,8 +29,8 @@ func TestSimappExportGenesis(t *testing.T) {
 	bz, err := app.AppCodec().MarshalJSON(genesis)
 	require.NoError(t, err)
 	buffer := new(bytes.Buffer)
-	err = json.Compact(buffer, []byte(`{	
-  "default_denom": "ukex",	
+	err = json.Compact(buffer, []byte(`{
+  "default_denom": "ukex",
   "bech32_prefix": "kira",
   "starting_proposal_id": "1",
   "next_role_id": "3",
@@ -201,13 +201,6 @@ func TestSimappExportGenesis(t *testing.T) {
       "default_parameters": "0"
     },
     {
-      "transaction_type": "claim-councilor",
-      "execution_fee": "100",
-      "failure_fee": "1",
-      "timeout": "10",
-      "default_parameters": "0"
-    },
-    {
       "transaction_type": "claim-proposal-type-x",
       "execution_fee": "100",
       "failure_fee": "1",
@@ -215,7 +208,14 @@ func TestSimappExportGenesis(t *testing.T) {
       "default_parameters": "0"
     },
     {
-      "transaction_type": "claim-validator",
+      "transaction_type": "claim_councilor",
+      "execution_fee": "100",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "claim_validator",
       "execution_fee": "100",
       "failure_fee": "1",
       "timeout": "10",
@@ -243,7 +243,7 @@ func TestSimappExportGenesis(t *testing.T) {
       "default_parameters": "0"
     },
     {
-      "transaction_type": "upsert-token-alias",
+      "transaction_type": "upsert_token_alias",
       "execution_fee": "100",
       "failure_fee": "1",
       "timeout": "10",
@@ -266,28 +266,28 @@ func TestSimappExportGenesis(t *testing.T) {
   ],
   "poor_network_messages": {
     "messages": [
-      "submit-proposal",
-      "set-network-properties",
-      "vote-proposal",
-      "claim-councilor",
-      "whitelist-permissions",
-      "blacklist-permissions",
-      "create-role",
-      "assign-role",
-      "unassign-role",
-      "whitelist-role-permission",
-      "blacklist-role-permission",
-      "remove-whitelist-role-permission",
-      "remove-blacklist-role-permission",
-      "claim-validator",
+      "submit_proposal",
+      "set_network_properties",
+      "vote_proposal",
+      "claim_councilor",
+      "whitelist_permissions",
+      "blacklist_permissions",
+      "create_role",
+      "assign_role",
+      "unassign_role",
+      "whitelist_role_permission",
+      "blacklist_role_permission",
+      "remove_whitelist_role_permission",
+      "remove_blacklist_role_permission",
+      "claim_validator",
       "activate",
       "pause",
       "unpause",
-      "register-identity-records",
-      "edit-identity-record",
-      "request-identity-records-verify",
-      "handle-identity-records-verify-request",
-      "cancel-identity-records-verify-request"
+      "register_identity_records",
+      "delete_identity_records",
+      "request_identity_records_verify",
+      "handle_identity_records_verify_request",
+      "cancel_identity_records_verify_request"
     ]
   },
   "proposals": [],
@@ -536,7 +536,7 @@ func TestExportInitGenesis(t *testing.T) {
   ],	
   "poor_network_messages": {	
     "messages": [	
-      "set-network-properties"	
+      "set_network_properties"	
     ]	
   },	
   "proposals": [],	
