@@ -235,7 +235,7 @@ func NewInitApp(
 		evidencetypes.StoreKey,
 		custodytypes.StoreKey,
 		collectivestypes.ModuleName,
-		layer2types.ModuleName,
+		layer2types.StoreKey,
 		consensusparamtypes.StoreKey,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -311,7 +311,7 @@ func NewInitApp(
 	)
 
 	app.Layer2Keeper = layer2keeper.NewKeeper(
-		keys[collectivestypes.StoreKey], appCodec,
+		keys[layer2types.StoreKey], appCodec,
 		app.BankKeeper,
 		app.CustomStakingKeeper,
 		app.CustomGovKeeper,
