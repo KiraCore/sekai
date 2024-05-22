@@ -38,7 +38,7 @@ func (suite *KeeperTestSuite) TestLpTokenPrice() {
 			Deposit: "",
 			Drip:    86400,
 		},
-		Issurance: types.IssuranceConfig{
+		Issuance: types.IssuanceConfig{
 			Deposit:  "",
 			Premint:  sdk.OneInt(),
 			Postmint: sdk.OneInt(),
@@ -112,7 +112,7 @@ func (suite *KeeperTestSuite) TestRedeemDappPoolTx() {
 			Deposit: "",
 			Drip:    86400,
 		},
-		Issurance: types.IssuranceConfig{
+		Issuance: types.IssuanceConfig{
 			Deposit:  "",
 			Premint:  sdk.OneInt(),
 			Postmint: sdk.OneInt(),
@@ -187,7 +187,7 @@ func (suite *KeeperTestSuite) TestConvertDappPoolTx() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),
@@ -233,7 +233,7 @@ func (suite *KeeperTestSuite) TestConvertDappPoolTx() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),

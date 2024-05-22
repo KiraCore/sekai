@@ -28,7 +28,7 @@ const (
 	FlagControllerAccounts = "controller-accounts"
 	FlagBinaryInfo         = "binary-info"
 	FlagLpPoolConfig       = "lp-pool-config"
-	FlagIssuranceConfig    = "issurance-config"
+	FlagIssuanceConfig     = "issuance-config"
 	FlagUpdateTimeMax      = "update-time-max"
 	FlagExecutorsMin       = "executors-min"
 	FlagExecutorsMax       = "executors-max"
@@ -157,14 +157,14 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 				return fmt.Errorf("invalid controller role/accounts: %w", err)
 			}
 
-			issuranceStr, err := cmd.Flags().GetString(FlagIssuranceConfig)
+			issuanceStr, err := cmd.Flags().GetString(FlagIssuanceConfig)
 			if err != nil {
-				return fmt.Errorf("invalid issurance config: %w", err)
+				return fmt.Errorf("invalid issuance config: %w", err)
 			}
-			issurance := types.IssuranceConfig{}
-			err = clientCtx.Codec.UnmarshalJSON([]byte(issuranceStr), &issurance)
+			issuance := types.IssuanceConfig{}
+			err = clientCtx.Codec.UnmarshalJSON([]byte(issuanceStr), &issuance)
 			if err != nil {
-				return fmt.Errorf("invalid issurance config: %w", err)
+				return fmt.Errorf("invalid issuance config: %w", err)
 			}
 
 			lpPoolConfigStr, err := cmd.Flags().GetString(FlagLpPoolConfig)
@@ -228,7 +228,7 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 					},
 					Bin:           []types.BinaryInfo{binaryInfo},
 					Pool:          lpPoolConfig,
-					Issurance:     issurance,
+					Issuance:      issuance,
 					UpdateTimeMax: updateMaxTime,
 					ExecutorsMin:  executorsMin,
 					ExecutorsMax:  executorsMax,
@@ -265,7 +265,7 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 	cmd.Flags().Uint64(FlagVoteEnactment, 0, "vote enactment of the dapp")
 	cmd.Flags().String(FlagControllerRoles, "", "controller roles on the dapp.")
 	cmd.Flags().String(FlagControllerAccounts, "", "controller accounts on the dapp.")
-	cmd.Flags().String(FlagIssuranceConfig, "{}", "dapp issurance config.")
+	cmd.Flags().String(FlagIssuanceConfig, "{}", "dapp issuance config.")
 	cmd.Flags().String(FlagLpPoolConfig, "{}", "dapp lp config.")
 	cmd.Flags().String(FlagBinaryInfo, "{}", "dapp binary info.")
 	cmd.Flags().String(FlagDappStatus, "{}", "dapp status.")
@@ -728,14 +728,14 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 				return fmt.Errorf("invalid controller role/accounts: %w", err)
 			}
 
-			issuranceStr, err := cmd.Flags().GetString(FlagIssuranceConfig)
+			issuanceStr, err := cmd.Flags().GetString(FlagIssuanceConfig)
 			if err != nil {
-				return fmt.Errorf("invalid issurance config: %w", err)
+				return fmt.Errorf("invalid issuance config: %w", err)
 			}
-			issurance := types.IssuranceConfig{}
-			err = clientCtx.Codec.UnmarshalJSON([]byte(issuranceStr), &issurance)
+			issuance := types.IssuanceConfig{}
+			err = clientCtx.Codec.UnmarshalJSON([]byte(issuanceStr), &issuance)
 			if err != nil {
-				return fmt.Errorf("invalid issurance config: %w", err)
+				return fmt.Errorf("invalid issuance config: %w", err)
 			}
 
 			lpPoolConfigStr, err := cmd.Flags().GetString(FlagLpPoolConfig)
@@ -814,7 +814,7 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 						},
 						Bin:           []types.BinaryInfo{binaryInfo},
 						Pool:          lpPoolConfig,
-						Issurance:     issurance,
+						Issuance:      issuance,
 						UpdateTimeMax: updateMaxTime,
 						ExecutorsMin:  executorsMin,
 						ExecutorsMax:  executorsMax,
@@ -852,7 +852,7 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 	cmd.Flags().Uint64(FlagVoteEnactment, 0, "vote enactment of the dapp")
 	cmd.Flags().String(FlagControllerRoles, "", "controller roles on the dapp.")
 	cmd.Flags().String(FlagControllerAccounts, "", "controller accounts on the dapp.")
-	cmd.Flags().String(FlagIssuranceConfig, "{}", "dapp issurance config.")
+	cmd.Flags().String(FlagIssuanceConfig, "{}", "dapp issuance config.")
 	cmd.Flags().String(FlagLpPoolConfig, "{}", "dapp lp config.")
 	cmd.Flags().String(FlagBinaryInfo, "{}", "dapp binary info.")
 	cmd.Flags().String(FlagDappStatus, "{}", "dapp status.")
