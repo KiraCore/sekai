@@ -99,6 +99,10 @@ func (am AppModule) InitGenesis(
 	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
+	if genesisState.Version != sekaitypes.SekaiVersion {
+		panic(types.ErrInvalidGenesisVersion)
+	}
+
 	if genesisState.CurrentPlan != nil {
 		am.upgradeKeeper.SaveCurrentPlan(ctx, *genesisState.CurrentPlan)
 	}
