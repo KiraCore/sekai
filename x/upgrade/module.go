@@ -3,6 +3,7 @@ package upgrade
 import (
 	"encoding/json"
 
+	sekaitypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/upgrade/client/cli"
 	"github.com/KiraCore/sekai/x/upgrade/keeper"
 	"github.com/KiraCore/sekai/x/upgrade/types"
@@ -41,6 +42,14 @@ func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage { //
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client.TxEncodingConfig, message json.RawMessage) error {
+	genesis := types.GenesisState{}
+	err := marshaler.UnmarshalJSON(message, &genesis)
+	if err != nil {
+		return err
+	}
+	if sekaitypes.SekaiVersion != genesis.Version {
+		return types.ErrInvalidGenesisVersion
+	}
 	return nil
 }
 
