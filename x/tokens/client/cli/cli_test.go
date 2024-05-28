@@ -66,53 +66,13 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
+func (s *IntegrationTestSuite) TestUpsertTokenInfoAndQuery() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	s.WhitelistPermissions(val.Address, govtypes.PermUpsertTokenAlias)
+	s.WhitelistPermissions(val.Address, govtypes.PermUpsertTokenInfo)
 
-	cmd := cli.GetTxUpsertTokenAliasCmd()
-	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=%s", cli.FlagSymbol, "ETH"),
-		fmt.Sprintf("--%s=%s", cli.FlagName, "Ethereum"),
-		fmt.Sprintf("--%s=%s", cli.FlagIcon, "myiconurl"),
-		fmt.Sprintf("--%s=%d", cli.FlagDecimals, 6),
-		fmt.Sprintf("--%s=%s", cli.FlagDenoms, "finney"),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
-	})
-	s.Require().NoError(err)
-
-	height, err := s.network.LatestHeight()
-	s.Require().NoError(err)
-
-	_, err = s.network.WaitForHeight(height + 2)
-	s.Require().NoError(err)
-
-	cmd = cli.GetCmdQueryTokenAlias()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ETH"})
-	s.Require().NoError(err)
-
-	var tokenAlias tokenstypes.TokenAlias
-	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &tokenAlias)
-
-	s.Require().Equal(tokenAlias.Symbol, "ETH")
-	s.Require().Equal(tokenAlias.Name, "Ethereum")
-	s.Require().Equal(tokenAlias.Icon, "myiconurl")
-	s.Require().Equal(tokenAlias.Decimals, uint32(6))
-	s.Require().Equal(tokenAlias.Denoms, []string{"finney"})
-}
-
-func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
-	val := s.network.Validators[0]
-	clientCtx := val.ClientCtx
-
-	s.WhitelistPermissions(val.Address, govtypes.PermUpsertTokenRate)
-
-	cmd := cli.GetTxUpsertTokenRateCmd()
+	cmd := cli.GetTxUpsertTokenInfoCmd()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
@@ -130,7 +90,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	_, err = s.network.WaitForHeight(height + 2)
 	s.Require().NoError(err)
 
-	cmd = cli.GetCmdQueryTokenRate()
+	cmd = cli.GetCmdQueryTokenInfo()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ubtc"})
 	s.Require().NoError(err)
 
@@ -151,12 +111,12 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTokenBlackWhites() {
 	s.Require().Equal(blackWhites.Data.Whitelisted, []string{"ukex"})
 }
 
-func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
+func (s IntegrationTestSuite) TestCreateProposalUpsertTokenInfo() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	cmd := cli.GetTxProposalUpsertTokenRatesCmd()
+	cmd := cli.GetTxProposalUpsertTokenInfoCmd()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
 		fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
@@ -172,43 +132,6 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 	fmt.Printf("%s", out.String())
 
 	// Vote Proposal
-	cmd = customgovcli.GetTxVoteProposal()
-	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", govtypes.OptionYes),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
-	})
-	s.Require().NoError(err)
-	fmt.Printf("%s", out.String())
-}
-
-func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
-	// Query permissions for role Validator
-	val := s.network.Validators[0]
-	clientCtx := val.ClientCtx
-
-	cmd := cli.GetTxProposalUpsertTokenAliasCmd()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		fmt.Sprintf("--%s=%s", cli.FlagSymbol, "ETH"),
-		fmt.Sprintf("--%s=%s", cli.FlagName, "Ethereum"),
-		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
-		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
-		fmt.Sprintf("--%s=%s", cli.FlagIcon, "myiconurl"),
-		fmt.Sprintf("--%s=%d", cli.FlagDecimals, 6),
-		fmt.Sprintf("--%s=%s", cli.FlagDenoms, "finney"),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
-	})
-	s.Require().NoError(err)
-	fmt.Printf("%s", out.String())
-
-	// Vote Proposal
-	out.Reset()
 	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
@@ -259,57 +182,29 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	fmt.Printf("%s", out.String())
 }
 
-func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenAliases() {
+func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenInfos() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	cmd := cli.GetCmdQueryAllTokenAliases()
+	cmd := cli.GetCmdQueryAllTokenInfos()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
 	s.Require().NoError(err)
 
-	var resp tokenstypes.AllTokenAliasesResponse
+	var resp tokenstypes.AllTokenInfosResponse
 	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }
 
-func (s *IntegrationTestSuite) TestGetCmdQueryTokenAliasesByDenom() {
+func (s *IntegrationTestSuite) TestGetCmdQueryTokenInfosByDenom() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	cmd := cli.GetCmdQueryTokenAliasesByDenom()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ukex", "mkex"})
-	s.Require().NoError(err)
-
-	var resp tokenstypes.TokenAliasesByDenomResponse
-	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &resp)
-
-	s.Require().Greater(len(resp.Data), 0)
-}
-
-func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenRates() {
-	val := s.network.Validators[0]
-	clientCtx := val.ClientCtx
-
-	cmd := cli.GetCmdQueryAllTokenRates()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
-	s.Require().NoError(err)
-
-	var resp tokenstypes.AllTokenRatesResponse
-	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &resp)
-
-	s.Require().Greater(len(resp.Data), 0)
-}
-
-func (s *IntegrationTestSuite) TestGetCmdQueryTokenRatesByDenom() {
-	val := s.network.Validators[0]
-	clientCtx := val.ClientCtx
-
-	cmd := cli.GetCmdQueryTokenRatesByDenom()
+	cmd := cli.GetCmdQueryTokenInfosByDenom()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ukex"})
 	s.Require().NoError(err)
 
-	var resp tokenstypes.TokenRatesByDenomResponse
+	var resp tokenstypes.TokenInfosByDenomResponse
 	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)

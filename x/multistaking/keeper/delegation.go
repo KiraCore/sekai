@@ -166,7 +166,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 	delegators := k.GetPoolDelegators(ctx, pool.Id)
 	for _, shareToken := range pool.TotalShareTokens {
 		nativeDenom := types.GetNativeDenom(pool.Id, shareToken.Denom)
-		rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
+		rate := k.tokenKeeper.GetTokenInfo(ctx, nativeDenom)
 		if rate == nil {
 			continue
 		}
@@ -216,7 +216,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 			k.RemoveDelegatorRewards(ctx, delegator)
 		} else {
 			for _, reward := range rewards {
-				rate := k.tokenKeeper.GetTokenRate(ctx, reward.Denom)
+				rate := k.tokenKeeper.GetTokenInfo(ctx, reward.Denom)
 				if rate.StakeToken && reward.Amount.GTE(rate.StakeMin) && isWithinArray(reward.Denom, compoundInfo.CompoundDenoms) {
 					autoCompoundRewards = autoCompoundRewards.Add(reward)
 				}
@@ -320,7 +320,7 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 	}
 
 	for _, amount := range msg.Amounts {
-		rate := k.tokenKeeper.GetTokenRate(ctx, amount.Denom)
+		rate := k.tokenKeeper.GetTokenInfo(ctx, amount.Denom)
 		if !rate.StakeToken {
 			return types.ErrNotAllowedStakingToken
 		}
@@ -400,7 +400,7 @@ func (k Keeper) GetPoolDelegationValue(ctx sdk.Context, pool types.StakingPool, 
 	delegationValue := sdk.ZeroInt()
 	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
 	for _, stakingToken := range pool.TotalStakingTokens {
-		rate := k.tokenKeeper.GetTokenRate(ctx, stakingToken.Denom)
+		rate := k.tokenKeeper.GetTokenInfo(ctx, stakingToken.Denom)
 		if rate == nil {
 			continue
 		}
@@ -414,7 +414,7 @@ func (k Keeper) GetPoolDelegationValue(ctx sdk.Context, pool types.StakingPool, 
 func (k Keeper) GetCoinsValue(ctx sdk.Context, coins sdk.Coins) sdk.Int {
 	delegationValue := sdk.ZeroInt()
 	for _, coin := range coins {
-		rate := k.tokenKeeper.GetTokenRate(ctx, coin.Denom)
+		rate := k.tokenKeeper.GetTokenInfo(ctx, coin.Denom)
 		if rate == nil {
 			continue
 		}
@@ -448,7 +448,7 @@ func (k Keeper) RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress) {
 		}
 
 		for _, stakingToken := range pool.TotalStakingTokens {
-			rate := k.tokenKeeper.GetTokenRate(ctx, stakingToken.Denom)
+			rate := k.tokenKeeper.GetTokenInfo(ctx, stakingToken.Denom)
 			shareToken := types.GetShareDenom(pool.Id, stakingToken.Denom)
 			balance := balances.AmountOf(shareToken)
 			if balance.GTE(rate.StakeMin) {
@@ -468,7 +468,7 @@ func (k Keeper) UnregisterNotEnoughStakeDelegator(ctx sdk.Context, pool types.St
 		balances := k.bankKeeper.GetAllBalances(ctx, delegator)
 		for _, shareToken := range pool.TotalShareTokens {
 			nativeDenom := types.GetNativeDenom(pool.Id, shareToken.Denom)
-			rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
+			rate := k.tokenKeeper.GetTokenInfo(ctx, nativeDenom)
 			if rate == nil {
 				continue
 			}

@@ -5,41 +5,41 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (suite *KeeperTestSuite) TestTokenRates() {
+func (suite *KeeperTestSuite) TestTokenInfos() {
 	suite.SetupTest()
 	ctx := suite.ctx
 
 	// check initial token rate before registration
-	rate := suite.app.TokensKeeper.GetTokenRate(ctx, "stake")
+	rate := suite.app.TokensKeeper.GetTokenInfo(ctx, "stake")
 	suite.Require().Nil(rate)
-	rates := suite.app.TokensKeeper.GetAllTokenRates(ctx)
+	rates := suite.app.TokensKeeper.GetAllTokenInfos(ctx)
 	suite.Require().Len(rates, 4)
-	rateMap := suite.app.TokensKeeper.GetTokenRatesByDenom(ctx, []string{"stake"})
+	rateMap := suite.app.TokensKeeper.GetTokenInfosByDenom(ctx, []string{"stake"})
 	suite.Require().Equal(len(rateMap), 0)
 	suite.Require().Nil(rateMap["stake"])
 
 	// upsert token rate and check
-	newRate := types.TokenRate{
+	newRate := types.TokenInfo{
 		Denom:       "stake",
 		FeeRate:     sdk.NewDec(2),
 		FeePayments: true,
 	}
-	suite.app.TokensKeeper.UpsertTokenRate(ctx, newRate)
-	rate = suite.app.TokensKeeper.GetTokenRate(ctx, "stake")
+	suite.app.TokensKeeper.UpsertTokenInfo(ctx, newRate)
+	rate = suite.app.TokensKeeper.GetTokenInfo(ctx, "stake")
 	suite.Require().NotNil(rate)
-	rates = suite.app.TokensKeeper.GetAllTokenRates(ctx)
+	rates = suite.app.TokensKeeper.GetAllTokenInfos(ctx)
 	suite.Require().Len(rates, 5)
-	rateMap = suite.app.TokensKeeper.GetTokenRatesByDenom(ctx, []string{"stake"})
+	rateMap = suite.app.TokensKeeper.GetTokenInfosByDenom(ctx, []string{"stake"})
 	suite.Require().Equal(len(rateMap), 1)
 	suite.Require().NotNil(rateMap["stake"])
 
 	// delete token rate and check
-	suite.app.TokensKeeper.DeleteTokenRate(ctx, "stake")
-	rate = suite.app.TokensKeeper.GetTokenRate(ctx, "stake")
+	suite.app.TokensKeeper.DeleteTokenInfo(ctx, "stake")
+	rate = suite.app.TokensKeeper.GetTokenInfo(ctx, "stake")
 	suite.Require().Nil(rate)
-	rates = suite.app.TokensKeeper.GetAllTokenRates(ctx)
+	rates = suite.app.TokensKeeper.GetAllTokenInfos(ctx)
 	suite.Require().Len(rates, 4)
-	rateMap = suite.app.TokensKeeper.GetTokenRatesByDenom(ctx, []string{"stake"})
+	rateMap = suite.app.TokensKeeper.GetTokenInfosByDenom(ctx, []string{"stake"})
 	suite.Require().Equal(len(rateMap), 0)
 	suite.Require().Nil(rateMap["stake"])
 }

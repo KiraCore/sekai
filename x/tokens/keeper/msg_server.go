@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -30,40 +29,7 @@ func NewMsgServerImpl(keeper Keeper, cgk types.CustomGovKeeper) types.MsgServer 
 
 var _ types.MsgServer = msgServer{}
 
-func (k msgServer) UpsertTokenAlias(
-	goCtx context.Context,
-	msg *types.MsgUpsertTokenAlias,
-) (*types.MsgUpsertTokenAliasResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, govtypes.PermUpsertTokenAlias)
-	if !isAllowed {
-		return nil, errorsmod.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenAlias.String())
-	}
-
-	err := k.keeper.UpsertTokenAlias(ctx, *types.NewTokenAlias(
-		msg.Symbol,
-		msg.Name,
-		msg.Icon,
-		msg.Decimals,
-		msg.Denoms,
-		msg.Invalidated,
-	))
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeUpsertTokenAlias,
-			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(types.AttributeKeySymbol, msg.Symbol),
-			sdk.NewAttribute(types.AttributeKeyName, msg.Name),
-			sdk.NewAttribute(types.AttributeKeyIcon, msg.Icon),
-			sdk.NewAttribute(types.AttributeKeyDecimals, fmt.Sprintf("%d", msg.Decimals)),
-			sdk.NewAttribute(types.AttributeKeyDenoms, strings.Join(msg.Denoms, ",")),
-		),
-	)
-	return &types.MsgUpsertTokenAliasResponse{}, err
-}
-
-func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTokenRate) (*types.MsgUpsertTokenRateResponse, error) {
+func (k msgServer) UpsertTokenInfo(goCtx context.Context, msg *types.MsgUpsertTokenInfo) (*types.MsgUpsertTokenInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	err := msg.ValidateBasic()
@@ -71,12 +37,12 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
-	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, govtypes.PermUpsertTokenRate)
+	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, govtypes.PermUpsertTokenInfo)
 	if !isAllowed {
-		return nil, errorsmod.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenRate.String())
+		return nil, errorsmod.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenInfo.String())
 	}
 
-	err = k.keeper.UpsertTokenRate(ctx, *types.NewTokenRate(
+	err = k.keeper.UpsertTokenInfo(ctx, *types.NewTokenInfo(
 		msg.Denom,
 		msg.Rate,
 		msg.FeePayments,
@@ -84,6 +50,10 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 		msg.StakeMin,
 		msg.StakeToken,
 		msg.Invalidated,
+		msg.Symbol,
+		msg.Name,
+		msg.Icon,
+		msg.Decimals,
 	))
 
 	if err != nil {
@@ -91,7 +61,7 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeUpsertTokenRate,
+			types.EventTypeUpsertTokenInfo,
 			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
 			sdk.NewAttribute(types.AttributeKeyDenom, msg.Denom),
 			sdk.NewAttribute(types.AttributeKeyRate, msg.Rate.String()),
@@ -99,7 +69,7 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 		),
 	)
 
-	return &types.MsgUpsertTokenRateResponse{}, nil
+	return &types.MsgUpsertTokenInfoResponse{}, nil
 }
 
 func (k msgServer) EthereumTx(goCtx context.Context, msg *types.MsgEthereumTx) (*types.MsgEthereumTxResponse, error) {

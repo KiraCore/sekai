@@ -42,7 +42,7 @@ const (
 	// PERMISSION_CHANGE_TX_FEE
 	PermChangeTxFee PermValue = 7
 	// PERMISSION_UPSERT_TOKEN_RATE
-	PermUpsertTokenRate PermValue = 8
+	PermUpsertTokenInfo PermValue = 8
 	// PERMISSION_UPSERT_ROLE makes possible to add, modify and assign roles.
 	PermUpsertRole PermValue = 9
 	// PERMISSION_CREATE_UPSERT_DATA_REGISTRY_PROPOSAL makes possible to create a proposal to change the Data Registry.
@@ -63,9 +63,9 @@ const (
 	// PERMISSION_VOTE_SET_POOR_NETWORK_MESSAGES_PROPOSAL defines the permission needed to vote proposals to set poor network messages
 	PermVoteSetPoorNetworkMessagesProposal PermValue = 17
 	// PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to create proposals for upsert token rate.
-	PermCreateUpsertTokenRateProposal PermValue = 18
+	PermCreateUpsertTokenInfoProposal PermValue = 18
 	// PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to vote proposals for upsert token rate.
-	PermVoteUpsertTokenRateProposal PermValue = 19
+	PermVoteUpsertTokenInfoProposal PermValue = 19
 	// PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to create a proposal to unjail a validator.
 	PermCreateUnjailValidatorProposal PermValue = 20
 	// PERMISSION_VOTE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to vote a proposal to unjail a validator.

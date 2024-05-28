@@ -329,7 +329,7 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	feeCoins := feeTx.GetFee()
 	tokensBlackWhite := svd.tk.GetTokenBlackWhites(ctx)
 	for _, feeCoin := range feeCoins {
-		rate := svd.tk.GetTokenRate(ctx, feeCoin.Denom)
+		rate := svd.tk.GetTokenInfo(ctx, feeCoin.Denom)
 		if !properties.EnableForeignFeePayments && feeCoin.Denom != defaultDenom {
 			return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("foreign fee payments is disabled by governance"))
 		}

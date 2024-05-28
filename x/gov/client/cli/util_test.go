@@ -208,7 +208,7 @@ func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value 
 func (s IntegrationTestSuite) UpsertRate(denom string, rate string, flagFeePayments bool) sdk.TxResponse {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
-	cmd := tokenscli.GetTxUpsertTokenRateCmd()
+	cmd := tokenscli.GetTxUpsertTokenInfoCmd()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", tokenscli.FlagDenom, denom),
 		fmt.Sprintf("--%s=%s", tokenscli.FlagRate, rate),

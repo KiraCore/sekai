@@ -9,7 +9,7 @@ import (
 )
 
 func (k Keeper) AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) {
-	rates := k.tk.GetAllTokenRates(ctx)
+	rates := k.tk.GetAllTokenInfos(ctx)
 	for _, rate := range rates {
 		if rate.StakeToken {
 			basket, err := k.GetBasketByDenom(ctx, fmt.Sprintf("sdb/%s", rate.Denom))
@@ -58,7 +58,7 @@ func (k Keeper) AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, 
 }
 
 func (k Keeper) AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool, slash sdk.Dec) {
-	rates := k.tk.GetAllTokenRates(ctx)
+	rates := k.tk.GetAllTokenInfos(ctx)
 	for _, rate := range rates {
 		if rate.StakeToken {
 			basket, err := k.GetBasketByDenom(ctx, fmt.Sprintf("sdb/%s", rate.Denom))
@@ -81,7 +81,7 @@ func (k Keeper) AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, p
 }
 
 func (k Keeper) AfterSlashProposalRaise(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) {
-	rates := k.tk.GetAllTokenRates(ctx)
+	rates := k.tk.GetAllTokenInfos(ctx)
 	for _, rate := range rates {
 		if rate.StakeToken {
 			basket, err := k.GetBasketByDenom(ctx, fmt.Sprintf("sdb/%s", rate.Denom))

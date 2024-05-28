@@ -2,8 +2,7 @@ package types
 
 // tokens module events
 const (
-	EventTypeUpsertTokenAlias = "upsert_token_alias"
-	EventTypeUpsertTokenRate  = "upsert_token_rate"
+	EventTypeUpsertTokenInfo = "upsert_token_rate"
 
 	AttributeKeyDescription = "proposal_id"
 	AttributeKeyDenom       = "proposal_type"

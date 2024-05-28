@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"os"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 
@@ -51,78 +50,7 @@ func setPermissionToAddr(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, ad
 	return nil
 }
 
-func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-	handler := tokens.NewHandler(app.TokensKeeper, app.CustomGovKeeper)
-
-	tests := []struct {
-		name        string
-		constructor func(sdk.AccAddress) (*tokenstypes.MsgUpsertTokenAlias, error)
-		handlerErr  string
-	}{
-		{
-			name: "good permission test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenAlias, error) {
-				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenAlias)
-				require.NoError(t, err)
-				return tokenstypes.NewMsgUpsertTokenAlias(
-					addr,
-					"ETH",
-					"Ethereum",
-					"icon",
-					6,
-					[]string{"finney"},
-					false,
-				), nil
-			},
-		},
-		{
-			name: "lack permission test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenAlias, error) {
-				return tokenstypes.NewMsgUpsertTokenAlias(
-					addr,
-					"ETH",
-					"Ethereum",
-					"icon",
-					6,
-					[]string{"finney"},
-					false,
-				), nil
-			},
-			handlerErr: "PERMISSION_UPSERT_TOKEN_ALIAS: not enough permissions",
-		},
-	}
-	for i, tt := range tests {
-		addr := NewAccountByIndex(i)
-		theMsg, err := tt.constructor(addr)
-		require.NoError(t, err)
-
-		_, err = handler(ctx, theMsg)
-		if len(tt.handlerErr) != 0 {
-			require.Error(t, err)
-			require.Contains(t, err.Error(), tt.handlerErr)
-		} else {
-			require.NoError(t, err)
-
-			// test various query commands
-			alias := app.TokensKeeper.GetTokenAlias(ctx, theMsg.Symbol)
-			require.True(t, alias != nil)
-			aliasesAll := app.TokensKeeper.ListTokenAlias(ctx)
-			require.True(t, len(aliasesAll) > 0)
-			aliasesByDenom := app.TokensKeeper.GetTokenAliasesByDenom(ctx, theMsg.Denoms)
-			require.True(t, aliasesByDenom[theMsg.Denoms[0]] != nil)
-
-			// try different alias for same denom
-			theMsg.Symbol += "V2"
-			_, err = handler(ctx, theMsg)
-			require.Error(t, err)
-			require.True(t, strings.Contains(err.Error(), "denom is already registered"))
-		}
-	}
-}
-
-func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
+func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
@@ -130,15 +58,15 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		constructor func(sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error)
+		constructor func(sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error)
 		handlerErr  string
 	}{
 		{
 			name: "good permission test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
-				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenRate)
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error) {
+				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenInfo)
 				require.NoError(t, err)
-				return tokenstypes.NewMsgUpsertTokenRate(
+				return tokenstypes.NewMsgUpsertTokenInfo(
 					addr,
 					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
 					true,
@@ -146,13 +74,17 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					sdk.ZeroInt(),
 					false,
 					false,
+					"ETH",
+					"Ethereum",
+					"icon",
+					6,
 				), nil
 			},
 		},
 		{
 			name: "lack permission test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
-				return tokenstypes.NewMsgUpsertTokenRate(
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error) {
+				return tokenstypes.NewMsgUpsertTokenInfo(
 					addr,
 					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
 					true,
@@ -160,14 +92,18 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					sdk.ZeroInt(),
 					false,
 					false,
+					"ETH",
+					"Ethereum",
+					"icon",
+					6,
 				), nil
 			},
 			handlerErr: "PERMISSION_UPSERT_TOKEN_RATE: not enough permissions",
 		},
 		{
 			name: "negative rate value test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
-				return tokenstypes.NewMsgUpsertTokenRate(
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error) {
+				return tokenstypes.NewMsgUpsertTokenInfo(
 					addr,
 					"finney", sdk.NewDec(-1), // -1
 					true,
@@ -175,16 +111,20 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					sdk.ZeroInt(),
 					false,
 					false,
+					"ETH",
+					"Ethereum",
+					"icon",
+					6,
 				), nil
 			},
 			handlerErr: "rate should be positive",
 		},
 		{
 			name: "bond denom rate change test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
-				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenRate)
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error) {
+				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenInfo)
 				require.NoError(t, err)
-				return tokenstypes.NewMsgUpsertTokenRate(
+				return tokenstypes.NewMsgUpsertTokenInfo(
 					addr,
 					"ukex", sdk.NewDec(10),
 					true,
@@ -192,6 +132,10 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					sdk.ZeroInt(),
 					false,
 					false,
+					"ETH",
+					"Ethereum",
+					"icon",
+					6,
 				), nil
 			},
 			handlerErr: "bond denom rate is read-only",
@@ -210,17 +154,17 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 			require.NoError(t, err)
 
 			// test various query commands
-			rate := app.TokensKeeper.GetTokenRate(ctx, theMsg.Denom)
+			rate := app.TokensKeeper.GetTokenInfo(ctx, theMsg.Denom)
 			require.True(t, rate != nil)
-			ratesAll := app.TokensKeeper.GetAllTokenRates(ctx)
+			ratesAll := app.TokensKeeper.GetAllTokenInfos(ctx)
 			require.True(t, len(ratesAll) > 0)
-			ratesByDenom := app.TokensKeeper.GetTokenRatesByDenom(ctx, []string{theMsg.Denom})
+			ratesByDenom := app.TokensKeeper.GetTokenInfosByDenom(ctx, []string{theMsg.Denom})
 			require.True(t, ratesByDenom[theMsg.Denom] != nil)
 		}
 	}
 }
 
-func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
+func TestHandler_CreateProposalUpsertTokenInfo_Errors(t *testing.T) {
 	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
@@ -232,129 +176,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 	}{
 		{
 			"Proposer does not have Perm",
-			tokenstypes.NewUpsertTokenAliasProposal(
-				"BTC",
-				"Bitcoin",
-				"http://theicon.com",
-				18,
-				[]string{},
-				false,
-			),
-			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenAliasProposal.String()),
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			app := simapp.Setup(false)
-			ctx := app.NewContext(false, tmproto.Header{})
-
-			tt.preparePerms(t, app, ctx)
-
-			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
-			require.NoError(t, err)
-			_, err = handler(ctx, msg)
-			require.EqualError(t, err, tt.expectedErr.Error())
-		})
-	}
-}
-
-func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
-	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
-	require.NoError(t, err)
-
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{
-		Time: time.Now(),
-	})
-
-	// Set proposer Permissions
-	proposerActor := types.NewDefaultActor(proposerAddr)
-	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateUpsertTokenAliasProposal)
-	require.NoError(t, err2)
-
-	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.MinimumProposalEndTime = 10
-	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
-
-	handler := gov.NewHandler(app.CustomGovKeeper)
-	proposal := tokenstypes.NewUpsertTokenAliasProposal(
-		"BTC",
-		"Bitcoin",
-		"http://sdlkfjalsdk.es",
-		18,
-		[]string{
-			"atom",
-		},
-		false,
-	)
-	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
-	require.NoError(t, err)
-	res, err := handler(
-		ctx,
-		msg,
-	)
-	require.NoError(t, err)
-	expData, _ := proto.Marshal(&govtypes.MsgSubmitProposalResponse{ProposalID: 1})
-	require.Equal(t, expData, res.Data)
-
-	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
-	require.True(t, found)
-
-	expectedSavedProposal, err := types.NewProposal(
-		1,
-		"title",
-		"some desc",
-		tokenstypes.NewUpsertTokenAliasProposal(
-			"BTC",
-			"Bitcoin",
-			"http://sdlkfjalsdk.es",
-			18,
-			[]string{
-				"atom",
-			},
-			false,
-		),
-		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)+
-			time.Second*time.Duration(properties.ProposalEnactmentTime),
-		),
-		ctx.BlockHeight()+2,
-		ctx.BlockHeight()+3,
-	)
-	require.NoError(t, err)
-	require.Equal(t, expectedSavedProposal, savedProposal)
-
-	// Next proposal ID is increased.
-	id := app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.Equal(t, uint64(2), id)
-
-	// Is not on finished active proposals.
-	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
-	require.False(t, iterator.Valid())
-
-	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
-	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
-	require.True(t, iterator.Valid())
-}
-
-func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
-	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
-	require.NoError(t, err)
-
-	tests := []struct {
-		name         string
-		content      govtypes.Content
-		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
-		expectedErr  error
-	}{
-		{
-			"Proposer does not have Perm",
-			tokenstypes.NewUpsertTokenRatesProposal(
+			tokenstypes.NewUpsertTokenInfosProposal(
 				"btc",
 				sdk.NewDec(1234),
 				false,
@@ -362,9 +184,10 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 				sdk.ZeroInt(),
 				false,
 				false,
+				"BTC", "Bitcoin", "", 9,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenRateProposal.String()),
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenInfoProposal.String()),
 		},
 	}
 
@@ -385,7 +208,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 	}
 }
 
-func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
+func TestHandler_CreateProposalUpsertTokenInfo(t *testing.T) {
 	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
@@ -396,7 +219,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 
 	// Set proposer Permissions
 	proposerActor := types.NewDefaultActor(proposerAddr)
-	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateUpsertTokenRateProposal)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateUpsertTokenInfoProposal)
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
@@ -404,7 +227,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
-	proposal := tokenstypes.NewUpsertTokenRatesProposal(
+	proposal := tokenstypes.NewUpsertTokenInfosProposal(
 		"btc",
 		sdk.NewDec(1234),
 		false,
@@ -412,6 +235,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		sdk.ZeroInt(),
 		false,
 		false,
+		"BTC", "Bitcoin", "", 9,
 	)
 	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
@@ -430,7 +254,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		1,
 		"title",
 		"some desc",
-		tokenstypes.NewUpsertTokenRatesProposal(
+		tokenstypes.NewUpsertTokenInfosProposal(
 			"btc",
 			sdk.NewDec(1234),
 			false,
@@ -438,6 +262,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 			sdk.ZeroInt(),
 			false,
 			false,
+			"BTC", "Bitcoin", "", 9,
 		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),

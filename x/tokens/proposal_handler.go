@@ -8,44 +8,26 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type ApplyUpsertTokenAliasProposalHandler struct {
+type ApplyUpsertTokenInfosProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplyUpsertTokenAliasProposalHandler(keeper keeper.Keeper) *ApplyUpsertTokenAliasProposalHandler {
-	return &ApplyUpsertTokenAliasProposalHandler{
-		keeper: keeper,
-	}
+func NewApplyUpsertTokenInfosProposalHandler(keeper keeper.Keeper) *ApplyUpsertTokenInfosProposalHandler {
+	return &ApplyUpsertTokenInfosProposalHandler{keeper: keeper}
 }
 
-func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypeUpsertTokenAlias
+func (a ApplyUpsertTokenInfosProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeUpsertTokenInfos
 }
 
-func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
-	p := proposal.(*tokenstypes.ProposalUpsertTokenAlias)
+func (a ApplyUpsertTokenInfosProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
+	p := proposal.(*tokenstypes.ProposalUpsertTokenInfo)
 
-	alias := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms, p.Invalidated)
-	return a.keeper.UpsertTokenAlias(ctx, *alias)
-}
-
-type ApplyUpsertTokenRatesProposalHandler struct {
-	keeper keeper.Keeper
-}
-
-func NewApplyUpsertTokenRatesProposalHandler(keeper keeper.Keeper) *ApplyUpsertTokenRatesProposalHandler {
-	return &ApplyUpsertTokenRatesProposalHandler{keeper: keeper}
-}
-
-func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypeUpsertTokenRates
-}
-
-func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
-	p := proposal.(*tokenstypes.ProposalUpsertTokenRates)
-
-	rate := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments, p.StakeCap, p.StakeMin, p.StakeToken, p.Invalidated)
-	return a.keeper.UpsertTokenRate(ctx, *rate)
+	rate := tokenstypes.NewTokenInfo(
+		p.Denom, p.Rate, p.FeePayments, p.StakeCap, p.StakeMin, p.StakeToken, p.Invalidated,
+		p.Symbol, p.Name, p.Icon, p.Decimals,
+	)
+	return a.keeper.UpsertTokenInfo(ctx, *rate)
 }
 
 type ApplyWhiteBlackChangeProposalHandler struct {

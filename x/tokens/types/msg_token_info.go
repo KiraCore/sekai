@@ -9,11 +9,11 @@ import (
 )
 
 var (
-	_ sdk.Msg = &MsgUpsertTokenRate{}
+	_ sdk.Msg = &MsgUpsertTokenInfo{}
 )
 
-// NewMsgUpsertTokenRate returns an instance of MsgUpserTokenRate
-func NewMsgUpsertTokenRate(
+// NewMsgUpsertTokenInfo returns an instance of MsgUpserTokenInfo
+func NewMsgUpsertTokenInfo(
 	proposer sdk.AccAddress,
 	denom string,
 	rate sdk.Dec,
@@ -22,8 +22,12 @@ func NewMsgUpsertTokenRate(
 	stakeMin sdk.Int,
 	stakeToken bool,
 	invalidated bool,
-) *MsgUpsertTokenRate {
-	return &MsgUpsertTokenRate{
+	symbol string,
+	name string,
+	icon string,
+	decimals uint32,
+) *MsgUpsertTokenInfo {
+	return &MsgUpsertTokenInfo{
 		Proposer:    proposer,
 		Denom:       denom,
 		Rate:        rate,
@@ -32,21 +36,25 @@ func NewMsgUpsertTokenRate(
 		StakeMin:    stakeMin,
 		StakeToken:  stakeToken,
 		Invalidated: invalidated,
+		Symbol:      symbol,
+		Name:        name,
+		Icon:        icon,
+		Decimals:    decimals,
 	}
 }
 
 // Route returns route
-func (m *MsgUpsertTokenRate) Route() string {
+func (m *MsgUpsertTokenInfo) Route() string {
 	return ModuleName
 }
 
 // Type returns return message type
-func (m *MsgUpsertTokenRate) Type() string {
-	return types.MsgTypeUpsertTokenRate
+func (m *MsgUpsertTokenInfo) Type() string {
+	return types.MsgTypeUpsertTokenInfo
 }
 
 // ValidateBasic returns basic validation result
-func (m *MsgUpsertTokenRate) ValidateBasic() error {
+func (m *MsgUpsertTokenInfo) ValidateBasic() error {
 	if m.Denom == appparams.DefaultDenom {
 		return errors.New("bond denom rate is read-only")
 	}
@@ -67,13 +75,13 @@ func (m *MsgUpsertTokenRate) ValidateBasic() error {
 }
 
 // GetSignBytes returns to sign bytes
-func (m *MsgUpsertTokenRate) GetSignBytes() []byte {
+func (m *MsgUpsertTokenInfo) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns signers
-func (m *MsgUpsertTokenRate) GetSigners() []sdk.AccAddress {
+func (m *MsgUpsertTokenInfo) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
 	}

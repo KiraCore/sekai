@@ -11,71 +11,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestQuerier_GetTokenAlias(t *testing.T) {
+func TestQuerier_GetTokenInfo(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
 	querier := keeper.NewQuerier(app.TokensKeeper)
 
-	resp, err := querier.GetTokenAlias(
+	resp, err := querier.GetTokenInfo(
 		sdk.WrapSDKContext(ctx),
-		&types.TokenAliasRequest{Symbol: "KEX"},
-	)
-	require.NoError(t, err)
-	require.Equal(t, "KEX", resp.Data.Symbol)
-	require.Equal(t, "Kira", resp.Data.Name)
-	require.Equal(t, "", resp.Data.Icon)
-	require.Equal(t, uint32(0x6), resp.Data.Decimals)
-	require.Equal(t, []string{"ukex", "mkex"}, resp.Data.Denoms)
-}
-
-func TestQuerier_GetTokenAliasesByDenom(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	querier := keeper.NewQuerier(app.TokensKeeper)
-
-	resp, err := querier.GetTokenAliasesByDenom(
-		sdk.WrapSDKContext(ctx),
-		&types.TokenAliasesByDenomRequest{Denoms: []string{"ukex"}},
-	)
-	require.NoError(t, err)
-	require.Equal(t, len(resp.Data), 1)
-	require.Equal(t, "KEX", resp.Data["ukex"].Symbol)
-	require.Equal(t, "Kira", resp.Data["ukex"].Name)
-	require.Equal(t, "", resp.Data["ukex"].Icon)
-	require.Equal(t, uint32(0x6), resp.Data["ukex"].Decimals)
-	require.Equal(t, []string{"ukex", "mkex"}, resp.Data["ukex"].Denoms)
-}
-
-func TestQuerier_GetAllTokenAliases(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	querier := keeper.NewQuerier(app.TokensKeeper)
-
-	resp, err := querier.GetAllTokenAliases(
-		sdk.WrapSDKContext(ctx),
-		&types.AllTokenAliasesRequest{},
-	)
-	require.NoError(t, err)
-	require.Equal(t, len(resp.Data), 1)
-	require.Equal(t, "KEX", resp.Data[0].Symbol)
-	require.Equal(t, "Kira", resp.Data[0].Name)
-	require.Equal(t, "", resp.Data[0].Icon)
-	require.Equal(t, uint32(0x6), resp.Data[0].Decimals)
-	require.Equal(t, []string{"ukex", "mkex"}, resp.Data[0].Denoms)
-}
-
-func TestQuerier_GetTokenRate(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	querier := keeper.NewQuerier(app.TokensKeeper)
-
-	resp, err := querier.GetTokenRate(
-		sdk.WrapSDKContext(ctx),
-		&types.TokenRateRequest{Denom: "ukex"},
+		&types.TokenInfoRequest{Denom: "ukex"},
 	)
 	require.NoError(t, err)
 	require.Equal(t, "ukex", resp.Data.Denom)
@@ -83,15 +27,15 @@ func TestQuerier_GetTokenRate(t *testing.T) {
 	require.Equal(t, true, resp.Data.FeePayments)
 }
 
-func TestQuerier_GetTokenRatesByDenom(t *testing.T) {
+func TestQuerier_GetTokenInfosByDenom(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
 	querier := keeper.NewQuerier(app.TokensKeeper)
 
-	resp, err := querier.GetTokenRatesByDenom(
+	resp, err := querier.GetTokenInfosByDenom(
 		sdk.WrapSDKContext(ctx),
-		&types.TokenRatesByDenomRequest{Denoms: []string{"ukex"}},
+		&types.TokenInfosByDenomRequest{Denoms: []string{"ukex"}},
 	)
 	require.NoError(t, err)
 	require.Equal(t, len(resp.Data), 1)
@@ -100,15 +44,15 @@ func TestQuerier_GetTokenRatesByDenom(t *testing.T) {
 	require.Equal(t, true, resp.Data["ukex"].FeePayments)
 }
 
-func TestQuerier_GetAllTokenRates(t *testing.T) {
+func TestQuerier_GetAllTokenInfos(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
 	querier := keeper.NewQuerier(app.TokensKeeper)
 
-	resp, err := querier.GetAllTokenRates(
+	resp, err := querier.GetAllTokenInfos(
 		sdk.WrapSDKContext(ctx),
-		&types.AllTokenRatesRequest{},
+		&types.AllTokenInfosRequest{},
 	)
 	require.NoError(t, err)
 	require.Equal(t, len(resp.Data), 4)

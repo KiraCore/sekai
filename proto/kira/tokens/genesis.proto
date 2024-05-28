@@ -1,14 +1,12 @@
 syntax = "proto3";
 package kira.tokens;
 
-import "kira/tokens/alias.proto";
-import "kira/tokens/rate.proto";
+import "kira/tokens/token.proto";
 import "kira/tokens/freeze.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
 message GenesisState {
-  repeated kira.tokens.TokenAlias aliases = 1;
-  repeated kira.tokens.TokenRate rates = 2;
-  TokensWhiteBlack tokenBlackWhites = 3;
+  repeated kira.tokens.TokenInfo tokenInfos = 1;
+  TokensWhiteBlack tokenBlackWhites = 2;
 }

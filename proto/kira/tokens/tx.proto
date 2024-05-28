@@ -3,25 +3,50 @@ package kira.tokens;
 
 import "gogoproto/gogo.proto";
 
-import "kira/tokens/alias.proto";
 import "kira/tokens/proposal.proto";
-import "kira/tokens/rate.proto";
+import "kira/tokens/token.proto";
 import "kira/tokens/freeze.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
 // Msg defines the tokens Msg service.
 service Msg {
-    // UpsertTokenAlias defines a method to upsert token alias
-    rpc UpsertTokenAlias(MsgUpsertTokenAlias) returns (MsgUpsertTokenAliasResponse);
-    // UpsertTokenRate defines a method to upsert token rate
-    rpc UpsertTokenRate(MsgUpsertTokenRate) returns (MsgUpsertTokenRateResponse);
-    // EthereumTx defines a method to send ethereum transaction
-    rpc EthereumTx(MsgEthereumTx) returns (MsgEthereumTxResponse);
+  // UpsertTokenInfo defines a method to upsert token rate
+  rpc UpsertTokenInfo(MsgUpsertTokenInfo) returns (MsgUpsertTokenInfoResponse);
+  // EthereumTx defines a method to send ethereum transaction
+  rpc EthereumTx(MsgEthereumTx) returns (MsgEthereumTxResponse);
 }
 
-message MsgUpsertTokenAliasResponse {}
-message MsgUpsertTokenRateResponse {}
+message MsgUpsertTokenInfo {
+  string denom = 1; // denomination target
+  string rate = 2 [ 
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ]; // Exchange rate in terms of KEX token
+  bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment method
+  string stake_cap = 4 [
+    (gogoproto.moretags) = "yaml:\"stake_cap\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // rewards cap, sum should be lower than 100%
+  string stake_min = 5 [
+    (gogoproto.moretags) = "yaml:\"stake_min\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool stake_token = 6;
+  bool invalidated = 7; // flag that the token is invalidated or not
+  string symbol = 8;    // Ticker (eg. ATOM, KEX, BTC)
+  string name = 9;      // Token Name (e.g. Cosmos, Kira, Bitcoin)
+  string icon = 10;     // Graphical Symbol (url link to graphics)
+  uint32 decimals = 11; // Integer number of max decimals
+  bytes proposer = 12 [
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+      (gogoproto.moretags) = "yaml:\"proposer\""
+  ];
+}
+
+message MsgUpsertTokenInfoResponse {}
 
 message MsgEthereumTx {
   string tx_type = 1;

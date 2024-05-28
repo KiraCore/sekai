@@ -95,12 +95,8 @@ func (am AppModule) InitGenesis(
 	var genesisState tokenstypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	for _, alias := range genesisState.Aliases {
-		am.tokensKeeper.UpsertTokenAlias(ctx, *alias)
-	}
-
-	for _, rate := range genesisState.Rates {
-		am.tokensKeeper.UpsertTokenRate(ctx, *rate)
+	for _, rate := range genesisState.TokenInfos {
+		am.tokensKeeper.UpsertTokenInfo(ctx, *rate)
 	}
 
 	am.tokensKeeper.SetTokenBlackWhites(ctx, genesisState.TokenBlackWhites)
@@ -110,8 +106,7 @@ func (am AppModule) InitGenesis(
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	var genesisState tokenstypes.GenesisState
-	genesisState.Aliases = am.tokensKeeper.ListTokenAlias(ctx)
-	genesisState.Rates = am.tokensKeeper.GetAllTokenRates(ctx)
+	genesisState.TokenInfos = am.tokensKeeper.GetAllTokenInfos(ctx)
 	genesisState.TokenBlackWhites = am.tokensKeeper.GetTokenBlackWhites(ctx)
 	return cdc.MustMarshalJSON(&genesisState)
 }
