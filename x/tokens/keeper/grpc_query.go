@@ -17,23 +17,33 @@ func NewQuerier(keeper Keeper) types.QueryServer {
 
 var _ types.QueryServer = Querier{}
 
-func (q Querier) GetTokenInfo(ctx context.Context, request *types.TokenInfoRequest) (*types.TokenInfoResponse, error) {
-	rate := q.keeper.GetTokenInfo(sdk.UnwrapSDKContext(ctx), request.Denom)
-
-	if rate == nil {
-		return &types.TokenInfoResponse{Data: nil}, nil
-	}
-	return &types.TokenInfoResponse{Data: rate}, nil
+func (q Querier) GetTokenInfo(goCtx context.Context, request *types.TokenInfoRequest) (*types.TokenInfoResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	info := q.keeper.GetTokenInfo(ctx, request.Denom)
+	supply := q.keeper.bankKeeper.GetSupply(ctx, request.Denom)
+	return &types.TokenInfoResponse{
+		Data:   info,
+		Supply: supply,
+	}, nil
 }
 
 func (q Querier) GetTokenInfosByDenom(ctx context.Context, request *types.TokenInfosByDenomRequest) (*types.TokenInfosByDenomResponse, error) {
-	rates := q.keeper.GetTokenInfosByDenom(sdk.UnwrapSDKContext(ctx), request.Denoms)
-	return &types.TokenInfosByDenomResponse{Data: rates}, nil
+	infos := q.keeper.GetTokenInfosByDenom(sdk.UnwrapSDKContext(ctx), request.Denoms)
+	return &types.TokenInfosByDenomResponse{Data: infos}, nil
 }
 
-func (q Querier) GetAllTokenInfos(ctx context.Context, request *types.AllTokenInfosRequest) (*types.AllTokenInfosResponse, error) {
-	rates := q.keeper.GetAllTokenInfos(sdk.UnwrapSDKContext(ctx))
-	return &types.AllTokenInfosResponse{Data: rates}, nil
+func (q Querier) GetAllTokenInfos(goCtx context.Context, request *types.AllTokenInfosRequest) (*types.AllTokenInfosResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	infos := q.keeper.GetAllTokenInfos(ctx)
+	data := []types.TokenInfoResponse{}
+	for _, info := range infos {
+		supply := q.keeper.bankKeeper.GetSupply(ctx, info.Denom)
+		data = append(data, types.TokenInfoResponse{
+			Data:   &info,
+			Supply: supply,
+		})
+	}
+	return &types.AllTokenInfosResponse{Data: data}, nil
 }
 
 func (q Querier) GetTokenBlackWhites(ctx context.Context, request *types.TokenBlackWhitesRequest) (*types.TokenBlackWhitesResponse, error) {

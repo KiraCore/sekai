@@ -3,7 +3,6 @@ package keeper
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,8 +25,8 @@ func (k Keeper) GetTokenInfo(ctx sdk.Context, denom string) *types.TokenInfo {
 }
 
 // GetAllTokenInfos returns all list of token rate
-func (k Keeper) GetAllTokenInfos(ctx sdk.Context) []*types.TokenInfo {
-	var tokenRates []*types.TokenInfo
+func (k Keeper) GetAllTokenInfos(ctx sdk.Context) []types.TokenInfo {
+	var tokenRates []types.TokenInfo
 
 	// get iterator for token rates
 	store := ctx.KVStore(k.storeKey)
@@ -35,27 +34,23 @@ func (k Keeper) GetAllTokenInfos(ctx sdk.Context) []*types.TokenInfo {
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		denom := strings.TrimPrefix(string(iterator.Key()), string(PrefixKeyTokenInfo))
-		tokenRate := k.GetTokenInfo(ctx, denom)
-		if tokenRate != nil {
-			tokenRates = append(tokenRates, tokenRate)
-		}
+		info := types.TokenInfo{}
+		k.cdc.MustUnmarshal(iterator.Value(), &info)
+		tokenRates = append(tokenRates, info)
 	}
 	return tokenRates
 }
 
 // GetTokenInfosByDenom returns all list of token rate
-func (k Keeper) GetTokenInfosByDenom(ctx sdk.Context, denoms []string) map[string]*types.TokenInfo {
-	// get iterator for token aliases
-	store := ctx.KVStore(k.storeKey)
-	tokenRatesMap := make(map[string]*types.TokenInfo)
+func (k Keeper) GetTokenInfosByDenom(ctx sdk.Context, denoms []string) map[string]types.TokenInfoResponse {
+	tokenRatesMap := make(map[string]types.TokenInfoResponse)
 
 	for _, denom := range denoms {
-		denomTokenStoreID := append([]byte(PrefixKeyTokenInfo), []byte(denom)...)
-
-		if store.Has(denomTokenStoreID) {
-			tokenRate := k.GetTokenInfo(ctx, denom)
-			tokenRatesMap[denom] = tokenRate
+		tokenRate := k.GetTokenInfo(ctx, denom)
+		supply := k.bankKeeper.GetSupply(ctx, denom)
+		tokenRatesMap[denom] = types.TokenInfoResponse{
+			Data:   tokenRate,
+			Supply: supply,
 		}
 	}
 	return tokenRatesMap

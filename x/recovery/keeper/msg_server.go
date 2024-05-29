@@ -550,7 +550,7 @@ func (k msgServer) IssueRecoveryTokens(goCtx context.Context, msg *types.MsgIssu
 	// issue 10'000'000 tokens
 	recoveryTokenAmount := sdk.NewInt(10_000_000).Mul(sdk.NewInt(1000_000))
 	recoveryCoins := sdk.NewCoins(sdk.NewCoin(denom, recoveryTokenAmount))
-	err = k.bk.MintCoins(ctx, types.ModuleName, recoveryCoins)
+	err = k.tk.MintCoins(ctx, types.ModuleName, recoveryCoins)
 	if err != nil {
 		return nil, err
 	}

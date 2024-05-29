@@ -96,7 +96,7 @@ func (am AppModule) InitGenesis(
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
 	for _, rate := range genesisState.TokenInfos {
-		am.tokensKeeper.UpsertTokenInfo(ctx, *rate)
+		am.tokensKeeper.UpsertTokenInfo(ctx, rate)
 	}
 
 	am.tokensKeeper.SetTokenBlackWhites(ctx, genesisState.TokenBlackWhites)

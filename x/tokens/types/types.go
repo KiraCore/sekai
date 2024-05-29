@@ -17,8 +17,8 @@ func NewTokenInfo(
 	name string,
 	icon string,
 	decimals uint32,
-) *TokenInfo {
-	return &TokenInfo{
+) TokenInfo {
+	return TokenInfo{
 		Denom:       denom,
 		FeeRate:     feeRate,
 		FeePayments: feePayments,

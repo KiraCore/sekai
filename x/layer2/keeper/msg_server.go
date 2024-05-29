@@ -795,7 +795,7 @@ func (k msgServer) MintIssueTx(goCtx context.Context, msg *types.MsgMintIssueTx)
 	}
 
 	mintCoin := sdk.NewCoin(msg.Denom, msg.Amount)
-	err := k.keeper.bk.MintCoins(ctx, types.ModuleName, sdk.Coins{mintCoin})
+	err := k.keeper.tk.MintCoins(ctx, types.ModuleName, sdk.Coins{mintCoin})
 	if err != nil {
 		return nil, err
 	}

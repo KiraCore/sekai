@@ -42,7 +42,7 @@ func (k msgServer) UpsertTokenInfo(goCtx context.Context, msg *types.MsgUpsertTo
 		return nil, errorsmod.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenInfo.String())
 	}
 
-	err = k.keeper.UpsertTokenInfo(ctx, *types.NewTokenInfo(
+	err = k.keeper.UpsertTokenInfo(ctx, types.NewTokenInfo(
 		msg.Denom,
 		msg.Rate,
 		msg.FeePayments,

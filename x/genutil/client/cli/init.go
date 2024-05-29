@@ -131,7 +131,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			}
 
 			tokenGenState := tokenstypes.GetGenesisStateFromAppState(clientCtx.Codec, genesis)
-			tokenGenState.TokenInfos = []*tokenstypes.TokenInfo{
+			tokenGenState.TokenInfos = []tokenstypes.TokenInfo{
 				{
 					Denom:       defaultDenom,
 					FeeRate:     sdk.OneDec(),

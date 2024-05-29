@@ -316,6 +316,7 @@ func NewInitApp(
 		app.CustomStakingKeeper,
 		app.CustomGovKeeper,
 		app.SpendingKeeper,
+		app.TokensKeeper,
 	)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
@@ -346,6 +347,7 @@ func NewInitApp(
 		app.CollectivesKeeper,
 		app.SpendingKeeper,
 		app.CustodyKeeper,
+		app.TokensKeeper,
 	)
 
 	app.DistrKeeper = distributorkeeper.NewKeeper(
@@ -354,7 +356,14 @@ func NewInitApp(
 		app.CustomStakingKeeper, app.CustomGovKeeper,
 		app.MultiStakingKeeper, app.RecoveryKeeper)
 	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
-	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper, app.DistrKeeper)
+	app.UbiKeeper = ubikeeper.NewKeeper(
+		keys[ubitypes.ModuleName],
+		appCodec,
+		app.BankKeeper,
+		app.SpendingKeeper,
+		app.DistrKeeper,
+		app.TokensKeeper,
+	)
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{

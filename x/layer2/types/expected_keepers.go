@@ -4,6 +4,7 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -28,4 +29,10 @@ type StakingKeeper interface {
 type SpendingKeeper interface {
 	CreateSpendingPool(ctx sdk.Context, pool spendingtypes.SpendingPool) error
 	DepositSpendingPoolFromModule(ctx sdk.Context, moduleName, poolName string, amount sdk.Coins) error
+}
+
+// TokensKeeper defines expected interface needed from tokens keeper
+type TokensKeeper interface {
+	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+	GetTokenInfo(ctx sdk.Context, denom string) *tokenstypes.TokenInfo
 }

@@ -3,6 +3,7 @@ package types
 import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -34,4 +35,11 @@ type MultiStakingKeeper interface {
 type MultistakingHooks interface {
 	AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) // Must be called when a upsert staking pool
 	AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool, slash sdk.Dec)
+}
+
+// TokensKeeper defines expected interface needed from tokens keeper
+type TokensKeeper interface {
+	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+	GetTokenInfo(ctx sdk.Context, denom string) *tokenstypes.TokenInfo
+	GetAllTokenInfos(ctx sdk.Context) []tokenstypes.TokenInfo
 }

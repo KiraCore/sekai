@@ -39,9 +39,9 @@ func TestQuerier_GetTokenInfosByDenom(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.Equal(t, len(resp.Data), 1)
-	require.Equal(t, "ukex", resp.Data["ukex"].Denom)
-	require.Equal(t, sdk.NewDec(1), resp.Data["ukex"].FeeRate)
-	require.Equal(t, true, resp.Data["ukex"].FeePayments)
+	require.Equal(t, "ukex", resp.Data["ukex"].Data.Denom)
+	require.Equal(t, sdk.NewDec(1), resp.Data["ukex"].Data.FeeRate)
+	require.Equal(t, true, resp.Data["ukex"].Data.FeePayments)
 }
 
 func TestQuerier_GetAllTokenInfos(t *testing.T) {
@@ -56,9 +56,9 @@ func TestQuerier_GetAllTokenInfos(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.Equal(t, len(resp.Data), 4)
-	require.Equal(t, "frozen", resp.Data[0].Denom)
-	require.Equal(t, sdk.NewDecWithPrec(1, 1), resp.Data[0].FeeRate)
-	require.Equal(t, true, resp.Data[0].FeePayments)
+	require.Equal(t, "xeth", resp.Data[0].Data.Denom)
+	require.Equal(t, sdk.NewDecWithPrec(1, 1), resp.Data[0].Data.FeeRate)
+	require.Equal(t, true, resp.Data[0].Data.FeePayments)
 }
 
 func TestQuerier_GetTokenBlackWhites(t *testing.T) {

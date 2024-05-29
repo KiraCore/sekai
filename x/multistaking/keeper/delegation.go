@@ -334,7 +334,7 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Add(poolCoins...)
 	k.SetStakingPool(ctx, pool)
 
-	err = k.bankKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
+	err = k.tokenKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
 	if err != nil {
 		return err
 	}

@@ -127,7 +127,7 @@ func (k Keeper) FinishDappBootstrap(ctx sdk.Context, dapp types.Dapp) {
 			drip = 1
 		}
 		rate := sdk.NewDecFromInt(spendingPoolDeposit).Quo(sdk.NewDec(int64(drip)))
-		err = k.bk.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(dappBondLpToken, totalSupply)})
+		err = k.tk.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(dappBondLpToken, totalSupply)})
 		if err != nil {
 			panic(err)
 		}

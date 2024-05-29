@@ -159,7 +159,7 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 			ratesAll := app.TokensKeeper.GetAllTokenInfos(ctx)
 			require.True(t, len(ratesAll) > 0)
 			ratesByDenom := app.TokensKeeper.GetTokenInfosByDenom(ctx, []string{theMsg.Denom})
-			require.True(t, ratesByDenom[theMsg.Denom] != nil)
+			require.True(t, ratesByDenom[theMsg.Denom].Data != nil)
 		}
 	}
 }

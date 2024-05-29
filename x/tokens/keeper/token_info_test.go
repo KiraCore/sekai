@@ -15,8 +15,8 @@ func (suite *KeeperTestSuite) TestTokenInfos() {
 	rates := suite.app.TokensKeeper.GetAllTokenInfos(ctx)
 	suite.Require().Len(rates, 4)
 	rateMap := suite.app.TokensKeeper.GetTokenInfosByDenom(ctx, []string{"stake"})
-	suite.Require().Equal(len(rateMap), 0)
-	suite.Require().Nil(rateMap["stake"])
+	suite.Require().Equal(len(rateMap), 1)
+	suite.Require().Nil(rateMap["stake"].Data)
 
 	// upsert token rate and check
 	newRate := types.TokenInfo{
@@ -40,6 +40,6 @@ func (suite *KeeperTestSuite) TestTokenInfos() {
 	rates = suite.app.TokensKeeper.GetAllTokenInfos(ctx)
 	suite.Require().Len(rates, 4)
 	rateMap = suite.app.TokensKeeper.GetTokenInfosByDenom(ctx, []string{"stake"})
-	suite.Require().Equal(len(rateMap), 0)
-	suite.Require().Nil(rateMap["stake"])
+	suite.Require().Equal(len(rateMap), 1)
+	suite.Require().Nil(rateMap["stake"].Data)
 }

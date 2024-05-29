@@ -5,6 +5,7 @@ import "kira/tokens/token.proto";
 import "kira/tokens/freeze.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
@@ -32,12 +33,13 @@ message TokenInfoRequest {
 
 message TokenInfoResponse {
   kira.tokens.TokenInfo data = 1;
+  cosmos.base.v1beta1.Coin supply = 2 [(gogoproto.nullable) = false];
 }
 
 message AllTokenInfosRequest {}
 
 message AllTokenInfosResponse {
-  repeated kira.tokens.TokenInfo data = 1;
+  repeated TokenInfoResponse data = 1 [ (gogoproto.nullable) = false ];
 }
 
 message TokenInfosByDenomRequest {
@@ -45,10 +47,10 @@ message TokenInfosByDenomRequest {
 }
   
 message TokenInfosByDenomResponse {
-  map<string, kira.tokens.TokenInfo> data = 1;
+  map<string, TokenInfoResponse> data = 1 [ (gogoproto.nullable) = false ];
 }
 
 message TokenBlackWhitesRequest {}
 message TokenBlackWhitesResponse {
-  TokensWhiteBlack data = 1;
+  TokensWhiteBlack data = 1 [ (gogoproto.nullable) = false ];
 }
