@@ -37,7 +37,6 @@ func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreateCust
 		CustodySettings: &msg.CustodySettings,
 	}
 
-	record.CustodySettings.Key = msg.NewKey
 	record.CustodySettings.NextController = msg.NextAddress
 
 	s.keeper.SetCustodyRecord(ctx, record)
@@ -112,7 +111,6 @@ func (s msgServer) AddToCustodians(goCtx context.Context, msg *types.MsgAddToCus
 
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 
@@ -150,7 +148,6 @@ func (s msgServer) RemoveFromCustodians(goCtx context.Context, msg *types.MsgRem
 	record.CustodyCustodians.Addresses[msg.RemoveAddress.String()] = false
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 
@@ -323,7 +320,6 @@ func (s msgServer) DropCustodians(goCtx context.Context, msg *types.MsgDropCusto
 
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 
@@ -361,7 +357,6 @@ func (s msgServer) AddToWhiteList(goCtx context.Context, msg *types.MsgAddToCust
 
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 
@@ -399,7 +394,6 @@ func (s msgServer) RemoveFromWhiteList(goCtx context.Context, msg *types.MsgRemo
 	record.CustodyWhiteList.Addresses[msg.RemoveAddress.String()] = false
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 
@@ -423,7 +417,6 @@ func (s msgServer) DropWhiteList(goCtx context.Context, msg *types.MsgDropCustod
 
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 
@@ -463,7 +456,6 @@ func (s msgServer) AddToLimits(goCtx context.Context, msg *types.MsgAddToCustody
 	record.CustodyLimits.Limits[msg.Denom] = &custodyLimit
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 
@@ -501,7 +493,6 @@ func (s msgServer) RemoveFromLimits(goCtx context.Context, msg *types.MsgRemoveF
 	record.CustodyLimits.Limits[msg.Denom] = new(types.CustodyLimit)
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 
@@ -525,7 +516,6 @@ func (s msgServer) DropLimits(goCtx context.Context, msg *types.MsgDropCustodyLi
 
 	keyRecord := types.CustodyKeyRecord{
 		Address:        msg.Address,
-		Key:            msg.NewKey,
 		NextController: msg.NextAddress,
 	}
 

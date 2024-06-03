@@ -45,7 +45,6 @@ func (k Keeper) DropCustodyRecord(ctx sdk.Context, address sdk.AccAddress) {
 
 func (k Keeper) SetCustodyRecordKey(ctx sdk.Context, record types.CustodyKeyRecord) {
 	info := k.GetCustodyInfoByAddress(ctx, record.Address)
-	info.Key = record.Key
 	info.NextController = record.NextController
 
 	store := ctx.KVStore(k.storeKey)

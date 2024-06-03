@@ -24,21 +24,6 @@ INPUT_CUSTODIANS="$ACCOUNT2_ADDRESS,$ACCOUNT3_ADDRESS,$ACCOUNT4_ADDRESS"
 
 PASSWORD="test_password"
 
-KEY1="6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
-KEY11="e0bc614e4fd035a488619799853b075143deea596c477b8dc077e309c0fe42e9"
-KEY2="d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
-KEY21="d8bdf9a0cb27a193a1127de2924b6e5a9e4c2d3b3fe42e935e160c011f3df1fc"
-KEY3="4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce"
-KEY31="5b65712d565c1551340998102d418ceccb35db8dbfb45f9041c4cae483d8717b"
-KEY4="4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a"
-KEY41="033c339a7975542785be7423a5b32fa8047813689726214143cdd7939747709c"
-KEY5="ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d"
-KEY51="c81d40dbeed369f1476086cf882dd36bf1c3dc35e07006f0bec588b983055487"
-KEY6="e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683"
-KEY61="9e259b7f6b4c741937a96a9617b3e6b84e166ff6e925e414e7b72936f5a2a51f"
-KEY7="7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451"
-KEY71="1048f03db5d45f654b955eae20d84b72673680fb13b318e7da22e8dce58df21c"
-
 sendTokens validator "$ACCOUNT1_ADDRESS" 1000000000000 ukex 100 ukex
 sendTokens validator "$ACCOUNT2_ADDRESS" 1000000000000 ukex 100 ukex
 sendTokens validator "$ACCOUNT3_ADDRESS" 1000000000000 ukex 100 ukex
@@ -73,27 +58,23 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   echoInfo "TEST 2/1"
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-  enableCustody tester1 60 0 0 0 150 ukex 0 $KEY11
+  enableCustody tester1 60 0 0 0 150 ukex 0
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
-  CUSTODY_KEY=$(getCustodyKey tester1)
 
   [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
-  [ "$CUSTODY_KEY" != $KEY11 ] && echoErr "ERROR TEST 2/1: Expected key to be $KEY11, but got '$CUSTODY_KEY'" && exit 1
   # <--- Enable custodians
 
   # TEST 2/2
   # Add custodians test double SHA protection --->
   echoInfo "TEST 2/2"
-  addCustodiansForce tester1 "$INPUT_CUSTODIANS" 1 ukex $KEY1 $KEY21
-  addCustodiansForce tester1 "$INPUT_CUSTODIANS" 2 ukex $KEY1 $KEY31
+  addCustodiansForce tester1 "$INPUT_CUSTODIANS" 1 ukex
+  addCustodiansForce tester1 "$INPUT_CUSTODIANS" 2 ukex
 
   sleep 10
 
   TESTER1_BALANCE_EXPECTED=$(showBalance tester1 ukex)
-  CUSTODY_KEY=$(getCustodyKey tester1)
 
-  [ "$CUSTODY_KEY" != $KEY21 ] && echoErr "ERROR TEST 2/2: Expected key1 to be $KEY21, but got '$CUSTODY_KEY'" && exit 1
   # <--- Add custodians test double SHA protection
 
   # TEST 2/3
@@ -223,13 +204,11 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   echoInfo "TEST 3/1"
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-  enableCustody tester1 0 1 0 0 150 ukex $KEY2 $KEY31
+  enableCustody tester1 0 1 0 0 150 ukex
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
-  CUSTODY_KEY=$(getCustodyKey tester1)
 
   [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 3/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
-  [ "$CUSTODY_KEY" != $KEY31 ] && echoErr "ERROR TEST 3/1: Expected key to be $KEY31, but got '$CUSTODY_KEY'" && exit 1
   # <--- Disable custodians and enable password protection
 
   # TEST 3/2
@@ -276,13 +255,11 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   echoInfo "TEST 4/1"
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-  dropCustody tester1 150 ukex $KEY3
+  dropCustody tester1 150 ukex
 
-  CUSTODY_KEY=$(getCustodyKey tester1)
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
 
   [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
-  [ "$CUSTODY_KEY" != '' ] && echoErr "ERROR TEST 4/1: Expected key to be "", but got '$CUSTODY_KEY'" && exit 1
   # <--- Disable custodians
 
   # TEST 4/2
@@ -307,13 +284,11 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   echoInfo "TEST 4/3"
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-  enableCustody tester1 30 1 0 0 150 ukex 0 $KEY41
+  enableCustody tester1 30 1 0 0 150 ukex 0
 
-  CUSTODY_KEY=$(getCustodyKey tester1)
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
 
   [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/3: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
-  [ "$CUSTODY_KEY" != $KEY41 ] && echoErr "ERROR TEST 4/3: Expected key to be $KEY41, but got '$CUSTODY_KEY'" && exit 1
   # <--- Enable custodians and password protection
 
   # TEST 4/3
@@ -321,13 +296,11 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   echoInfo "TEST 4/4"
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-  addCustodians tester1 "$INPUT_CUSTODIANS" 150 ukex $KEY4 $KEY51
+  addCustodians tester1 "$INPUT_CUSTODIANS" 150 ukex
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
-  CUSTODY_KEY=$(getCustodyKey tester1)
 
   [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/4: Expected tester5 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
-  [ "$CUSTODY_KEY" != $KEY51 ] && echoErr "ERROR TEST 4/4: Expected key to be $KEY51, but got '$CUSTODY_KEY'" && exit 1
   # <--- Add custodians
 
   # TEST 4/5
@@ -445,15 +418,13 @@ echoInfo "INFO: $TEST_NAME - Integration Test - END, elapsed: $(prettyTime "$(ti
   echoInfo "TEST 5/1"
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-  enableCustody tester1 60 0 0 0 150 ukex $KEY5 $KEY61 tester2
+  enableCustody tester1 60 0 0 0 150 ukex tester2
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
-  CUSTODY_KEY1=$(getCustodyKey tester1)
 
   # todo: get next controller and test it
 
   [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 5/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
-  [ "$CUSTODY_KEY1" != $KEY61 ] && echoErr "ERROR TEST 5/1: Expected key to be $KEY61, but got '$CUSTODY_KEY1'" && exit 1
   # <--- Enable custodians
 
   # TEST 5/2
@@ -461,17 +432,17 @@ echoInfo "INFO: $TEST_NAME - Integration Test - END, elapsed: $(prettyTime "$(ti
   echoInfo "TEST 5/2"
   TESTER2_BALANCE_EXPECTED=$(($TESTER2_BALANCE_EXPECTED - 150)) # -150 fee
 
-  addCustodians tester2 "$INPUT_CUSTODIANS" 150 ukex $KEY6 $KEY71 tester3 tester1
+  addCustodians tester2 "$INPUT_CUSTODIANS" 150 ukex tester3 tester1
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
   TESTER2_BALANCE_REAL=$(showBalance tester2 ukex)
-  CUSTODY_KEY=$(getCustodyKey tester1)
+
 
   # todo: get next controller and test it
 
   [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 5/2: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
   [ "$TESTER2_BALANCE_EXPECTED" != "$TESTER2_BALANCE_REAL" ] && echoErr "ERROR TEST 5/2: Expected tester2 account balance to be '$TESTER2_BALANCE_EXPECTED', but got '$TESTER2_BALANCE_REAL'" && exit 1
-  [ "$CUSTODY_KEY" != $KEY71 ] && echoErr "ERROR TEST 5/2: Expected key1 to be $KEY71, but got '$CUSTODY_KEY'" && exit 1
+
   # <--- Add custodians test double SHA protection
 
 echoInfo "INFO: $TEST_NAME - Integration Test - END, elapsed: $(prettyTime $(timerSpan $TEST_NAME))"
