@@ -93,6 +93,7 @@ message Dapp {
   string team_reserve = 24; // team multisig
   uint64 premint_time = 25; // timestamp for premint
   bool post_mint_paid = 26; // flag to show post mint paid or not
+  bool enable_bond_verifiers = 27; // flag to enable verifiers with bonding
 }
 
 message UserDappBond {

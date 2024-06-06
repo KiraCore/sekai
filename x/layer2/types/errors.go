@@ -42,4 +42,6 @@ var (
 	ErrNegativeBridgeBalance                = errors.Register(ModuleName, 34, "negative bridge balance")
 	ErrInvalidBridgeSourceAccount           = errors.Register(ModuleName, 35, "invalid bridge source account")
 	ErrInvalidDappVersion                   = errors.Register(ModuleName, 36, "invalid dapp version")
+	ErrDappNotAllowsBondVerifiers           = errors.Register(ModuleName, 37, "dapp does not allow bond verifiers")
+	ErrCanNotDisableBondedVerifiers         = errors.Register(ModuleName, 38, "cannot disable bond verifiers once enabled")
 )

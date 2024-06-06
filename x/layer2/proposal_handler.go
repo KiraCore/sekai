@@ -180,6 +180,10 @@ func (a ApplyUpsertDappProposalHandler) Apply(ctx sdk.Context, proposalID uint64
 	dapp.VoteQuorum = p.Dapp.VoteQuorum
 	dapp.VotePeriod = p.Dapp.VotePeriod
 	dapp.VoteEnactment = p.Dapp.VoteEnactment
+	if dapp.EnableBondVerifiers && !p.Dapp.EnableBondVerifiers {
+		return types.ErrCanNotDisableBondedVerifiers
+	}
+	dapp.EnableBondVerifiers = p.Dapp.EnableBondVerifiers
 
 	a.keeper.SetDapp(ctx, p.Dapp)
 	return nil

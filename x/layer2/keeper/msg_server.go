@@ -141,6 +141,10 @@ func (k msgServer) JoinDappVerifierWithBond(goCtx context.Context, msg *types.Ms
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if !dapp.EnableBondVerifiers {
+		return nil, types.ErrDappNotAllowsBondVerifiers
+	}
+
 	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
 	if operator.DappName != "" && operator.Verifier {
 		return nil, types.ErrAlreadyADappVerifier

@@ -15,31 +15,32 @@ import (
 )
 
 const (
-	FlagTitle              = "title"
-	FlagDescription        = "description"
-	FlagDappName           = "dapp-name"
-	FlagDappDescription    = "dapp-description"
-	FlagDenom              = "denom"
-	FlagWebsite            = "website"
-	FlagLogo               = "logo"
-	FlagSocial             = "social"
-	FlagDocs               = "docs"
-	FlagControllerRoles    = "controller-roles"
-	FlagControllerAccounts = "controller-accounts"
-	FlagBinaryInfo         = "binary-info"
-	FlagLpPoolConfig       = "lp-pool-config"
-	FlagIssuanceConfig     = "issuance-config"
-	FlagUpdateTimeMax      = "update-time-max"
-	FlagExecutorsMin       = "executors-min"
-	FlagExecutorsMax       = "executors-max"
-	FlagVerifiersMin       = "verifiers-min"
-	FlagDappStatus         = "dapp-status"
-	FlagBond               = "bond"
-	FlagVoteQuorum         = "vote-quorum"
-	FlagVotePeriod         = "vote-period"
-	FlagVoteEnactment      = "vote-enactment"
-	FlagAddr               = "addr"
-	FlagAmount             = "amount"
+	FlagTitle               = "title"
+	FlagDescription         = "description"
+	FlagDappName            = "dapp-name"
+	FlagDappDescription     = "dapp-description"
+	FlagDenom               = "denom"
+	FlagWebsite             = "website"
+	FlagLogo                = "logo"
+	FlagSocial              = "social"
+	FlagDocs                = "docs"
+	FlagControllerRoles     = "controller-roles"
+	FlagControllerAccounts  = "controller-accounts"
+	FlagBinaryInfo          = "binary-info"
+	FlagLpPoolConfig        = "lp-pool-config"
+	FlagIssuanceConfig      = "issuance-config"
+	FlagUpdateTimeMax       = "update-time-max"
+	FlagExecutorsMin        = "executors-min"
+	FlagExecutorsMax        = "executors-max"
+	FlagVerifiersMin        = "verifiers-min"
+	FlagDappStatus          = "dapp-status"
+	FlagBond                = "bond"
+	FlagVoteQuorum          = "vote-quorum"
+	FlagVotePeriod          = "vote-period"
+	FlagVoteEnactment       = "vote-enactment"
+	FlagAddr                = "addr"
+	FlagAmount              = "amount"
+	FlagEnableBondVerifiers = "enable_bond_verifiers"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -208,6 +209,10 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid verifiersMin: %w", err)
 			}
+			enableBondVerifiers, err := cmd.Flags().GetBool(FlagEnableBondVerifiers)
+			if err != nil {
+				return fmt.Errorf("invalid enable bond verifiers: %w", err)
+			}
 
 			msg := &types.MsgCreateDappProposal{
 				Sender: clientCtx.GetFromAddress().String(),
@@ -226,17 +231,18 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 							Addresses: ctrlAccounts,
 						},
 					},
-					Bin:           []types.BinaryInfo{binaryInfo},
-					Pool:          lpPoolConfig,
-					Issuance:      issuance,
-					UpdateTimeMax: updateMaxTime,
-					ExecutorsMin:  executorsMin,
-					ExecutorsMax:  executorsMax,
-					VerifiersMin:  verifiersMin,
-					Status:        types.DappStatus(types.SessionStatus_value[statusStr]),
-					VoteQuorum:    sdk.NewDecWithPrec(int64(voteQuorum), 2),
-					VotePeriod:    votePeriod,
-					VoteEnactment: voteEnactment,
+					Bin:                 []types.BinaryInfo{binaryInfo},
+					Pool:                lpPoolConfig,
+					Issuance:            issuance,
+					UpdateTimeMax:       updateMaxTime,
+					ExecutorsMin:        executorsMin,
+					ExecutorsMax:        executorsMax,
+					VerifiersMin:        verifiersMin,
+					Status:              types.DappStatus(types.SessionStatus_value[statusStr]),
+					VoteQuorum:          sdk.NewDecWithPrec(int64(voteQuorum), 2),
+					VotePeriod:          votePeriod,
+					VoteEnactment:       voteEnactment,
+					EnableBondVerifiers: enableBondVerifiers,
 				},
 			}
 
@@ -273,6 +279,7 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 	cmd.Flags().Uint64(FlagExecutorsMin, 0, "dapp executors min")
 	cmd.Flags().Uint64(FlagExecutorsMax, 0, "dapp executors max")
 	cmd.Flags().Uint64(FlagVerifiersMin, 0, "dapp verifiers min")
+	cmd.Flags().Bool(FlagEnableBondVerifiers, true, "enable verifiers with bonding")
 
 	return cmd
 }
@@ -791,6 +798,10 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid vote period: %w", err)
 			}
+			enableBondVerifiers, err := cmd.Flags().GetBool(FlagEnableBondVerifiers)
+			if err != nil {
+				return fmt.Errorf("invalid enable bond verifiers: %w", err)
+			}
 
 			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
@@ -812,17 +823,18 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 								Addresses: ctrlAccounts,
 							},
 						},
-						Bin:           []types.BinaryInfo{binaryInfo},
-						Pool:          lpPoolConfig,
-						Issuance:      issuance,
-						UpdateTimeMax: updateMaxTime,
-						ExecutorsMin:  executorsMin,
-						ExecutorsMax:  executorsMax,
-						VerifiersMin:  verifiersMin,
-						Status:        types.DappStatus(types.SessionStatus_value[statusStr]),
-						VoteQuorum:    sdk.NewDecWithPrec(int64(voteQuorum), 2),
-						VotePeriod:    votePeriod,
-						VoteEnactment: voteEnactment,
+						Bin:                 []types.BinaryInfo{binaryInfo},
+						Pool:                lpPoolConfig,
+						Issuance:            issuance,
+						UpdateTimeMax:       updateMaxTime,
+						ExecutorsMin:        executorsMin,
+						ExecutorsMax:        executorsMax,
+						VerifiersMin:        verifiersMin,
+						Status:              types.DappStatus(types.SessionStatus_value[statusStr]),
+						VoteQuorum:          sdk.NewDecWithPrec(int64(voteQuorum), 2),
+						VotePeriod:          votePeriod,
+						VoteEnactment:       voteEnactment,
+						EnableBondVerifiers: enableBondVerifiers,
 					},
 				},
 			)
@@ -860,6 +872,7 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 	cmd.Flags().Uint64(FlagExecutorsMin, 0, "dapp executors min")
 	cmd.Flags().Uint64(FlagExecutorsMax, 0, "dapp executors max")
 	cmd.Flags().Uint64(FlagVerifiersMin, 0, "dapp verifiers min")
+	cmd.Flags().Bool(FlagEnableBondVerifiers, true, "enable verifiers with bonding")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
