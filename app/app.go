@@ -338,7 +338,7 @@ func NewInitApp(
 
 	app.RecoveryKeeper = recoverykeeper.NewKeeper(
 		appCodec,
-		keys[slashingtypes.StoreKey],
+		keys[recoverytypes.StoreKey],
 		app.AccountKeeper,
 		app.BankKeeper,
 		&customStakingKeeper,
