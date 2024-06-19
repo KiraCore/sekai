@@ -1194,9 +1194,9 @@ func GetTxMintCreateFtTxCmd() *cobra.Command {
 				return fmt.Errorf("invalid supply")
 			}
 
-			fee, ok := sdk.NewIntFromString(args[10])
-			if !ok {
-				return fmt.Errorf("invalid fee")
+			feeRate, err := sdk.NewDecFromStr(args[10])
+			if err != nil {
+				return err
 			}
 
 			msg := &types.MsgMintCreateFtTx{
@@ -1208,10 +1208,10 @@ func GetTxMintCreateFtTxCmd() *cobra.Command {
 				Description: args[4],
 				Website:     args[5],
 				Social:      args[6],
-				Decimals:    uint64(decimals),
+				Decimals:    uint32(decimals),
 				Cap:         cap,
 				Supply:      supply,
-				Fee:         fee,
+				FeeRate:     feeRate,
 				Owner:       args[11],
 			}
 
@@ -1257,9 +1257,9 @@ func GetTxMintCreateNftTxCmd() *cobra.Command {
 				return fmt.Errorf("invalid supply")
 			}
 
-			fee, ok := sdk.NewIntFromString(args[10])
-			if !ok {
-				return fmt.Errorf("invalid fee")
+			feeRate, err := sdk.NewDecFromStr(args[10])
+			if err != nil {
+				return err
 			}
 
 			msg := &types.MsgMintCreateNftTx{
@@ -1271,10 +1271,10 @@ func GetTxMintCreateNftTxCmd() *cobra.Command {
 				Description: args[4],
 				Website:     args[5],
 				Social:      args[6],
-				Decimals:    uint64(decimals),
+				Decimals:    uint32(decimals),
 				Cap:         cap,
 				Supply:      supply,
-				Fee:         fee,
+				FeeRate:     feeRate,
 				Owner:       args[11],
 				Metadata:    args[12],
 				Hash:        args[13],

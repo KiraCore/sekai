@@ -115,7 +115,7 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 		return err
 	}
 
-	err = k.bk.BurnCoins(ctx, types.ModuleName, burnCoins)
+	err = k.tk.BurnCoins(ctx, types.ModuleName, burnCoins)
 	if err != nil {
 		return err
 	}

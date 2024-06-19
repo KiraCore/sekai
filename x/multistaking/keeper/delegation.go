@@ -217,7 +217,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 		} else {
 			for _, reward := range rewards {
 				rate := k.tokenKeeper.GetTokenInfo(ctx, reward.Denom)
-				if rate.StakeToken && reward.Amount.GTE(rate.StakeMin) && isWithinArray(reward.Denom, compoundInfo.CompoundDenoms) {
+				if rate.StakeEnabled && reward.Amount.GTE(rate.StakeMin) && isWithinArray(reward.Denom, compoundInfo.CompoundDenoms) {
 					autoCompoundRewards = autoCompoundRewards.Add(reward)
 				}
 			}
@@ -321,7 +321,7 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 
 	for _, amount := range msg.Amounts {
 		rate := k.tokenKeeper.GetTokenInfo(ctx, amount.Denom)
-		if !rate.StakeToken {
+		if !rate.StakeEnabled {
 			return types.ErrNotAllowedStakingToken
 		}
 		if amount.Amount.LT(rate.StakeMin) {

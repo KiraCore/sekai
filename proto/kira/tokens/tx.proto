@@ -23,7 +23,7 @@ message MsgUpsertTokenInfo {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ]; // Exchange rate in terms of KEX token
-  bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment method
+  bool fee_enabled = 3; // Properties defining if it is enabled or disabled as fee payment method
   string stake_cap = 4 [
     (gogoproto.moretags) = "yaml:\"stake_cap\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -34,8 +34,8 @@ message MsgUpsertTokenInfo {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  bool stake_token = 6;
-  bool invalidated = 7; // flag that the token is invalidated or not
+  bool stake_enabled = 6;
+  bool inactive = 7;    // flag that the token is inactive or not
   string symbol = 8;    // Ticker (eg. ATOM, KEX, BTC)
   string name = 9;      // Token Name (e.g. Cosmos, Kira, Bitcoin)
   string icon = 10;     // Graphical Symbol (url link to graphics)

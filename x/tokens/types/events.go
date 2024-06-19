@@ -2,12 +2,12 @@ package types
 
 // tokens module events
 const (
-	EventTypeUpsertTokenInfo = "upsert_token_rate"
+	EventTypeUpsertTokenInfo = "upsert_token_info"
 
-	AttributeKeyDescription = "proposal_id"
-	AttributeKeyDenom       = "proposal_type"
-	AttributeKeyRate        = "proposal_content"
-	AttributeKeyFeePayments = "voter"
+	AttributeKeyDescription = "description"
+	AttributeKeyDenom       = "denom"
+	AttributeKeyRate        = "rate"
+	AttributeKeyFeeEnabled  = "fee_enabled"
 	AttributeKeyProposer    = "proposer"
 	AttributeKeySymbol      = "symbol"
 	AttributeKeyName        = "name"

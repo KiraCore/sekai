@@ -20,9 +20,9 @@ func (suite *KeeperTestSuite) TestTokenInfos() {
 
 	// upsert token rate and check
 	newRate := types.TokenInfo{
-		Denom:       "stake",
-		FeeRate:     sdk.NewDec(2),
-		FeePayments: true,
+		Denom:      "stake",
+		FeeRate:    sdk.NewDec(2),
+		FeeEnabled: true,
 	}
 	suite.app.TokensKeeper.UpsertTokenInfo(ctx, newRate)
 	rate = suite.app.TokensKeeper.GetTokenInfo(ctx, "stake")

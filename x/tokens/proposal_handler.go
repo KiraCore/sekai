@@ -24,7 +24,7 @@ func (a ApplyUpsertTokenInfosProposalHandler) Apply(ctx sdk.Context, proposalID 
 	p := proposal.(*tokenstypes.ProposalUpsertTokenInfo)
 
 	rate := tokenstypes.NewTokenInfo(
-		p.Denom, p.Rate, p.FeePayments, p.StakeCap, p.StakeMin, p.StakeToken, p.Invalidated,
+		p.Denom, p.Rate, p.FeeEnabled, p.StakeCap, p.StakeMin, p.StakeEnabled, p.Inactive,
 		p.Symbol, p.Name, p.Icon, p.Decimals,
 	)
 	return a.keeper.UpsertTokenInfo(ctx, rate)

@@ -10,19 +10,26 @@ func (k Keeper) MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) err
 	for _, coin := range amt {
 		tokenInfo := k.GetTokenInfo(ctx, coin.Denom)
 		if tokenInfo == nil {
-			k.UpsertTokenInfo(ctx, types.TokenInfo{
-				Denom:       coin.Denom,
-				FeeRate:     math.LegacyZeroDec(),
-				FeePayments: false,
-				StakeCap:    math.LegacyZeroDec(),
-				StakeMin:    math.OneInt(),
-				StakeToken:  false,
-				Invalidated: false,
-				Symbol:      coin.Denom,
-				Name:        coin.Denom,
-				Icon:        "",
-				Decimals:    6,
-			})
+			tokenInfo = &types.TokenInfo{
+				Denom:        coin.Denom,
+				FeeRate:      math.LegacyZeroDec(),
+				FeeEnabled:   false,
+				Supply:       math.ZeroInt(),
+				StakeCap:     math.LegacyZeroDec(),
+				StakeMin:     math.OneInt(),
+				StakeEnabled: false,
+				Inactive:     false,
+				Symbol:       coin.Denom,
+				Name:         coin.Denom,
+				Icon:         "",
+				Decimals:     6,
+			}
+		}
+
+		tokenInfo.Supply = tokenInfo.Supply.Add(coin.Amount)
+		err := k.UpsertTokenInfo(ctx, *tokenInfo)
+		if err != nil {
+			return err
 		}
 	}
 	return k.bankKeeper.MintCoins(ctx, moduleName, amt)

@@ -333,7 +333,7 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		if !properties.EnableForeignFeePayments && feeCoin.Denom != defaultDenom {
 			return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("foreign fee payments is disabled by governance"))
 		}
-		if rate == nil || !rate.FeePayments {
+		if rate == nil || !rate.FeeEnabled {
 			return ctx, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use was not whitelisted as fee payment"))
 		}
 		if tokensBlackWhite.IsFrozen(feeCoin.Denom, defaultDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {

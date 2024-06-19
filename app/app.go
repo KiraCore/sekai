@@ -354,7 +354,7 @@ func NewInitApp(
 		keys[distributortypes.ModuleName], appCodec,
 		app.AccountKeeper, app.BankKeeper,
 		app.CustomStakingKeeper, app.CustomGovKeeper,
-		app.MultiStakingKeeper, app.RecoveryKeeper)
+		app.MultiStakingKeeper, app.RecoveryKeeper, app.TokensKeeper)
 	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
 	app.UbiKeeper = ubikeeper.NewKeeper(
 		keys[ubitypes.ModuleName],

@@ -34,7 +34,6 @@ var (
 	ErrInvalidLpToken                       = errors.Register(ModuleName, 26, "invalid lp token")
 	ErrOperationExceedsSlippage             = errors.Register(ModuleName, 27, "operation exceeds slippage")
 	ErrTokenNotRegistered                   = errors.Register(ModuleName, 28, "token not registered")
-	ErrCannotExceedTokenCap                 = errors.Register(ModuleName, 29, "cannot exceed token cap")
 	ErrTokenAlreadyRegistered               = errors.Register(ModuleName, 30, "token already registered")
 	ErrNotAbleToMintCoinsWithoutFee         = errors.Register(ModuleName, 31, "not able to mint coins without fee")
 	ErrInvalidBridgeDepositMessage          = errors.Register(ModuleName, 32, "invalid bridge deposit message")

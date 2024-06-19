@@ -40,6 +40,7 @@ type MultistakingHooks interface {
 // TokensKeeper defines expected interface needed from tokens keeper
 type TokensKeeper interface {
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	GetTokenInfo(ctx sdk.Context, denom string) *tokenstypes.TokenInfo
 	GetAllTokenInfos(ctx sdk.Context) []tokenstypes.TokenInfo
 }

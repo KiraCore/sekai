@@ -11,7 +11,7 @@ import (
 func (k Keeper) AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) {
 	rates := k.tk.GetAllTokenInfos(ctx)
 	for _, rate := range rates {
-		if rate.StakeToken {
+		if rate.StakeEnabled {
 			basket, err := k.GetBasketByDenom(ctx, fmt.Sprintf("sdb/%s", rate.Denom))
 			if err != nil {
 				basket = types.Basket{
@@ -60,7 +60,7 @@ func (k Keeper) AfterUpsertStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, 
 func (k Keeper) AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool, slash sdk.Dec) {
 	rates := k.tk.GetAllTokenInfos(ctx)
 	for _, rate := range rates {
-		if rate.StakeToken {
+		if rate.StakeEnabled {
 			basket, err := k.GetBasketByDenom(ctx, fmt.Sprintf("sdb/%s", rate.Denom))
 			if err != nil {
 				continue
@@ -83,7 +83,7 @@ func (k Keeper) AfterSlashStakingPool(ctx sdk.Context, valAddr sdk.ValAddress, p
 func (k Keeper) AfterSlashProposalRaise(ctx sdk.Context, valAddr sdk.ValAddress, pool multistakingtypes.StakingPool) {
 	rates := k.tk.GetAllTokenInfos(ctx)
 	for _, rate := range rates {
-		if rate.StakeToken {
+		if rate.StakeEnabled {
 			basket, err := k.GetBasketByDenom(ctx, fmt.Sprintf("sdb/%s", rate.Denom))
 			if err != nil {
 				continue

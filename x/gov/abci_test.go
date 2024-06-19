@@ -491,7 +491,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				token := app.TokensKeeper.GetTokenInfo(ctx, "btc")
 				require.Equal(t, sdk.NewDec(1234), token.FeeRate)
 				require.Equal(t, "btc", token.Denom)
-				require.Equal(t, false, token.FeePayments)
+				require.Equal(t, false, token.FeeEnabled)
 			},
 			blockHeightChange: 3,
 		},

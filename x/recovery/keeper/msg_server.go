@@ -608,7 +608,7 @@ func (k msgServer) BurnRecoveryTokens(goCtx context.Context, msg *types.MsgBurnR
 		return nil, err
 	}
 
-	err = k.bk.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(msg.RrCoin))
+	err = k.tk.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(msg.RrCoin))
 	if err != nil {
 		return nil, err
 	}

@@ -39,33 +39,36 @@ func (k msgServer) UpsertTokenInfo(goCtx context.Context, msg *types.MsgUpsertTo
 
 	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, govtypes.PermUpsertTokenInfo)
 	if !isAllowed {
-		return nil, errorsmod.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenInfo.String())
+		tokenInfo := k.keeper.GetTokenInfo(ctx, msg.Denom)
+		if tokenInfo == nil || tokenInfo.Owner != msg.Proposer.String() || tokenInfo.OwnerEditDisabled {
+			return nil, errorsmod.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenInfo.String())
+		}
 	}
 
 	err = k.keeper.UpsertTokenInfo(ctx, types.NewTokenInfo(
 		msg.Denom,
 		msg.Rate,
-		msg.FeePayments,
+		msg.FeeEnabled,
 		msg.StakeCap,
 		msg.StakeMin,
-		msg.StakeToken,
-		msg.Invalidated,
+		msg.StakeEnabled,
+		msg.Inactive,
 		msg.Symbol,
 		msg.Name,
 		msg.Icon,
 		msg.Decimals,
 	))
-
 	if err != nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
+
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeUpsertTokenInfo,
 			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
 			sdk.NewAttribute(types.AttributeKeyDenom, msg.Denom),
 			sdk.NewAttribute(types.AttributeKeyRate, msg.Rate.String()),
-			sdk.NewAttribute(types.AttributeKeyFeePayments, fmt.Sprintf("%t", msg.FeePayments)),
+			sdk.NewAttribute(types.AttributeKeyFeeEnabled, fmt.Sprintf("%t", msg.FeeEnabled)),
 		),
 	)
 

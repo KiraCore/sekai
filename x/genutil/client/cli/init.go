@@ -133,17 +133,17 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			tokenGenState := tokenstypes.GetGenesisStateFromAppState(clientCtx.Codec, genesis)
 			tokenGenState.TokenInfos = []tokenstypes.TokenInfo{
 				{
-					Denom:       defaultDenom,
-					FeeRate:     sdk.OneDec(),
-					FeePayments: true,
-					StakeCap:    sdk.NewDecWithPrec(5, 1), // 0.5
-					StakeMin:    sdk.OneInt(),
-					StakeToken:  true,
-					Invalidated: false,
-					Symbol:      defaultDenom,
-					Name:        defaultDenom,
-					Icon:        "",
-					Decimals:    6,
+					Denom:        defaultDenom,
+					FeeRate:      sdk.OneDec(),
+					FeeEnabled:   true,
+					StakeCap:     sdk.NewDecWithPrec(5, 1), // 0.5
+					StakeMin:     sdk.OneInt(),
+					StakeEnabled: true,
+					Inactive:     false,
+					Symbol:       defaultDenom,
+					Name:         defaultDenom,
+					Icon:         "",
+					Decimals:     6,
 				},
 			}
 			tokenGenState.TokenBlackWhites.Whitelisted = []string{defaultDenom}
