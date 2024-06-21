@@ -15,23 +15,34 @@ import (
 
 // flags for tokens module txs
 const (
-	FlagSymbol      = "symbol"
-	FlagName        = "name"
-	FlagIcon        = "icon"
-	FlagDecimals    = "decimals"
-	FlagDenoms      = "denoms"
-	FlagDenom       = "denom"
-	FlagRate        = "rate"
-	FlagStakeCap    = "stake_cap"
-	FlagStakeToken  = "stake_token"
-	FlagStakeMin    = "stake_min"
-	FlagFeePayments = "fee_payments"
-	FlagIsBlacklist = "is_blacklist"
-	FlagIsAdd       = "is_add"
-	FlagTokens      = "tokens"
-	FlagTitle       = "title"
-	FlagDescription = "description"
-	FlagInvalidated = "invalidated"
+	FlagSymbol            = "symbol"
+	FlagName              = "name"
+	FlagIcon              = "icon"
+	FlagDecimals          = "decimals"
+	FlagDenoms            = "denoms"
+	FlagDenom             = "denom"
+	FlagFeeRate           = "fee_rate"
+	FlagStakeCap          = "stake_cap"
+	FlagStakeToken        = "stake_token"
+	FlagStakeMin          = "stake_min"
+	FlagFeeEnabled        = "fee_payments"
+	FlagIsBlacklist       = "is_blacklist"
+	FlagIsAdd             = "is_add"
+	FlagTokens            = "tokens"
+	FlagTitle             = "title"
+	FlagDescription       = "description"
+	FlagInvalidated       = "invalidated"
+	FlagSupply            = "supply"
+	FlagSupplyCap         = "supply_cap"
+	FlagWebsite           = "website"
+	FlagSocial            = "social"
+	FlagMintingFee        = "minting_fee"
+	FlagOwner             = "owner"
+	FlagOwnerEditDisabled = "owner_edit_disabled"
+	FlagNftMetadata       = "nft_metadata"
+	FlagNftHash           = "nft_hash"
+	FlagTokenType         = "token_type"
+	FlagTokenRate         = "token_rate"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -60,6 +71,9 @@ func GetTxProposalUpsertTokenInfoCmd() *cobra.Command {
 		Short: "Create a proposal to upsert token rate",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return fmt.Errorf("invalid is_blacklist flag: %w", err)
+			}
 
 			denom, err := cmd.Flags().GetString(FlagDenom)
 			if err != nil {
@@ -69,19 +83,44 @@ func GetTxProposalUpsertTokenInfoCmd() *cobra.Command {
 				return fmt.Errorf("bond denom rate is read-only")
 			}
 
-			rateString, err := cmd.Flags().GetString(FlagRate)
+			tokenType, err := cmd.Flags().GetString(FlagTokenType)
+			if err != nil {
+				return fmt.Errorf("invalid tokenType")
+			}
+
+			rateString, err := cmd.Flags().GetString(FlagTokenRate)
 			if err != nil {
 				return fmt.Errorf("invalid rate")
 			}
 
-			rate, err := sdk.NewDecFromStr(rateString)
+			feeRate, err := sdk.NewDecFromStr(rateString)
 			if err != nil {
 				return err
 			}
 
-			feePayments, err := cmd.Flags().GetBool(FlagFeePayments)
+			feeEnabled, err := cmd.Flags().GetBool(FlagFeeEnabled)
 			if err != nil {
-				return fmt.Errorf("invalid fee payments")
+				return fmt.Errorf("invalid fee enabled flag")
+			}
+
+			supplyString, err := cmd.Flags().GetString(FlagSupply)
+			if err != nil {
+				return fmt.Errorf("invalid supply: %w", err)
+			}
+
+			supply, ok := sdk.NewIntFromString(supplyString)
+			if !ok {
+				return fmt.Errorf("invalid supply: %s", supplyString)
+			}
+
+			supplyCapString, err := cmd.Flags().GetString(FlagSupplyCap)
+			if err != nil {
+				return fmt.Errorf("invalid supply cap: %w", err)
+			}
+
+			supplyCap, ok := sdk.NewIntFromString(supplyCapString)
+			if !ok {
+				return fmt.Errorf("invalid supply cap: %s", supplyCapString)
 			}
 
 			title, err := cmd.Flags().GetString(FlagTitle)
@@ -92,6 +131,46 @@ func GetTxProposalUpsertTokenInfoCmd() *cobra.Command {
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			website, err := cmd.Flags().GetString(FlagWebsite)
+			if err != nil {
+				return fmt.Errorf("invalid website: %w", err)
+			}
+
+			social, err := cmd.Flags().GetString(FlagSocial)
+			if err != nil {
+				return fmt.Errorf("invalid social: %w", err)
+			}
+
+			mintingFeeStr, err := cmd.Flags().GetString(FlagMintingFee)
+			if err != nil {
+				return fmt.Errorf("invalid mintingFee: %w", err)
+			}
+
+			mintingFee, ok := sdk.NewIntFromString(mintingFeeStr)
+			if !ok {
+				return fmt.Errorf("invalid minting fee: %s", mintingFeeStr)
+			}
+
+			owner, err := cmd.Flags().GetString(FlagOwner)
+			if err != nil {
+				return fmt.Errorf("invalid owner: %w", err)
+			}
+
+			ownerEditDisabled, err := cmd.Flags().GetBool(FlagOwnerEditDisabled)
+			if err != nil {
+				return fmt.Errorf("invalid ownerEditDisabled: %w", err)
+			}
+
+			nftMetadata, err := cmd.Flags().GetString(FlagNftMetadata)
+			if err != nil {
+				return fmt.Errorf("invalid nftMetadata: %w", err)
+			}
+
+			nftHash, err := cmd.Flags().GetString(FlagNftHash)
+			if err != nil {
+				return fmt.Errorf("invalid nftHash: %w", err)
 			}
 
 			stakeToken, err := cmd.Flags().GetBool(FlagStakeToken)
@@ -150,8 +229,11 @@ func GetTxProposalUpsertTokenInfoCmd() *cobra.Command {
 				description,
 				types.NewUpsertTokenInfosProposal(
 					denom,
-					rate,
-					feePayments,
+					tokenType,
+					feeRate,
+					feeEnabled,
+					supply,
+					supplyCap,
 					stakeCap,
 					stakeMin,
 					stakeToken,
@@ -160,6 +242,15 @@ func GetTxProposalUpsertTokenInfoCmd() *cobra.Command {
 					name,
 					icon,
 					decimals,
+					description,
+					website,
+					social,
+					0,
+					mintingFee,
+					owner,
+					ownerEditDisabled,
+					nftMetadata,
+					nftHash,
 				),
 			)
 			if err != nil {
@@ -177,10 +268,10 @@ func GetTxProposalUpsertTokenInfoCmd() *cobra.Command {
 
 	cmd.Flags().String(FlagDenom, "tbtc", "denom - identifier for token rates")
 	cmd.MarkFlagRequired(FlagDenom)
-	cmd.Flags().String(FlagRate, "1.0", "rate to register, max decimal 9, max value 10^10")
-	cmd.MarkFlagRequired(FlagRate)
-	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
-	cmd.MarkFlagRequired(FlagFeePayments)
+	cmd.Flags().String(FlagFeeRate, "1.0", "rate to register, max decimal 9, max value 10^10")
+	cmd.MarkFlagRequired(FlagFeeRate)
+	cmd.Flags().Bool(FlagFeeEnabled, true, "use registry as fee payment")
+	cmd.MarkFlagRequired(FlagFeeEnabled)
 	cmd.Flags().String(FlagTitle, "", "The title of a proposal.")
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
@@ -193,6 +284,17 @@ func GetTxProposalUpsertTokenInfoCmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "Kira", "Token Name (e.g. Cosmos, Kira, Bitcoin)")
 	cmd.Flags().String(FlagIcon, "", "Graphical Symbol (url link to graphics)")
 	cmd.Flags().Uint32(FlagDecimals, 6, "Integer number of max decimals")
+	cmd.Flags().String(FlagSupply, "", "Supply of token")
+	cmd.Flags().String(FlagSupplyCap, "", "Supply cap of token")
+	cmd.Flags().String(FlagWebsite, "", "Website")
+	cmd.Flags().String(FlagSocial, "", "Social")
+	cmd.Flags().String(FlagMintingFee, "", "Minting fee")
+	cmd.Flags().String(FlagOwner, "", "Owner")
+	cmd.Flags().Bool(FlagOwnerEditDisabled, false, "Owner edit disabled flag")
+	cmd.Flags().String(FlagNftMetadata, "", "Nft metadata")
+	cmd.Flags().String(FlagNftHash, "", "Nft hash")
+	cmd.Flags().String(FlagTokenType, "", "Token type")
+	cmd.Flags().String(FlagTokenRate, "", "Token rate")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -216,19 +318,44 @@ func GetTxUpsertTokenInfoCmd() *cobra.Command {
 				return fmt.Errorf("bond denom rate is read-only")
 			}
 
-			rateString, err := cmd.Flags().GetString(FlagRate)
+			tokenType, err := cmd.Flags().GetString(FlagTokenType)
+			if err != nil {
+				return fmt.Errorf("invalid tokenType")
+			}
+
+			rateString, err := cmd.Flags().GetString(FlagFeeRate)
 			if err != nil {
 				return fmt.Errorf("invalid rate")
 			}
 
-			rate, err := sdk.NewDecFromStr(rateString)
+			feeRate, err := sdk.NewDecFromStr(rateString)
 			if err != nil {
 				return err
 			}
 
-			feePayments, err := cmd.Flags().GetBool(FlagFeePayments)
+			feeEnabled, err := cmd.Flags().GetBool(FlagFeeEnabled)
 			if err != nil {
 				return fmt.Errorf("invalid fee payments")
+			}
+
+			supplyString, err := cmd.Flags().GetString(FlagSupply)
+			if err != nil {
+				return fmt.Errorf("invalid supply: %w", err)
+			}
+
+			supply, ok := sdk.NewIntFromString(supplyString)
+			if !ok {
+				return fmt.Errorf("invalid supply: %s", supplyString)
+			}
+
+			supplyCapString, err := cmd.Flags().GetString(FlagSupplyCap)
+			if err != nil {
+				return fmt.Errorf("invalid supply cap: %w", err)
+			}
+
+			supplyCap, ok := sdk.NewIntFromString(supplyCapString)
+			if !ok {
+				return fmt.Errorf("invalid supply cap: %s", supplyCapString)
 			}
 
 			stakeToken, err := cmd.Flags().GetBool(FlagStakeToken)
@@ -281,11 +408,59 @@ func GetTxUpsertTokenInfoCmd() *cobra.Command {
 				return fmt.Errorf("invalid decimals")
 			}
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			website, err := cmd.Flags().GetString(FlagWebsite)
+			if err != nil {
+				return fmt.Errorf("invalid website: %w", err)
+			}
+
+			social, err := cmd.Flags().GetString(FlagSocial)
+			if err != nil {
+				return fmt.Errorf("invalid social: %w", err)
+			}
+
+			mintingFeeStr, err := cmd.Flags().GetString(FlagMintingFee)
+			if err != nil {
+				return fmt.Errorf("invalid mintingFee: %w", err)
+			}
+
+			mintingFee, ok := sdk.NewIntFromString(mintingFeeStr)
+			if !ok {
+				return fmt.Errorf("invalid minting fee: %s", mintingFeeStr)
+			}
+
+			owner, err := cmd.Flags().GetString(FlagOwner)
+			if err != nil {
+				return fmt.Errorf("invalid owner: %w", err)
+			}
+
+			ownerEditDisabled, err := cmd.Flags().GetBool(FlagOwnerEditDisabled)
+			if err != nil {
+				return fmt.Errorf("invalid ownerEditDisabled: %w", err)
+			}
+
+			nftMetadata, err := cmd.Flags().GetString(FlagNftMetadata)
+			if err != nil {
+				return fmt.Errorf("invalid nftMetadata: %w", err)
+			}
+
+			nftHash, err := cmd.Flags().GetString(FlagNftHash)
+			if err != nil {
+				return fmt.Errorf("invalid nftHash: %w", err)
+			}
+
 			msg := types.NewMsgUpsertTokenInfo(
 				clientCtx.FromAddress,
 				denom,
-				rate,
-				feePayments,
+				tokenType,
+				feeRate,
+				feeEnabled,
+				supply,
+				supplyCap,
 				stakeCap,
 				stakeMin,
 				stakeToken,
@@ -294,6 +469,15 @@ func GetTxUpsertTokenInfoCmd() *cobra.Command {
 				name,
 				icon,
 				decimals,
+				description,
+				website,
+				social,
+				0,
+				mintingFee,
+				owner,
+				ownerEditDisabled,
+				nftMetadata,
+				nftHash,
 			)
 
 			err = msg.ValidateBasic()
@@ -307,10 +491,10 @@ func GetTxUpsertTokenInfoCmd() *cobra.Command {
 
 	cmd.Flags().String(FlagDenom, "tbtc", "denom - identifier for token rates")
 	cmd.MarkFlagRequired(FlagDenom)
-	cmd.Flags().String(FlagRate, "1.0", "rate to register, max decimal 9, max value 10^10")
-	cmd.MarkFlagRequired(FlagRate)
-	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
-	cmd.MarkFlagRequired(FlagFeePayments)
+	cmd.Flags().String(FlagFeeRate, "1.0", "rate to register, max decimal 9, max value 10^10")
+	cmd.MarkFlagRequired(FlagFeeRate)
+	cmd.Flags().Bool(FlagFeeEnabled, true, "use registry as fee payment")
+	cmd.MarkFlagRequired(FlagFeeEnabled)
 	cmd.Flags().String(FlagStakeCap, "0.1", "rewards to be allocated for the token.")
 	cmd.Flags().String(FlagStakeMin, "1", "min amount to stake at a time.")
 	cmd.Flags().Bool(FlagStakeToken, false, "flag of if staking token or not.")
@@ -319,6 +503,17 @@ func GetTxUpsertTokenInfoCmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "Kira", "Token Name (e.g. Cosmos, Kira, Bitcoin)")
 	cmd.Flags().String(FlagIcon, "", "Graphical Symbol (url link to graphics)")
 	cmd.Flags().Uint32(FlagDecimals, 6, "Integer number of max decimals")
+	cmd.Flags().String(FlagSupply, "", "Supply of token")
+	cmd.Flags().String(FlagSupplyCap, "", "Supply cap of token")
+	cmd.Flags().String(FlagWebsite, "", "Website")
+	cmd.Flags().String(FlagSocial, "", "Social")
+	cmd.Flags().String(FlagMintingFee, "", "Minting fee")
+	cmd.Flags().String(FlagOwner, "", "Owner")
+	cmd.Flags().Bool(FlagOwnerEditDisabled, false, "Owner edit disabled flag")
+	cmd.Flags().String(FlagNftMetadata, "", "Nft metadata")
+	cmd.Flags().String(FlagNftHash, "", "Nft hash")
+	cmd.Flags().String(FlagTokenType, "", "Token type")
+	cmd.Flags().String(FlagTokenRate, "", "Token rate")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -333,6 +528,9 @@ func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
 		Short: "Create a proposal to update whitelisted and blacklisted tokens",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			isBlacklist, err := cmd.Flags().GetBool(FlagIsBlacklist)
 			if err != nil {

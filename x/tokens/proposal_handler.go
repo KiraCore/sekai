@@ -23,11 +23,28 @@ func (a ApplyUpsertTokenInfosProposalHandler) ProposalType() string {
 func (a ApplyUpsertTokenInfosProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*tokenstypes.ProposalUpsertTokenInfo)
 
-	rate := tokenstypes.NewTokenInfo(
-		p.Denom, p.Rate, p.FeeEnabled, p.StakeCap, p.StakeMin, p.StakeEnabled, p.Inactive,
+	tokenInfo := a.keeper.GetTokenInfo(ctx, p.Denom)
+	if tokenInfo != nil {
+		tokenInfo.Name = p.Name
+		tokenInfo.Symbol = p.Symbol
+		tokenInfo.Icon = p.Icon
+		tokenInfo.Description = p.Description
+		tokenInfo.Website = p.Website
+		tokenInfo.Social = p.Social
+		tokenInfo.Inactive = p.Inactive
+		tokenInfo.FeeRate = p.FeeRate
+		tokenInfo.FeeEnabled = p.FeeEnabled
+		tokenInfo.StakeCap = p.StakeCap
+		tokenInfo.StakeMin = p.StakeMin
+		tokenInfo.StakeEnabled = p.StakeEnabled
+		return a.keeper.UpsertTokenInfo(ctx, *tokenInfo)
+	}
+
+	return a.keeper.UpsertTokenInfo(ctx, tokenstypes.NewTokenInfo(
+		p.Denom, p.TokenType, p.FeeRate, p.FeeEnabled, p.Supply, p.SupplyCap, p.StakeCap, p.StakeMin, p.StakeEnabled, p.Inactive,
 		p.Symbol, p.Name, p.Icon, p.Decimals,
-	)
-	return a.keeper.UpsertTokenInfo(ctx, rate)
+		p.Description, p.Website, p.Social, p.Holders, p.MintingFee, p.Owner, p.OwnerEditDisabled, p.NftMetadata, p.NftHash,
+	))
 }
 
 type ApplyWhiteBlackChangeProposalHandler struct {

@@ -1,34 +1,58 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 )
 
 // NewTokenInfo generates a new token rate struct.
 func NewTokenInfo(
 	denom string,
-	feeRate sdk.Dec,
+	tokenType string,
+	feeRate math.LegacyDec,
 	feeEnabled bool,
-	stakeCap sdk.Dec,
-	stakeMin sdk.Int,
+	supply math.Int,
+	supplyCap math.Int,
+	stakeCap math.LegacyDec,
+	stakeMin math.Int,
 	stakeEnabled bool,
 	inactive bool,
 	symbol string,
 	name string,
 	icon string,
 	decimals uint32,
+	description string,
+	website string,
+	social string,
+	holders uint64,
+	mintingFee math.Int,
+	owner string,
+	ownerEditDisabled bool,
+	nftMetadata string,
+	nftHash string,
 ) TokenInfo {
 	return TokenInfo{
-		Denom:        denom,
-		FeeRate:      feeRate,
-		FeeEnabled:   feeEnabled,
-		StakeCap:     stakeCap,
-		StakeMin:     stakeMin,
-		StakeEnabled: stakeEnabled,
-		Inactive:     inactive,
-		Symbol:       symbol,
-		Name:         name,
-		Icon:         icon,
-		Decimals:     decimals,
+		Denom:             denom,
+		TokenType:         tokenType,
+		FeeRate:           feeRate,
+		FeeEnabled:        feeEnabled,
+		Supply:            supply,
+		SupplyCap:         supplyCap,
+		StakeCap:          stakeCap,
+		StakeMin:          stakeMin,
+		StakeEnabled:      stakeEnabled,
+		Inactive:          inactive,
+		Symbol:            symbol,
+		Name:              name,
+		Icon:              icon,
+		Decimals:          decimals,
+		Description:       description,
+		Website:           website,
+		Social:            social,
+		Holders:           holders,
+		MintingFee:        mintingFee,
+		Owner:             owner,
+		OwnerEditDisabled: ownerEditDisabled,
+		NftMetadata:       nftMetadata,
+		NftHash:           nftHash,
 	}
 }

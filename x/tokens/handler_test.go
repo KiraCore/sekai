@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	simapp "github.com/KiraCore/sekai/app"
 	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/gov"
@@ -68,8 +69,10 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 				require.NoError(t, err)
 				return tokenstypes.NewMsgUpsertTokenInfo(
 					addr,
+					"adr20",
 					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
 					true,
+					sdk.ZeroInt(), sdk.ZeroInt(),
 					sdk.ZeroDec(),
 					sdk.ZeroInt(),
 					false,
@@ -78,6 +81,7 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 					"Ethereum",
 					"icon",
 					6,
+					"", "", "", 0, math.ZeroInt(), "", false, "", "",
 				), nil
 			},
 		},
@@ -86,8 +90,10 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error) {
 				return tokenstypes.NewMsgUpsertTokenInfo(
 					addr,
+					"adr20",
 					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
 					true,
+					sdk.ZeroInt(), sdk.ZeroInt(),
 					sdk.ZeroDec(),
 					sdk.ZeroInt(),
 					false,
@@ -96,6 +102,7 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 					"Ethereum",
 					"icon",
 					6,
+					"", "", "", 0, math.ZeroInt(), "", false, "", "",
 				), nil
 			},
 			handlerErr: "PERMISSION_UPSERT_TOKEN_RATE: not enough permissions",
@@ -105,8 +112,10 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error) {
 				return tokenstypes.NewMsgUpsertTokenInfo(
 					addr,
+					"adr20",
 					"finney", sdk.NewDec(-1), // -1
 					true,
+					sdk.ZeroInt(), sdk.ZeroInt(),
 					sdk.ZeroDec(),
 					sdk.ZeroInt(),
 					false,
@@ -115,6 +124,7 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 					"Ethereum",
 					"icon",
 					6,
+					"", "", "", 0, math.ZeroInt(), "", false, "", "",
 				), nil
 			},
 			handlerErr: "rate should be positive",
@@ -126,8 +136,10 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 				require.NoError(t, err)
 				return tokenstypes.NewMsgUpsertTokenInfo(
 					addr,
+					"adr20",
 					"ukex", sdk.NewDec(10),
 					true,
+					sdk.ZeroInt(), sdk.ZeroInt(),
 					sdk.ZeroDec(),
 					sdk.ZeroInt(),
 					false,
@@ -136,6 +148,7 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 					"Ethereum",
 					"icon",
 					6,
+					"", "", "", 0, math.ZeroInt(), "", false, "", "",
 				), nil
 			},
 			handlerErr: "bond denom rate is read-only",
@@ -178,13 +191,16 @@ func TestHandler_CreateProposalUpsertTokenInfo_Errors(t *testing.T) {
 			"Proposer does not have Perm",
 			tokenstypes.NewUpsertTokenInfosProposal(
 				"btc",
+				"adr20",
 				sdk.NewDec(1234),
 				false,
+				sdk.ZeroInt(), sdk.ZeroInt(),
 				sdk.ZeroDec(),
 				sdk.ZeroInt(),
 				false,
 				false,
 				"BTC", "Bitcoin", "", 9,
+				"", "", "", 0, math.ZeroInt(), "", false, "", "",
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenInfoProposal.String()),
@@ -229,13 +245,16 @@ func TestHandler_CreateProposalUpsertTokenInfo(t *testing.T) {
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	proposal := tokenstypes.NewUpsertTokenInfosProposal(
 		"btc",
+		"adr20",
 		sdk.NewDec(1234),
 		false,
+		sdk.ZeroInt(), sdk.ZeroInt(),
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
 		false,
 		"BTC", "Bitcoin", "", 9,
+		"", "", "", 0, math.ZeroInt(), "", false, "", "",
 	)
 	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
@@ -256,13 +275,16 @@ func TestHandler_CreateProposalUpsertTokenInfo(t *testing.T) {
 		"some desc",
 		tokenstypes.NewUpsertTokenInfosProposal(
 			"btc",
+			"adr20",
 			sdk.NewDec(1234),
 			false,
+			sdk.ZeroInt(), sdk.ZeroInt(),
 			sdk.ZeroDec(),
 			sdk.ZeroInt(),
 			false,
 			false,
 			"BTC", "Bitcoin", "", 9,
+			"", "", "", 0, math.ZeroInt(), "", false, "", "",
 		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),

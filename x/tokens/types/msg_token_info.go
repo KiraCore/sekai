@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 
+	"cosmossdk.io/math"
 	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,30 +17,54 @@ var (
 func NewMsgUpsertTokenInfo(
 	proposer sdk.AccAddress,
 	denom string,
-	rate sdk.Dec,
+	tokenType string,
+	feeRate math.LegacyDec,
 	feeEnabled bool,
-	stakeCap sdk.Dec,
-	stakeMin sdk.Int,
+	supply math.Int,
+	supplyCap math.Int,
+	stakeCap math.LegacyDec,
+	stakeMin math.Int,
 	stakeEnabled bool,
 	inactive bool,
 	symbol string,
 	name string,
 	icon string,
 	decimals uint32,
+	description string,
+	website string,
+	social string,
+	holders uint64,
+	mintingFee math.Int,
+	owner string,
+	ownerEditDisabled bool,
+	nftMetadata string,
+	nftHash string,
 ) *MsgUpsertTokenInfo {
 	return &MsgUpsertTokenInfo{
-		Proposer:     proposer,
-		Denom:        denom,
-		Rate:         rate,
-		FeeEnabled:   feeEnabled,
-		StakeCap:     stakeCap,
-		StakeMin:     stakeMin,
-		StakeEnabled: stakeEnabled,
-		Inactive:     inactive,
-		Symbol:       symbol,
-		Name:         name,
-		Icon:         icon,
-		Decimals:     decimals,
+		Proposer:          proposer,
+		Denom:             denom,
+		TokenType:         tokenType,
+		FeeRate:           feeRate,
+		FeeEnabled:        feeEnabled,
+		Supply:            supply,
+		SupplyCap:         supplyCap,
+		StakeCap:          stakeCap,
+		StakeMin:          stakeMin,
+		StakeEnabled:      stakeEnabled,
+		Inactive:          inactive,
+		Symbol:            symbol,
+		Name:              name,
+		Icon:              icon,
+		Decimals:          decimals,
+		Description:       description,
+		Website:           website,
+		Social:            social,
+		Holders:           holders,
+		MintingFee:        mintingFee,
+		Owner:             owner,
+		OwnerEditDisabled: ownerEditDisabled,
+		NftMetadata:       nftMetadata,
+		NftHash:           nftHash,
 	}
 }
 
@@ -59,7 +84,7 @@ func (m *MsgUpsertTokenInfo) ValidateBasic() error {
 		return errors.New("bond denom rate is read-only")
 	}
 
-	if m.Rate.LTE(sdk.NewDec(0)) { // not positive
+	if !m.FeeRate.IsPositive() { // not positive
 		return errors.New("rate should be positive")
 	}
 

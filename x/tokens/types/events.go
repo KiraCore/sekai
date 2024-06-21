@@ -6,7 +6,7 @@ const (
 
 	AttributeKeyDescription = "description"
 	AttributeKeyDenom       = "denom"
-	AttributeKeyRate        = "rate"
+	AttributeKeyFeeRate     = "fee_rate"
 	AttributeKeyFeeEnabled  = "fee_enabled"
 	AttributeKeyProposer    = "proposer"
 	AttributeKeySymbol      = "symbol"

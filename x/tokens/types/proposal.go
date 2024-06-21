@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 
+	"cosmossdk.io/math"
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,29 +16,53 @@ var (
 
 func NewUpsertTokenInfosProposal(
 	denom string,
-	rate sdk.Dec,
+	tokenType string,
+	feeRate math.LegacyDec,
 	feeEnabled bool,
-	stakeCap sdk.Dec,
-	stakeMin sdk.Int,
+	supply math.Int,
+	supplyCap math.Int,
+	stakeCap math.LegacyDec,
+	stakeMin math.Int,
 	stakeEnabled bool,
 	inactive bool,
 	symbol string,
 	name string,
 	icon string,
 	decimals uint32,
+	description string,
+	website string,
+	social string,
+	holders uint64,
+	mintingFee math.Int,
+	owner string,
+	ownerEditDisabled bool,
+	nftMetadata string,
+	nftHash string,
 ) *ProposalUpsertTokenInfo {
 	return &ProposalUpsertTokenInfo{
-		Denom:        denom,
-		Rate:         rate,
-		FeeEnabled:   feeEnabled,
-		StakeCap:     stakeCap,
-		StakeMin:     stakeMin,
-		StakeEnabled: stakeEnabled,
-		Inactive:     inactive,
-		Symbol:       symbol,
-		Name:         name,
-		Icon:         icon,
-		Decimals:     decimals,
+		Denom:             denom,
+		TokenType:         tokenType,
+		FeeRate:           feeRate,
+		FeeEnabled:        feeEnabled,
+		Supply:            supply,
+		SupplyCap:         supplyCap,
+		StakeCap:          stakeCap,
+		StakeMin:          stakeMin,
+		StakeEnabled:      stakeEnabled,
+		Inactive:          inactive,
+		Symbol:            symbol,
+		Name:              name,
+		Icon:              icon,
+		Decimals:          decimals,
+		Description:       description,
+		Website:           website,
+		Social:            social,
+		Holders:           holders,
+		MintingFee:        mintingFee,
+		Owner:             owner,
+		OwnerEditDisabled: ownerEditDisabled,
+		NftMetadata:       nftMetadata,
+		NftHash:           nftHash,
 	}
 }
 
