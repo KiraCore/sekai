@@ -122,7 +122,7 @@ func (k Keeper) GetBondsValue(ctx sdk.Context, bonds sdk.Coins) sdk.Dec {
 	bondsValue := sdk.ZeroDec()
 	for _, bond := range bonds {
 		denom := multistakingtypes.GetOriginalDenom(bond.Denom)
-		rate := k.tk.GetTokenRate(ctx, denom)
+		rate := k.tk.GetTokenInfo(ctx, denom)
 		if rate == nil {
 			continue
 		}

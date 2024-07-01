@@ -3,8 +3,7 @@ package types
 const (
 	ProposalTypeSoftwareUpgrade                    = "SoftwareUpgrade"
 	ProposalTypeCancelSoftwareUpgrade              = "CancelSoftwareUpgrade"
-	ProposalTypeUpsertTokenAlias                   = "UpsertTokenAlias"
-	ProposalTypeUpsertTokenRates                   = "UpsertTokenRates"
+	ProposalTypeUpsertTokenInfos                   = "UpsertTokenInfos"
 	ProposalTypeTokensWhiteBlackChange             = "TokensWhiteBlackChange"
 	ProposalTypeUnjailValidator                    = "UnjailValidator"
 	ProposalTypeResetWholeValidatorRank            = "ResetWholeValidatorRank"
@@ -50,8 +49,7 @@ const (
 var AllProposalTypes []string = []string{
 	ProposalTypeSoftwareUpgrade,
 	ProposalTypeCancelSoftwareUpgrade,
-	ProposalTypeUpsertTokenAlias,
-	ProposalTypeUpsertTokenRates,
+	ProposalTypeUpsertTokenInfos,
 	ProposalTypeTokensWhiteBlackChange,
 	ProposalTypeUnjailValidator,
 	ProposalTypeResetWholeValidatorRank,

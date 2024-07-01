@@ -29,5 +29,5 @@ type MultiStakingKeeper interface {
 
 // TokensKeeper defines expected interface needed to get token rate
 type TokensKeeper interface {
-	GetTokenRate(ctx sdk.Context, denom string) *tokenstypes.TokenRate
+	GetTokenInfo(ctx sdk.Context, denom string) *tokenstypes.TokenInfo
 }

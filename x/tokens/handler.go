@@ -15,12 +15,8 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgUpsertTokenAlias:
-			res, err := msgServer.UpsertTokenAlias(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-
-		case *types.MsgUpsertTokenRate:
-			res, err := msgServer.UpsertTokenRate(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgUpsertTokenInfo:
+			res, err := msgServer.UpsertTokenInfo(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		default:

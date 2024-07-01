@@ -36,7 +36,7 @@ func (suite *KeeperTestSuite) TestDappSetGetDelete() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),
@@ -82,7 +82,7 @@ func (suite *KeeperTestSuite) TestDappSetGetDelete() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),

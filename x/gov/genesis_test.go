@@ -53,15 +53,12 @@ func TestSimappExportGenesis(t *testing.T) {
         1,
         2,
         3,
-        6,
         8,
         9,
         12,
         13,
         10,
         11,
-        14,
-        15,
         18,
         19,
         20,
@@ -243,13 +240,6 @@ func TestSimappExportGenesis(t *testing.T) {
       "default_parameters": "0"
     },
     {
-      "transaction_type": "upsert_token_alias",
-      "execution_fee": "100",
-      "failure_fee": "1",
-      "timeout": "10",
-      "default_parameters": "0"
-    },
-    {
       "transaction_type": "veto-proposal-type-x",
       "execution_fee": "100",
       "failure_fee": "1",
@@ -341,7 +331,6 @@ func TestExportInitGenesis(t *testing.T) {
 				types.PermSetPermissions,
 				types.PermClaimValidator,
 				types.PermClaimCouncilor,
-				types.PermUpsertTokenAlias,
 			}, nil),
 		},
 		StartingProposalId: 1,
@@ -451,8 +440,7 @@ func TestExportInitGenesis(t *testing.T) {
       "whitelist": [	
         1,	
         2,	
-        3,	
-        6	
+        3
       ]	
     },	
     "2": {	

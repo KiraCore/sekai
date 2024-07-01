@@ -15,31 +15,32 @@ import (
 )
 
 const (
-	FlagTitle              = "title"
-	FlagDescription        = "description"
-	FlagDappName           = "dapp-name"
-	FlagDappDescription    = "dapp-description"
-	FlagDenom              = "denom"
-	FlagWebsite            = "website"
-	FlagLogo               = "logo"
-	FlagSocial             = "social"
-	FlagDocs               = "docs"
-	FlagControllerRoles    = "controller-roles"
-	FlagControllerAccounts = "controller-accounts"
-	FlagBinaryInfo         = "binary-info"
-	FlagLpPoolConfig       = "lp-pool-config"
-	FlagIssuranceConfig    = "issurance-config"
-	FlagUpdateTimeMax      = "update-time-max"
-	FlagExecutorsMin       = "executors-min"
-	FlagExecutorsMax       = "executors-max"
-	FlagVerifiersMin       = "verifiers-min"
-	FlagDappStatus         = "dapp-status"
-	FlagBond               = "bond"
-	FlagVoteQuorum         = "vote-quorum"
-	FlagVotePeriod         = "vote-period"
-	FlagVoteEnactment      = "vote-enactment"
-	FlagAddr               = "addr"
-	FlagAmount             = "amount"
+	FlagTitle               = "title"
+	FlagDescription         = "description"
+	FlagDappName            = "dapp-name"
+	FlagDappDescription     = "dapp-description"
+	FlagDenom               = "denom"
+	FlagWebsite             = "website"
+	FlagLogo                = "logo"
+	FlagSocial              = "social"
+	FlagDocs                = "docs"
+	FlagControllerRoles     = "controller-roles"
+	FlagControllerAccounts  = "controller-accounts"
+	FlagBinaryInfo          = "binary-info"
+	FlagLpPoolConfig        = "lp-pool-config"
+	FlagIssuanceConfig      = "issuance-config"
+	FlagUpdateTimeMax       = "update-time-max"
+	FlagExecutorsMin        = "executors-min"
+	FlagExecutorsMax        = "executors-max"
+	FlagVerifiersMin        = "verifiers-min"
+	FlagDappStatus          = "dapp-status"
+	FlagBond                = "bond"
+	FlagVoteQuorum          = "vote-quorum"
+	FlagVotePeriod          = "vote-period"
+	FlagVoteEnactment       = "vote-enactment"
+	FlagAddr                = "addr"
+	FlagAmount              = "amount"
+	FlagEnableBondVerifiers = "enable_bond_verifiers"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -157,14 +158,14 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 				return fmt.Errorf("invalid controller role/accounts: %w", err)
 			}
 
-			issuranceStr, err := cmd.Flags().GetString(FlagIssuranceConfig)
+			issuanceStr, err := cmd.Flags().GetString(FlagIssuanceConfig)
 			if err != nil {
-				return fmt.Errorf("invalid issurance config: %w", err)
+				return fmt.Errorf("invalid issuance config: %w", err)
 			}
-			issurance := types.IssuranceConfig{}
-			err = clientCtx.Codec.UnmarshalJSON([]byte(issuranceStr), &issurance)
+			issuance := types.IssuanceConfig{}
+			err = clientCtx.Codec.UnmarshalJSON([]byte(issuanceStr), &issuance)
 			if err != nil {
-				return fmt.Errorf("invalid issurance config: %w", err)
+				return fmt.Errorf("invalid issuance config: %w", err)
 			}
 
 			lpPoolConfigStr, err := cmd.Flags().GetString(FlagLpPoolConfig)
@@ -208,6 +209,10 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid verifiersMin: %w", err)
 			}
+			enableBondVerifiers, err := cmd.Flags().GetBool(FlagEnableBondVerifiers)
+			if err != nil {
+				return fmt.Errorf("invalid enable bond verifiers: %w", err)
+			}
 
 			msg := &types.MsgCreateDappProposal{
 				Sender: clientCtx.GetFromAddress().String(),
@@ -226,17 +231,18 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 							Addresses: ctrlAccounts,
 						},
 					},
-					Bin:           []types.BinaryInfo{binaryInfo},
-					Pool:          lpPoolConfig,
-					Issurance:     issurance,
-					UpdateTimeMax: updateMaxTime,
-					ExecutorsMin:  executorsMin,
-					ExecutorsMax:  executorsMax,
-					VerifiersMin:  verifiersMin,
-					Status:        types.DappStatus(types.SessionStatus_value[statusStr]),
-					VoteQuorum:    sdk.NewDecWithPrec(int64(voteQuorum), 2),
-					VotePeriod:    votePeriod,
-					VoteEnactment: voteEnactment,
+					Bin:                 []types.BinaryInfo{binaryInfo},
+					Pool:                lpPoolConfig,
+					Issuance:            issuance,
+					UpdateTimeMax:       updateMaxTime,
+					ExecutorsMin:        executorsMin,
+					ExecutorsMax:        executorsMax,
+					VerifiersMin:        verifiersMin,
+					Status:              types.DappStatus(types.SessionStatus_value[statusStr]),
+					VoteQuorum:          sdk.NewDecWithPrec(int64(voteQuorum), 2),
+					VotePeriod:          votePeriod,
+					VoteEnactment:       voteEnactment,
+					EnableBondVerifiers: enableBondVerifiers,
 				},
 			}
 
@@ -265,7 +271,7 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 	cmd.Flags().Uint64(FlagVoteEnactment, 0, "vote enactment of the dapp")
 	cmd.Flags().String(FlagControllerRoles, "", "controller roles on the dapp.")
 	cmd.Flags().String(FlagControllerAccounts, "", "controller accounts on the dapp.")
-	cmd.Flags().String(FlagIssuranceConfig, "{}", "dapp issurance config.")
+	cmd.Flags().String(FlagIssuanceConfig, "{}", "dapp issuance config.")
 	cmd.Flags().String(FlagLpPoolConfig, "{}", "dapp lp config.")
 	cmd.Flags().String(FlagBinaryInfo, "{}", "dapp binary info.")
 	cmd.Flags().String(FlagDappStatus, "{}", "dapp status.")
@@ -273,6 +279,7 @@ func GetTxCreateDappProposalCmd() *cobra.Command {
 	cmd.Flags().Uint64(FlagExecutorsMin, 0, "dapp executors min")
 	cmd.Flags().Uint64(FlagExecutorsMax, 0, "dapp executors max")
 	cmd.Flags().Uint64(FlagVerifiersMin, 0, "dapp verifiers min")
+	cmd.Flags().Bool(FlagEnableBondVerifiers, true, "enable verifiers with bonding")
 
 	return cmd
 }
@@ -728,14 +735,14 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 				return fmt.Errorf("invalid controller role/accounts: %w", err)
 			}
 
-			issuranceStr, err := cmd.Flags().GetString(FlagIssuranceConfig)
+			issuanceStr, err := cmd.Flags().GetString(FlagIssuanceConfig)
 			if err != nil {
-				return fmt.Errorf("invalid issurance config: %w", err)
+				return fmt.Errorf("invalid issuance config: %w", err)
 			}
-			issurance := types.IssuranceConfig{}
-			err = clientCtx.Codec.UnmarshalJSON([]byte(issuranceStr), &issurance)
+			issuance := types.IssuanceConfig{}
+			err = clientCtx.Codec.UnmarshalJSON([]byte(issuanceStr), &issuance)
 			if err != nil {
-				return fmt.Errorf("invalid issurance config: %w", err)
+				return fmt.Errorf("invalid issuance config: %w", err)
 			}
 
 			lpPoolConfigStr, err := cmd.Flags().GetString(FlagLpPoolConfig)
@@ -791,6 +798,10 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid vote period: %w", err)
 			}
+			enableBondVerifiers, err := cmd.Flags().GetBool(FlagEnableBondVerifiers)
+			if err != nil {
+				return fmt.Errorf("invalid enable bond verifiers: %w", err)
+			}
 
 			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
@@ -812,17 +823,18 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 								Addresses: ctrlAccounts,
 							},
 						},
-						Bin:           []types.BinaryInfo{binaryInfo},
-						Pool:          lpPoolConfig,
-						Issurance:     issurance,
-						UpdateTimeMax: updateMaxTime,
-						ExecutorsMin:  executorsMin,
-						ExecutorsMax:  executorsMax,
-						VerifiersMin:  verifiersMin,
-						Status:        types.DappStatus(types.SessionStatus_value[statusStr]),
-						VoteQuorum:    sdk.NewDecWithPrec(int64(voteQuorum), 2),
-						VotePeriod:    votePeriod,
-						VoteEnactment: voteEnactment,
+						Bin:                 []types.BinaryInfo{binaryInfo},
+						Pool:                lpPoolConfig,
+						Issuance:            issuance,
+						UpdateTimeMax:       updateMaxTime,
+						ExecutorsMin:        executorsMin,
+						ExecutorsMax:        executorsMax,
+						VerifiersMin:        verifiersMin,
+						Status:              types.DappStatus(types.SessionStatus_value[statusStr]),
+						VoteQuorum:          sdk.NewDecWithPrec(int64(voteQuorum), 2),
+						VotePeriod:          votePeriod,
+						VoteEnactment:       voteEnactment,
+						EnableBondVerifiers: enableBondVerifiers,
 					},
 				},
 			)
@@ -852,7 +864,7 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 	cmd.Flags().Uint64(FlagVoteEnactment, 0, "vote enactment of the dapp")
 	cmd.Flags().String(FlagControllerRoles, "", "controller roles on the dapp.")
 	cmd.Flags().String(FlagControllerAccounts, "", "controller accounts on the dapp.")
-	cmd.Flags().String(FlagIssuranceConfig, "{}", "dapp issurance config.")
+	cmd.Flags().String(FlagIssuanceConfig, "{}", "dapp issuance config.")
 	cmd.Flags().String(FlagLpPoolConfig, "{}", "dapp lp config.")
 	cmd.Flags().String(FlagBinaryInfo, "{}", "dapp binary info.")
 	cmd.Flags().String(FlagDappStatus, "{}", "dapp status.")
@@ -860,6 +872,7 @@ func GetTxProposalUpsertDappCmd() *cobra.Command {
 	cmd.Flags().Uint64(FlagExecutorsMin, 0, "dapp executors min")
 	cmd.Flags().Uint64(FlagExecutorsMax, 0, "dapp executors max")
 	cmd.Flags().Uint64(FlagVerifiersMin, 0, "dapp verifiers min")
+	cmd.Flags().Bool(FlagEnableBondVerifiers, true, "enable verifiers with bonding")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -1181,9 +1194,9 @@ func GetTxMintCreateFtTxCmd() *cobra.Command {
 				return fmt.Errorf("invalid supply")
 			}
 
-			fee, ok := sdk.NewIntFromString(args[10])
-			if !ok {
-				return fmt.Errorf("invalid fee")
+			feeRate, err := sdk.NewDecFromStr(args[10])
+			if err != nil {
+				return err
 			}
 
 			msg := &types.MsgMintCreateFtTx{
@@ -1195,10 +1208,10 @@ func GetTxMintCreateFtTxCmd() *cobra.Command {
 				Description: args[4],
 				Website:     args[5],
 				Social:      args[6],
-				Decimals:    uint64(decimals),
+				Decimals:    uint32(decimals),
 				Cap:         cap,
 				Supply:      supply,
-				Fee:         fee,
+				FeeRate:     feeRate,
 				Owner:       args[11],
 			}
 
@@ -1244,9 +1257,9 @@ func GetTxMintCreateNftTxCmd() *cobra.Command {
 				return fmt.Errorf("invalid supply")
 			}
 
-			fee, ok := sdk.NewIntFromString(args[10])
-			if !ok {
-				return fmt.Errorf("invalid fee")
+			feeRate, err := sdk.NewDecFromStr(args[10])
+			if err != nil {
+				return err
 			}
 
 			msg := &types.MsgMintCreateNftTx{
@@ -1258,10 +1271,10 @@ func GetTxMintCreateNftTxCmd() *cobra.Command {
 				Description: args[4],
 				Website:     args[5],
 				Social:      args[6],
-				Decimals:    uint64(decimals),
+				Decimals:    uint32(decimals),
 				Cap:         cap,
 				Supply:      supply,
-				Fee:         fee,
+				FeeRate:     feeRate,
 				Owner:       args[11],
 				Metadata:    args[12],
 				Hash:        args[13],

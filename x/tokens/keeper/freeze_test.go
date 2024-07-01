@@ -87,8 +87,8 @@ func (suite *KeeperTestSuite) TestTokenBlackWhiteSetGet() {
 		Whitelisted: []string{"newwhite"},
 		Blacklisted: []string{"newblack"},
 	}
-	suite.app.TokensKeeper.SetTokenBlackWhites(ctx, &blackWhites)
+	suite.app.TokensKeeper.SetTokenBlackWhites(ctx, blackWhites)
 	bw := suite.app.TokensKeeper.GetTokenBlackWhites(ctx)
 	suite.Require().NotNil(bw)
-	suite.Require().Equal(blackWhites, *bw)
+	suite.Require().Equal(blackWhites, bw)
 }

@@ -23,6 +23,7 @@ type Keeper struct {
 	ck       types.CollectivesKeeper
 	spk      types.SpendingKeeper
 	custodyk types.CustodyKeeper
+	tk       types.TokensKeeper
 }
 
 // NewKeeper creates a recovery keeper
@@ -35,6 +36,7 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey,
 	ck types.CollectivesKeeper,
 	spk types.SpendingKeeper,
 	custodyk types.CustodyKeeper,
+	tk types.TokensKeeper,
 ) Keeper {
 
 	return Keeper{
@@ -48,6 +50,7 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey,
 		ck:       ck,
 		spk:      spk,
 		custodyk: custodyk,
+		tk:       tk,
 	}
 }
 

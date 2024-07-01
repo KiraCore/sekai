@@ -199,7 +199,7 @@ func (suite *KeeperTestSuite) GetBondsValue() {
 	suite.Require().Equal(value, sdk.NewDec(1000_000))
 
 	// get bonds value with newly registered token
-	suite.app.TokensKeeper.UpsertTokenRate(suite.ctx, tokenstypes.TokenRate{
+	suite.app.TokensKeeper.UpsertTokenInfo(suite.ctx, tokenstypes.TokenInfo{
 		Denom:   "zzz",
 		FeeRate: sdk.NewDec(10),
 	})

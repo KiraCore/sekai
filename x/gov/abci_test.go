@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -441,57 +442,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 			blockHeightChange: 3,
 		},
 		{
-			name: "Passed proposal in enactment is applied and removed from enactment list: Set Token Alias",
-			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
-				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
-
-				actor := types.NewDefaultActor(addrs[0])
-				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
-
-				proposalID := uint64(1234)
-				proposal, err := types.NewProposal(
-					proposalID,
-					"title",
-					"some desc",
-					tokenstypes.NewUpsertTokenAliasProposal(
-						"EUR",
-						"Euro",
-						"http://www.google.es",
-						12,
-						[]string{
-							"eur",
-							"€",
-						},
-						false,
-					),
-					time.Now(),
-					time.Now().Add(10*time.Second),
-					time.Now().Add(20*time.Second),
-					ctx.BlockHeight()+2,
-					ctx.BlockHeight()+3,
-				)
-				require.NoError(t, err)
-
-				proposal.Result = types.Enactment
-				app.CustomGovKeeper.SaveProposal(ctx, proposal)
-
-				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
-
-				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
-				requireIteratorCount(t, iterator, 1)
-
-				return addrs
-			},
-			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
-				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
-				requireIteratorCount(t, iterator, 0)
-
-				token := app.TokensKeeper.GetTokenAlias(ctx, "EUR")
-				require.Equal(t, "Euro", token.Name)
-			},
-			blockHeightChange: 3,
-		},
-		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Set Token Rates",
 			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
@@ -504,14 +454,22 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					proposalID,
 					"title",
 					"some desc",
-					tokenstypes.NewUpsertTokenRatesProposal(
+					tokenstypes.NewUpsertTokenInfosProposal(
 						"btc",
+						"adr20",
 						sdk.NewDec(1234),
 						false,
+						sdk.ZeroInt(),
+						sdk.ZeroInt(),
 						sdk.ZeroDec(),
 						sdk.ZeroInt(),
 						false,
 						false,
+						"BTC",
+						"Bitcoin",
+						"",
+						9,
+						"", "", "", 0, math.ZeroInt(), "", false, "", "",
 					),
 					time.Now(),
 					time.Now().Add(10*time.Second),
@@ -535,10 +493,10 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
-				token := app.TokensKeeper.GetTokenRate(ctx, "btc")
+				token := app.TokensKeeper.GetTokenInfo(ctx, "btc")
 				require.Equal(t, sdk.NewDec(1234), token.FeeRate)
 				require.Equal(t, "btc", token.Denom)
-				require.Equal(t, false, token.FeePayments)
+				require.Equal(t, false, token.FeeEnabled)
 			},
 			blockHeightChange: 3,
 		},

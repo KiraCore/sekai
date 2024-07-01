@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/json"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -10,16 +11,13 @@ import (
 // DefaultGenesis returns the default CustomGo genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		Aliases: []*TokenAlias{
-			NewTokenAlias("KEX", "Kira", "", 6, []string{"ukex", "mkex"}, false),
+		TokenInfos: []TokenInfo{
+			NewTokenInfo("ukex", "adr20", sdk.NewDec(1), true, math.ZeroInt(), math.ZeroInt(), sdk.NewDecWithPrec(50, 2), sdk.OneInt(), true, false, "KEX", "KEX", "", 6, "", "", "", 0, math.ZeroInt(), "", false, "", ""),                   // 1
+			NewTokenInfo("ubtc", "adr20", sdk.NewDec(10), true, math.ZeroInt(), math.ZeroInt(), sdk.NewDecWithPrec(25, 2), sdk.OneInt(), true, false, "BTC", "Bitcoin", "", 9, "", "", "", 0, math.ZeroInt(), "", false, "", ""),              // 10
+			NewTokenInfo("xeth", "adr20", sdk.NewDecWithPrec(1, 1), true, math.ZeroInt(), math.ZeroInt(), sdk.NewDecWithPrec(10, 2), sdk.OneInt(), false, false, "ETH", "Ethereum", "", 18, "", "", "", 0, math.ZeroInt(), "", false, "", ""), // 0.1
+			NewTokenInfo("frozen", "adr20", sdk.NewDecWithPrec(1, 1), true, math.ZeroInt(), math.ZeroInt(), sdk.ZeroDec(), sdk.OneInt(), false, false, "FROZEN", "FROZEN", "", 6, "", "", "", 0, math.ZeroInt(), "", false, "", ""),           // 0.1
 		},
-		Rates: []*TokenRate{
-			NewTokenRate("ukex", sdk.NewDec(1), true, sdk.NewDecWithPrec(50, 2), sdk.OneInt(), true, false),             // 1
-			NewTokenRate("ubtc", sdk.NewDec(10), true, sdk.NewDecWithPrec(25, 2), sdk.OneInt(), true, false),            // 10
-			NewTokenRate("xeth", sdk.NewDecWithPrec(1, 1), true, sdk.NewDecWithPrec(10, 2), sdk.OneInt(), false, false), // 0.1
-			NewTokenRate("frozen", sdk.NewDecWithPrec(1, 1), true, sdk.ZeroDec(), sdk.OneInt(), false, false),           // 0.1
-		},
-		TokenBlackWhites: &TokensWhiteBlack{
+		TokenBlackWhites: TokensWhiteBlack{
 			Whitelisted: []string{"ukex"},
 			Blacklisted: []string{"frozen"},
 		},

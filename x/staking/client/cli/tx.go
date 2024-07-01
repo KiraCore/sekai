@@ -70,7 +70,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 	return cmd
 }
 
-// GetTxProposalUnjailValidatorCmd implement cli command for MsgUpsertTokenAlias
+// GetTxProposalUnjailValidatorCmd implement cli command for UnjailValidator
 func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "unjail-validator [val_addr] [reference]",

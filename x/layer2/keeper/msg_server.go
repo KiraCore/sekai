@@ -5,6 +5,7 @@ import (
 
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/layer2/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -141,6 +142,10 @@ func (k msgServer) JoinDappVerifierWithBond(goCtx context.Context, msg *types.Ms
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if !dapp.EnableBondVerifiers {
+		return nil, types.ErrDappNotAllowsBondVerifiers
+	}
+
 	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
 	if operator.DappName != "" && operator.Verifier {
 		return nil, types.ErrAlreadyADappVerifier
@@ -688,19 +693,19 @@ func (k msgServer) MintCreateFtTx(goCtx context.Context, msg *types.MsgMintCreat
 		return nil, err
 	}
 
-	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{fee})
+	err = k.keeper.tk.BurnCoins(ctx, types.ModuleName, sdk.Coins{fee})
 	if err != nil {
 		return nil, err
 	}
 
 	denom := "ku/" + msg.DenomSuffix
 
-	info := k.keeper.GetTokenInfo(ctx, denom)
+	info := k.keeper.tk.GetTokenInfo(ctx, denom)
 	if info.Denom != "" {
 		return nil, types.ErrTokenAlreadyRegistered
 	}
 
-	k.keeper.SetTokenInfo(ctx, types.TokenInfo{
+	err = k.keeper.tk.UpsertTokenInfo(ctx, tokenstypes.TokenInfo{
 		TokenType:   "adr20",
 		Denom:       denom,
 		Name:        msg.Name,
@@ -710,14 +715,17 @@ func (k msgServer) MintCreateFtTx(goCtx context.Context, msg *types.MsgMintCreat
 		Website:     msg.Website,
 		Social:      msg.Social,
 		Decimals:    msg.Decimals,
-		Cap:         msg.Cap,
+		SupplyCap:   msg.Cap,
 		Supply:      msg.Supply,
 		Holders:     msg.Holders,
-		Fee:         msg.Fee,
+		FeeRate:     msg.FeeRate,
 		Owner:       msg.Owner,
-		Metadata:    "",
-		Hash:        "",
+		NftMetadata: "",
+		NftHash:     "",
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.MsgMintCreateFtTxResponse{}, nil
 }
@@ -732,18 +740,18 @@ func (k msgServer) MintCreateNftTx(goCtx context.Context, msg *types.MsgMintCrea
 		return nil, err
 	}
 
-	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{fee})
+	err = k.keeper.tk.BurnCoins(ctx, types.ModuleName, sdk.Coins{fee})
 	if err != nil {
 		return nil, err
 	}
 
 	denom := "ku/" + msg.DenomSuffix
-	info := k.keeper.GetTokenInfo(ctx, denom)
+	info := k.keeper.tk.GetTokenInfo(ctx, denom)
 	if info.Denom != "" {
 		return nil, types.ErrTokenAlreadyRegistered
 	}
 
-	k.keeper.SetTokenInfo(ctx, types.TokenInfo{
+	err = k.keeper.tk.UpsertTokenInfo(ctx, tokenstypes.TokenInfo{
 		TokenType:   "adr43",
 		Denom:       denom,
 		Name:        msg.Name,
@@ -752,15 +760,18 @@ func (k msgServer) MintCreateNftTx(goCtx context.Context, msg *types.MsgMintCrea
 		Description: msg.Description,
 		Website:     msg.Website,
 		Social:      msg.Social,
-		Decimals:    msg.Decimals,
-		Cap:         msg.Cap,
+		Decimals:    0,
+		SupplyCap:   msg.Cap,
 		Supply:      msg.Supply,
 		Holders:     msg.Holders,
-		Fee:         msg.Fee,
+		FeeRate:     msg.FeeRate,
 		Owner:       msg.Owner,
-		Metadata:    msg.Metadata,
-		Hash:        msg.Hash,
+		NftMetadata: msg.Metadata,
+		NftHash:     msg.Hash,
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.MsgMintCreateNftTxResponse{}, nil
 }
@@ -768,13 +779,13 @@ func (k msgServer) MintCreateNftTx(goCtx context.Context, msg *types.MsgMintCrea
 func (k msgServer) MintIssueTx(goCtx context.Context, msg *types.MsgMintIssueTx) (*types.MsgMintIssueTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	tokenInfo := k.keeper.GetTokenInfo(ctx, msg.Denom)
+	tokenInfo := k.keeper.tk.GetTokenInfo(ctx, msg.Denom)
 	if tokenInfo.Denom == "" {
 		return nil, types.ErrTokenNotRegistered
 	}
 
 	if msg.Sender != tokenInfo.Owner {
-		fee := msg.Amount.Mul(tokenInfo.Fee).Quo(Pow10(tokenInfo.Decimals))
+		fee := tokenInfo.FeeRate.MulInt(msg.Amount).TruncateInt()
 		feeCoins := sdk.Coins{sdk.NewCoin(k.keeper.DefaultDenom(ctx), fee)}
 		if fee.IsPositive() {
 			if tokenInfo.Owner == "" {
@@ -795,7 +806,7 @@ func (k msgServer) MintIssueTx(goCtx context.Context, msg *types.MsgMintIssueTx)
 	}
 
 	mintCoin := sdk.NewCoin(msg.Denom, msg.Amount)
-	err := k.keeper.bk.MintCoins(ctx, types.ModuleName, sdk.Coins{mintCoin})
+	err := k.keeper.tk.MintCoins(ctx, types.ModuleName, sdk.Coins{mintCoin})
 	if err != nil {
 		return nil, err
 	}
@@ -805,19 +816,13 @@ func (k msgServer) MintIssueTx(goCtx context.Context, msg *types.MsgMintIssueTx)
 		return nil, err
 	}
 
-	tokenInfo.Supply = tokenInfo.Supply.Add(msg.Amount)
-	if tokenInfo.Supply.GT(tokenInfo.Cap) {
-		return nil, types.ErrCannotExceedTokenCap
-	}
-	k.keeper.SetTokenInfo(ctx, tokenInfo)
-
 	return &types.MsgMintIssueTxResponse{}, nil
 }
 
 func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (*types.MsgMintBurnTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	tokenInfo := k.keeper.GetTokenInfo(ctx, msg.Denom)
+	tokenInfo := k.keeper.tk.GetTokenInfo(ctx, msg.Denom)
 	if tokenInfo.Denom == "" {
 		return nil, types.ErrTokenNotRegistered
 	}
@@ -828,13 +833,10 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 		return nil, err
 	}
 
-	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{burnCoin})
+	err = k.keeper.tk.BurnCoins(ctx, types.ModuleName, sdk.Coins{burnCoin})
 	if err != nil {
 		return nil, err
 	}
-
-	tokenInfo.Supply = tokenInfo.Supply.Sub(msg.Amount)
-	k.keeper.SetTokenInfo(ctx, tokenInfo)
 
 	return &types.MsgMintBurnTxResponse{}, nil
 }

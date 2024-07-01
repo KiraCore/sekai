@@ -63,14 +63,14 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 	filledAmount := sdk.NewDec(0)
 
 	for _, coin := range amt {
-		rate := k.tk.GetTokenRate(ctx, coin.Denom)
+		rate := k.tk.GetTokenInfo(ctx, coin.Denom)
 		if rate != nil {
 			totalAmount = totalAmount.Add(rate.FeeRate.Mul(sdk.NewDecFromInt(coin.Amount)))
 		}
 	}
 
 	for _, coin := range recipientSentCoins {
-		rate := k.tk.GetTokenRate(ctx, coin.Denom)
+		rate := k.tk.GetTokenInfo(ctx, coin.Denom)
 		if rate == nil {
 			continue
 		}

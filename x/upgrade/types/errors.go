@@ -5,5 +5,6 @@ import (
 )
 
 var (
-	ErrInvalidUpgradeTime = errors.Register(ModuleName, 1, "invalid upgrade time")
+	ErrInvalidUpgradeTime    = errors.Register(ModuleName, 1, "invalid upgrade time")
+	ErrInvalidGenesisVersion = errors.Register(ModuleName, 2, "invalid genesis version")
 )

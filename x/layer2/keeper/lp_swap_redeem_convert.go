@@ -22,7 +22,7 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, fee sdk.Coins) error {
 	// - `25%` will be split between **ACTIVE** dApp executors, and verifiers (fisherman).
 	// Additionally, the premint and postmint tokens can be used to incentivize operators before
 	// dApp starts to generate revenue.
-	err := k.bk.BurnCoins(ctx, types.ModuleName, fee)
+	err := k.tk.BurnCoins(ctx, types.ModuleName, fee)
 	if err != nil {
 		return err
 	}

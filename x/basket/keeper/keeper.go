@@ -4,7 +4,6 @@ import (
 	"github.com/KiraCore/sekai/x/basket/types"
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
-	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,12 +16,12 @@ type Keeper struct {
 	ak       types.AccountKeeper
 	bk       types.BankKeeper
 	gk       govkeeper.Keeper
-	tk       tokenskeeper.Keeper
+	tk       types.TokensKeeper
 	mk       types.MultiStakingKeeper
 }
 
 // NewKeeper returns instance of a keeper
-func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, ak types.AccountKeeper, bk types.BankKeeper, gk govkeeper.Keeper, tk tokenskeeper.Keeper, mk types.MultiStakingKeeper) Keeper {
+func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, ak types.AccountKeeper, bk types.BankKeeper, gk govkeeper.Keeper, tk types.TokensKeeper, mk types.MultiStakingKeeper) Keeper {
 	return Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,

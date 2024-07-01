@@ -169,7 +169,7 @@ func (a ApplyUpsertDappProposalHandler) Apply(ctx sdk.Context, proposalID uint64
 	dapp.Controllers = p.Dapp.Controllers
 	dapp.Bin = p.Dapp.Bin
 	dapp.Pool = p.Dapp.Pool
-	dapp.Issurance = p.Dapp.Issurance
+	dapp.Issuance = p.Dapp.Issuance
 	dapp.UpdateTimeMax = p.Dapp.UpdateTimeMax
 	dapp.ExecutorsMin = p.Dapp.ExecutorsMin
 	dapp.ExecutorsMax = p.Dapp.ExecutorsMax
@@ -180,6 +180,10 @@ func (a ApplyUpsertDappProposalHandler) Apply(ctx sdk.Context, proposalID uint64
 	dapp.VoteQuorum = p.Dapp.VoteQuorum
 	dapp.VotePeriod = p.Dapp.VotePeriod
 	dapp.VoteEnactment = p.Dapp.VoteEnactment
+	if dapp.EnableBondVerifiers && !p.Dapp.EnableBondVerifiers {
+		return types.ErrCanNotDisableBondedVerifiers
+	}
+	dapp.EnableBondVerifiers = p.Dapp.EnableBondVerifiers
 
 	a.keeper.SetDapp(ctx, p.Dapp)
 	return nil

@@ -11,6 +11,8 @@ const (
 	RouterKey = ModuleName
 	// QuerierRoute is the querier route for the layer2 module
 	QuerierRoute = ModuleName
+	// StoreKey is the store key string for layer2 module
+	StoreKey = ModuleName
 )
 
 // constants

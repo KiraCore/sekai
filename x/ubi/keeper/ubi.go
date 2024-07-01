@@ -87,7 +87,7 @@ func (k Keeper) ProcessUBIRecord(ctx sdk.Context, record types.UBIRecord) error 
 	}
 
 	coin := sdk.NewCoin(defaultDenom, amount)
-	err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.NewCoins(coin))
+	err := k.tk.MintCoins(ctx, minttypes.ModuleName, sdk.NewCoins(coin))
 	if err != nil {
 		return err
 	}

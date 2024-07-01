@@ -6,7 +6,6 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
 import "kira/layer2/layer2.proto";
-import "kira/layer2/mint.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/layer2/types";
 
@@ -26,14 +25,6 @@ service Query {
   rpc TransferDapps(QueryTransferDappsRequest) returns (QueryTransferDappsResponse) {
     option (google.api.http).get = "/kira/layer2/transfer_dapp";
   }
-  // query list of all token denoms on the network including those created in
-  // the genesis (ukex, samolean etc..) as well as those in the minting module,
-  // lp tokens, validator recovery tokens and so on. If the flag with specific
-  // name is specified provide a detailed information about the token including
-  // its current circulating supply etc.
-  rpc GlobalTokens(QueryGlobalTokensRequest) returns (QueryGlobalTokensResponse) {
-    option (google.api.http).get = "/kira/layer2/global_tokens";
-  }
 }
 
 message QueryExecutionRegistrarRequest {
@@ -52,9 +43,4 @@ message QueryAllDappsResponse {
 message QueryTransferDappsRequest {}
 message QueryTransferDappsResponse {
   repeated XAM XAMs = 1 [ (gogoproto.nullable) = false ];
-}
-
-message QueryGlobalTokensRequest {}
-message QueryGlobalTokensResponse {
-  repeated TokenInfo tokens = 1 [ (gogoproto.nullable) = false ];
 }

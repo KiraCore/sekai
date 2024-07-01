@@ -4,17 +4,18 @@ import (
 	"errors"
 
 	"cosmossdk.io/math"
-	kiratypes "github.com/KiraCore/sekai/types"
-	"github.com/KiraCore/sekai/x/gov/types"
+	appparams "github.com/KiraCore/sekai/app/params"
+	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var (
-	_ types.Content = &ProposalUpsertTokenInfo{}
-	_ types.Content = &ProposalTokensWhiteBlackChange{}
+	_ sdk.Msg = &MsgUpsertTokenInfo{}
 )
 
-func NewUpsertTokenInfosProposal(
+// NewMsgUpsertTokenInfo returns an instance of MsgUpserTokenInfo
+func NewMsgUpsertTokenInfo(
+	proposer sdk.AccAddress,
 	denom string,
 	tokenType string,
 	feeRate math.LegacyDec,
@@ -38,8 +39,9 @@ func NewUpsertTokenInfosProposal(
 	ownerEditDisabled bool,
 	nftMetadata string,
 	nftHash string,
-) *ProposalUpsertTokenInfo {
-	return &ProposalUpsertTokenInfo{
+) *MsgUpsertTokenInfo {
+	return &MsgUpsertTokenInfo{
+		Proposer:          proposer,
 		Denom:             denom,
 		TokenType:         tokenType,
 		FeeRate:           feeRate,
@@ -66,20 +68,26 @@ func NewUpsertTokenInfosProposal(
 	}
 }
 
-func (m *ProposalUpsertTokenInfo) ProposalType() string {
-	return kiratypes.ProposalTypeUpsertTokenInfos
+// Route returns route
+func (m *MsgUpsertTokenInfo) Route() string {
+	return ModuleName
 }
 
-func (m *ProposalUpsertTokenInfo) ProposalPermission() types.PermValue {
-	return types.PermCreateUpsertTokenInfoProposal
+// Type returns return message type
+func (m *MsgUpsertTokenInfo) Type() string {
+	return types.MsgTypeUpsertTokenInfo
 }
 
-func (m *ProposalUpsertTokenInfo) VotePermission() types.PermValue {
-	return types.PermVoteUpsertTokenInfoProposal
-}
+// ValidateBasic returns basic validation result
+func (m *MsgUpsertTokenInfo) ValidateBasic() error {
+	if m.Denom == appparams.DefaultDenom {
+		return errors.New("bond denom rate is read-only")
+	}
 
-// ValidateBasic returns basic validation
-func (m *ProposalUpsertTokenInfo) ValidateBasic() error {
+	if !m.FeeRate.IsPositive() { // not positive
+		return errors.New("rate should be positive")
+	}
+
 	if m.StakeCap.LT(sdk.NewDec(0)) { // not positive
 		return errors.New("reward cap should be positive")
 	}
@@ -87,26 +95,19 @@ func (m *ProposalUpsertTokenInfo) ValidateBasic() error {
 	if m.StakeCap.GT(sdk.OneDec()) { // more than 1
 		return errors.New("reward cap not be more than 100%")
 	}
+
 	return nil
 }
 
-func NewTokensWhiteBlackChangeProposal(isBlacklist, isAdd bool, tokens []string) *ProposalTokensWhiteBlackChange {
-	return &ProposalTokensWhiteBlackChange{isBlacklist, isAdd, tokens}
+// GetSignBytes returns to sign bytes
+func (m *MsgUpsertTokenInfo) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
 }
 
-func (m *ProposalTokensWhiteBlackChange) ProposalType() string {
-	return kiratypes.ProposalTypeTokensWhiteBlackChange
-}
-
-func (m *ProposalTokensWhiteBlackChange) ProposalPermission() types.PermValue {
-	return types.PermCreateTokensWhiteBlackChangeProposal
-}
-
-func (m *ProposalTokensWhiteBlackChange) VotePermission() types.PermValue {
-	return types.PermVoteTokensWhiteBlackChangeProposal
-}
-
-// ValidateBasic returns basic validation
-func (m *ProposalTokensWhiteBlackChange) ValidateBasic() error {
-	return nil
+// GetSigners returns signers
+func (m *MsgUpsertTokenInfo) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
 }

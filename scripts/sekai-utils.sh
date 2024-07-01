@@ -771,16 +771,12 @@ function showValidator() {
     echo $VAL_STATUS
 }
 
-function showTokenAliases() {
-    echo $(sekaid query tokens all-aliases --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse 2> /dev/null || echo -n "") 
-}
-
-function showTokenRates() {
+function showTokenInfos() {
     echo $(sekaid query tokens all-rates --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse 2> /dev/null || echo -n "") 
 }
 
-# setTokenRate <account> <denom> <rate> <is-fee-token>
-function setTokenRate() {
+# setTokenInfo <account> <denom> <rate> <is-fee-token>
+function setTokenInfo() {
     local ACCOUNT=$1
     local DENOM=$2
     local RATE=$3

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # register stake token as 1ukex=100stake
-sekaid tx customgov permission whitelist --from validator --keyring-backend=test --permission=$PermUpsertTokenRate --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
+sekaid tx customgov permission whitelist --from validator --keyring-backend=test --permission=$PermUpsertTokenInfo --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
 sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="stake" --rate="0.01" --fee_payments=true --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  --yes
 sekaid query tokens rate stake
 
@@ -20,6 +20,6 @@ sekaid query bank balances $(sekaid keys show -a validator --keyring-backend=tes
 # try upsert-token-alias failure in foreign currency
 sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="ETH" --name="Ethereum" --icon="myiconurl" --decimals=6 --denoms="finney" --chain-id=testing --fees=500000stake --home=$HOME/.sekaid  --yes
 # set permission for this execution
-sekaid tx customgov permission whitelist --from validator --keyring-backend=test --permission=$PermUpsertTokenAlias --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=10000stake --home=$HOME/.sekaid --yes
+sekaid tx customgov permission whitelist --from validator --keyring-backend=test --permission=$PermUpsertTokenInfo --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=10000stake --home=$HOME/.sekaid --yes
 # try upsert-token-alias success in foreign currency
 sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="ETH" --name="Ethereum" --icon="myiconurl" --decimals=6 --denoms="finney" --chain-id=testing --fees=500000stake --home=$HOME/.sekaid  --yes
