@@ -760,7 +760,7 @@ func (k msgServer) MintCreateNftTx(goCtx context.Context, msg *types.MsgMintCrea
 		Description: msg.Description,
 		Website:     msg.Website,
 		Social:      msg.Social,
-		Decimals:    msg.Decimals,
+		Decimals:    0,
 		SupplyCap:   msg.Cap,
 		Supply:      msg.Supply,
 		Holders:     msg.Holders,

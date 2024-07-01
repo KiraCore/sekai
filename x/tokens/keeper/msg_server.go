@@ -46,6 +46,10 @@ func (k msgServer) UpsertTokenInfo(goCtx context.Context, msg *types.MsgUpsertTo
 		tokenInfo.Description = msg.Description
 		tokenInfo.Website = msg.Website
 		tokenInfo.Social = msg.Social
+		if !tokenInfo.SupplyCap.IsZero() &&
+			(tokenInfo.SupplyCap.LT(msg.SupplyCap) || msg.SupplyCap.IsZero()) {
+			return nil, types.ErrSupplyCapShouldNotBeIncreased
+		}
 		tokenInfo.SupplyCap = msg.SupplyCap
 		tokenInfo.MintingFee = msg.MintingFee
 		tokenInfo.Owner = msg.Owner

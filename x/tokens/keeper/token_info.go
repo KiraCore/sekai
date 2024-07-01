@@ -60,9 +60,9 @@ func (k Keeper) UpsertTokenInfo(ctx sdk.Context, info types.TokenInfo) error {
 	store := ctx.KVStore(k.storeKey)
 	// we use denom of TokenInfo as an ID inside KVStore storage
 	tokenInfoStoreID := append([]byte(PrefixKeyTokenInfo), []byte(info.Denom)...)
-	if info.Denom == k.DefaultDenom(ctx) && store.Has(tokenInfoStoreID) {
-		return types.ErrBondDenomIsReadOnly
-	}
+	// if info.Denom == k.DefaultDenom(ctx) && store.Has(tokenInfoStoreID) {
+	// 	return types.ErrBondDenomIsReadOnly
+	// }
 
 	if !info.SupplyCap.IsNil() && info.SupplyCap.IsPositive() && info.Supply.GT(info.SupplyCap) {
 		return types.ErrCannotExceedTokenCap

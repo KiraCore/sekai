@@ -52,7 +52,6 @@ func setPermissionToAddr(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, ad
 }
 
 func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
-
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 	handler := tokens.NewHandler(app.TokensKeeper, app.CustomGovKeeper)
@@ -129,30 +128,30 @@ func TestNewHandler_MsgUpsertTokenInfo(t *testing.T) {
 			},
 			handlerErr: "rate should be positive",
 		},
-		{
-			name: "bond denom rate change test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error) {
-				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenInfo)
-				require.NoError(t, err)
-				return tokenstypes.NewMsgUpsertTokenInfo(
-					addr,
-					"adr20",
-					"ukex", sdk.NewDec(10),
-					true,
-					sdk.ZeroInt(), sdk.ZeroInt(),
-					sdk.ZeroDec(),
-					sdk.ZeroInt(),
-					false,
-					false,
-					"ETH",
-					"Ethereum",
-					"icon",
-					6,
-					"", "", "", 0, math.ZeroInt(), "", false, "", "",
-				), nil
-			},
-			handlerErr: "bond denom rate is read-only",
-		},
+		// {
+		// 	name: "bond denom rate change test",
+		// 	constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenInfo, error) {
+		// 		err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenInfo)
+		// 		require.NoError(t, err)
+		// 		return tokenstypes.NewMsgUpsertTokenInfo(
+		// 			addr,
+		// 			"adr20",
+		// 			"ukex", sdk.NewDec(10),
+		// 			true,
+		// 			sdk.ZeroInt(), sdk.ZeroInt(),
+		// 			sdk.ZeroDec(),
+		// 			sdk.ZeroInt(),
+		// 			false,
+		// 			false,
+		// 			"ETH",
+		// 			"Ethereum",
+		// 			"icon",
+		// 			6,
+		// 			"", "", "", 0, math.ZeroInt(), "", false, "", "",
+		// 		), nil
+		// 	},
+		// 	handlerErr: "bond denom rate is read-only",
+		// },
 	}
 	for i, tt := range tests {
 		addr := NewAccountByIndex(i)

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"testing"
 
+	"cosmossdk.io/math"
 	simapp "github.com/KiraCore/sekai/app"
 	kiratypes "github.com/KiraCore/sekai/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -44,7 +45,10 @@ func TestNewKeeper_Executions(t *testing.T) {
 	require.True(t, len(executions) == 0)
 
 	msg1 := tokenstypes.NewMsgUpsertTokenInfo(
-		addr, "ukex", sdk.NewDec(1), true,
+		addr,
+		"adr20",
+		"ukex", sdk.NewDec(1), true,
+		sdk.ZeroInt(), sdk.ZeroInt(),
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
@@ -53,13 +57,17 @@ func TestNewKeeper_Executions(t *testing.T) {
 		"Kira",
 		"",
 		10,
+		"", "", "", 0, math.ZeroInt(), "", false, "", "",
 	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg1)
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 1)
 
 	msg3 := tokenstypes.NewMsgUpsertTokenInfo(
-		addr, "ukex", sdk.NewDec(1), true,
+		addr,
+		"adr20",
+		"ukex", sdk.NewDec(1), true,
+		sdk.ZeroInt(), sdk.ZeroInt(),
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
@@ -68,6 +76,7 @@ func TestNewKeeper_Executions(t *testing.T) {
 		"Kira",
 		"",
 		10,
+		"", "", "", 0, math.ZeroInt(), "", false, "", "",
 	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg3)
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
@@ -178,7 +187,10 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	fees := sdk.Coins{sdk.NewInt64Coin("ukex", 1000)}
 	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr, authtypes.FeeCollectorName, fees)
 	msg := tokenstypes.NewMsgUpsertTokenInfo(
-		addr, "ukex", sdk.NewDec(1), true,
+		addr,
+		"adr20",
+		"ukex", sdk.NewDec(1), true,
+		sdk.ZeroInt(), sdk.ZeroInt(),
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
@@ -187,6 +199,7 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 		"Kira",
 		"",
 		10,
+		"", "", "", 0, math.ZeroInt(), "", false, "", "",
 	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg)
 	app.FeeProcessingKeeper.ProcessExecutionFeeReturn(ctx)
@@ -214,7 +227,10 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr2, authtypes.FeeCollectorName, fees)
 	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr3, authtypes.FeeCollectorName, fees)
 	msg2 := tokenstypes.NewMsgUpsertTokenInfo(
-		addr2, "ukex", sdk.NewDec(1), true,
+		addr2,
+		"adr20",
+		"ukex", sdk.NewDec(1), true,
+		sdk.ZeroInt(), sdk.ZeroInt(),
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
@@ -223,9 +239,13 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 		"Kira",
 		"",
 		10,
+		"", "", "", 0, math.ZeroInt(), "", false, "", "",
 	)
 	msg3 := tokenstypes.NewMsgUpsertTokenInfo(
-		addr3, "ukex", sdk.NewDec(1), true,
+		addr3,
+		"adr20",
+		"ukex", sdk.NewDec(1), true,
+		sdk.ZeroInt(), sdk.ZeroInt(),
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
@@ -234,6 +254,7 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 		"Kira",
 		"",
 		10,
+		"", "", "", 0, math.ZeroInt(), "", false, "", "",
 	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg3)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg2)

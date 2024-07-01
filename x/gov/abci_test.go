@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -455,8 +456,11 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					"some desc",
 					tokenstypes.NewUpsertTokenInfosProposal(
 						"btc",
+						"adr20",
 						sdk.NewDec(1234),
 						false,
+						sdk.ZeroInt(),
+						sdk.ZeroInt(),
 						sdk.ZeroDec(),
 						sdk.ZeroInt(),
 						false,
@@ -465,6 +469,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 						"Bitcoin",
 						"",
 						9,
+						"", "", "", 0, math.ZeroInt(), "", false, "", "",
 					),
 					time.Now(),
 					time.Now().Add(10*time.Second),

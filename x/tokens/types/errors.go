@@ -10,4 +10,5 @@ var (
 	ErrCannotExceedTokenCap             = errors.Register(ModuleName, 6, "cannot exceed token cap")
 	ErrBondDenomIsReadOnly              = errors.Register(ModuleName, 7, "bond denom rate is read-only")
 	ErrTokenNotRegistered               = errors.Register(ModuleName, 8, "token not registered")
+	ErrSupplyCapShouldNotBeIncreased    = errors.Register(ModuleName, 9, "supply cap should not be increased")
 )

@@ -76,8 +76,10 @@ func (s *IntegrationTestSuite) TestUpsertTokenInfoAndQuery() {
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
-		fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
-		fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
+		fmt.Sprintf("--%s=%s", cli.FlagSupply, "0"),
+		fmt.Sprintf("--%s=%s", cli.FlagSupplyCap, "0"),
+		fmt.Sprintf("--%s=%f", cli.FlagFeeRate, 0.00001),
+		fmt.Sprintf("--%s=%s", cli.FlagFeeEnabled, "true"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
@@ -119,10 +121,11 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenInfo() {
 	cmd := cli.GetTxProposalUpsertTokenInfoCmd()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
-		fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
+		fmt.Sprintf("--%s=%f", cli.FlagFeeRate, 0.00001),
 		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
-		fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
+		fmt.Sprintf("--%s=%s", cli.FlagFeeEnabled, "true"),
+		fmt.Sprintf("--%s=%s", cli.FlagDecimals, "6"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),

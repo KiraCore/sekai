@@ -30,6 +30,13 @@ func NewTokenInfo(
 	nftMetadata string,
 	nftHash string,
 ) TokenInfo {
+	if tokenType == "adr43" {
+		decimals = 0
+	}
+	if tokenType == "adr20" {
+		nftHash = ""
+		nftMetadata = ""
+	}
 	return TokenInfo{
 		Denom:             denom,
 		TokenType:         tokenType,
