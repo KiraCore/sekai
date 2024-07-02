@@ -34,6 +34,7 @@ func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec,
 		sk:       sk,
 		gk:       gk,
 		spk:      spk,
+		tk:       tk,
 	}
 }
 

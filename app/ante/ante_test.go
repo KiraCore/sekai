@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"cosmossdk.io/math"
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -557,17 +558,17 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 				msgs := []sdk.Msg{
 					tokenstypes.NewMsgUpsertTokenInfo(
 						accounts[4].acc.GetAddress(),
+						"adr20",
 						"foo",
-						sdk.NewDec(1),
-						true,
-						sdk.ZeroDec(),
-						sdk.ZeroInt(),
-						false,
-						false,
+						sdk.NewDec(1), true,
+						sdk.ZeroInt(), sdk.ZeroInt(),
+						sdk.ZeroDec(), sdk.ZeroInt(),
+						false, false,
 						"FOO",
 						"Foo",
 						"",
 						6,
+						"", "", "", 0, math.ZeroInt(), "", false, "", "",
 					),
 				}
 				return msgs, privs[0:1], accNums[0:1], []uint64{1}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))

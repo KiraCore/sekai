@@ -309,6 +309,9 @@ func GetTxUpsertTokenInfoCmd() *cobra.Command {
 		Short: "Upsert token rate",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			denom, err := cmd.Flags().GetString(FlagDenom)
 			if err != nil {
@@ -513,6 +516,7 @@ func GetTxUpsertTokenInfoCmd() *cobra.Command {
 	cmd.Flags().String(FlagNftMetadata, "", "Nft metadata")
 	cmd.Flags().String(FlagNftHash, "", "Nft hash")
 	cmd.Flags().String(FlagTokenType, "", "Token type")
+	cmd.Flags().String(FlagDescription, "", "Token description")
 	cmd.Flags().String(FlagTokenRate, "", "Token rate")
 
 	flags.AddTxFlagsToCmd(cmd)
