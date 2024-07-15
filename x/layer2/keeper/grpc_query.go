@@ -34,11 +34,3 @@ func (k Keeper) TransferDapps(goCtx context.Context, request *types.QueryTransfe
 		XAMs: k.GetXAMs(ctx),
 	}, nil
 }
-
-func (k Keeper) GlobalTokens(goCtx context.Context, request *types.QueryGlobalTokensRequest) (*types.QueryGlobalTokensResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	return &types.QueryGlobalTokensResponse{
-		Tokens: k.GetTokenInfos(ctx),
-	}, nil
-}

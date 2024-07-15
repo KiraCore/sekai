@@ -14,7 +14,7 @@ type BankKeeper interface {
 
 // TokensKeeper defines expected interface needed to get token rate
 type TokensKeeper interface {
-	GetTokenRate(ctx sdk.Context, denom string) *types.TokenRate
+	GetTokenInfo(ctx sdk.Context, denom string) *types.TokenInfo
 }
 
 // CustomGovKeeper defines the expected interface contract the tokens module requires

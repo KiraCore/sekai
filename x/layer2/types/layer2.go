@@ -15,7 +15,7 @@ func (dapp Dapp) GetSpendingPoolLpDeposit() sdk.Int {
 
 func (dapp Dapp) GetLpTokenSupply() sdk.Int {
 	spendingPoolDeposit := dapp.GetSpendingPoolLpDeposit()
-	totalSupply := spendingPoolDeposit.Add(dapp.Issurance.Postmint).Add(dapp.Issurance.Premint)
+	totalSupply := spendingPoolDeposit.Add(dapp.Issuance.Postmint).Add(dapp.Issuance.Premint)
 	return totalSupply
 }
 

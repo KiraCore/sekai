@@ -550,7 +550,7 @@ func (k msgServer) IssueRecoveryTokens(goCtx context.Context, msg *types.MsgIssu
 	// issue 10'000'000 tokens
 	recoveryTokenAmount := sdk.NewInt(10_000_000).Mul(sdk.NewInt(1000_000))
 	recoveryCoins := sdk.NewCoins(sdk.NewCoin(denom, recoveryTokenAmount))
-	err = k.bk.MintCoins(ctx, types.ModuleName, recoveryCoins)
+	err = k.tk.MintCoins(ctx, types.ModuleName, recoveryCoins)
 	if err != nil {
 		return nil, err
 	}
@@ -608,7 +608,7 @@ func (k msgServer) BurnRecoveryTokens(goCtx context.Context, msg *types.MsgBurnR
 		return nil, err
 	}
 
-	err = k.bk.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(msg.RrCoin))
+	err = k.tk.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(msg.RrCoin))
 	if err != nil {
 		return nil, err
 	}

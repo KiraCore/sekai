@@ -62,9 +62,8 @@ const (
 	MsgTypeBasketClaimRewards     = "basket_claim_rewards"
 
 	// tokens module
-	MsgTypeUpsertTokenAlias = "upsert_token_alias"
-	MsgTypeUpsertTokenRate  = "upsert_token_rate"
-	MsgTypeEthereumTx       = "ethereum_tx"
+	MsgTypeUpsertTokenInfo = "upsert_token_info"
+	MsgTypeEthereumTx      = "ethereum_tx"
 
 	// slashing module
 	MsgTypeActivate = "activate"
@@ -173,8 +172,7 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeRemoveWhitelistRolePermission: 30,
 	MsgTypeRemoveBlacklistRolePermission: 31,
 	MsgTypeClaimValidator:                32,
-	MsgTypeUpsertTokenAlias:              33,
-	MsgTypeUpsertTokenRate:               34,
+	MsgTypeUpsertTokenInfo:               34,
 	MsgTypeActivate:                      35,
 	MsgTypePause:                         36,
 	MsgTypeUnpause:                       37,
