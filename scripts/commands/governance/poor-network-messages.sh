@@ -20,7 +20,7 @@ sekaid tx customgov permission whitelist --from validator --keyring-backend=test
 # test poor network messages after modifying min_validators section
 sekaid tx customgov set-network-properties --from validator --min_validators="2" --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
 # set permission for upsert token rate
-sekaid tx customgov permission whitelist --from validator --keyring-backend=test --permission=$PermUpsertTokenRate --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
+sekaid tx customgov permission whitelist --from validator --keyring-backend=test --permission=$PermUpsertTokenInfo --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
 # try running upsert token rate which is not allowed on poor network
 sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="mykex" --rate="1.5" --fee_payments=true --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  --yes
 # try sending more than allowed amount via bank send

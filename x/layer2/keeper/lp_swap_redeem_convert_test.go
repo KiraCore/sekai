@@ -38,7 +38,7 @@ func (suite *KeeperTestSuite) TestLpTokenPrice() {
 			Deposit: "",
 			Drip:    86400,
 		},
-		Issurance: types.IssuranceConfig{
+		Issuance: types.IssuanceConfig{
 			Deposit:  "",
 			Premint:  sdk.OneInt(),
 			Postmint: sdk.OneInt(),
@@ -112,7 +112,7 @@ func (suite *KeeperTestSuite) TestRedeemDappPoolTx() {
 			Deposit: "",
 			Drip:    86400,
 		},
-		Issurance: types.IssuranceConfig{
+		Issuance: types.IssuanceConfig{
 			Deposit:  "",
 			Premint:  sdk.OneInt(),
 			Postmint: sdk.OneInt(),
@@ -134,14 +134,14 @@ func (suite *KeeperTestSuite) TestRedeemDappPoolTx() {
 
 	lpToken := dapp.LpToken()
 	lpCoins := sdk.Coins{sdk.NewInt64Coin(lpToken, 10000)}
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, lpCoins)
+	err := suite.app.TokensKeeper.MintCoins(suite.ctx, minttypes.ModuleName, lpCoins)
 	suite.Require().NoError(err)
 
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, lpCoins)
 	suite.Require().NoError(err)
 
-	err = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{dapp.TotalBond})
+	err = suite.app.TokensKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{dapp.TotalBond})
 	suite.Require().NoError(err)
 
 	price := suite.app.Layer2Keeper.LpTokenPrice(suite.ctx, dapp)
@@ -187,7 +187,7 @@ func (suite *KeeperTestSuite) TestConvertDappPoolTx() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),
@@ -233,7 +233,7 @@ func (suite *KeeperTestSuite) TestConvertDappPoolTx() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),
@@ -262,17 +262,17 @@ func (suite *KeeperTestSuite) TestConvertDappPoolTx() {
 
 	lpToken1 := dapp1.LpToken()
 	lpCoins1 := sdk.Coins{sdk.NewInt64Coin(lpToken1, 10000)}
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, lpCoins1)
+	err := suite.app.TokensKeeper.MintCoins(suite.ctx, minttypes.ModuleName, lpCoins1)
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, lpCoins1)
 	suite.Require().NoError(err)
 
 	lpToken2 := dapp2.LpToken()
 	lpCoins2 := sdk.Coins{sdk.NewInt64Coin(lpToken2, 10000)}
-	err = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, lpCoins2)
+	err = suite.app.TokensKeeper.MintCoins(suite.ctx, types.ModuleName, lpCoins2)
 	suite.Require().NoError(err)
 
-	err = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{dapp1.TotalBond})
+	err = suite.app.TokensKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{dapp1.TotalBond})
 	suite.Require().NoError(err)
 
 	price := suite.app.Layer2Keeper.LpTokenPrice(suite.ctx, dapp1)

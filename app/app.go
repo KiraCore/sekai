@@ -235,7 +235,7 @@ func NewInitApp(
 		evidencetypes.StoreKey,
 		custodytypes.StoreKey,
 		collectivestypes.ModuleName,
-		layer2types.ModuleName,
+		layer2types.StoreKey,
 		consensusparamtypes.StoreKey,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -311,11 +311,12 @@ func NewInitApp(
 	)
 
 	app.Layer2Keeper = layer2keeper.NewKeeper(
-		keys[collectivestypes.StoreKey], appCodec,
+		keys[layer2types.StoreKey], appCodec,
 		app.BankKeeper,
 		app.CustomStakingKeeper,
 		app.CustomGovKeeper,
 		app.SpendingKeeper,
+		app.TokensKeeper,
 	)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
@@ -337,7 +338,7 @@ func NewInitApp(
 
 	app.RecoveryKeeper = recoverykeeper.NewKeeper(
 		appCodec,
-		keys[slashingtypes.StoreKey],
+		keys[recoverytypes.StoreKey],
 		app.AccountKeeper,
 		app.BankKeeper,
 		&customStakingKeeper,
@@ -346,15 +347,23 @@ func NewInitApp(
 		app.CollectivesKeeper,
 		app.SpendingKeeper,
 		app.CustodyKeeper,
+		app.TokensKeeper,
 	)
 
 	app.DistrKeeper = distributorkeeper.NewKeeper(
 		keys[distributortypes.ModuleName], appCodec,
 		app.AccountKeeper, app.BankKeeper,
 		app.CustomStakingKeeper, app.CustomGovKeeper,
-		app.MultiStakingKeeper, app.RecoveryKeeper)
+		app.MultiStakingKeeper, app.RecoveryKeeper, app.TokensKeeper)
 	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
-	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper, app.DistrKeeper)
+	app.UbiKeeper = ubikeeper.NewKeeper(
+		keys[ubitypes.ModuleName],
+		appCodec,
+		app.BankKeeper,
+		app.SpendingKeeper,
+		app.DistrKeeper,
+		app.TokensKeeper,
+	)
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
@@ -370,8 +379,7 @@ func NewInitApp(
 			customgov.NewApplyResetWholeCouncilorRankProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyJailCouncilorProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetExecutionFeesProposalHandler(app.CustomGovKeeper),
-			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
-			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
+			tokens.NewApplyUpsertTokenInfosProposalHandler(app.TokensKeeper),
 			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
 			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),

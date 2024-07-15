@@ -11,7 +11,7 @@ sekaid tx layer2 create-dapp-proposal --dapp-name="l2dex" --denom="ul2d" --dapp-
   --website="website" --logo="logo" --social="social" --docs="docs" \
   --controller-roles="1" --controller-accounts="" --vote-quorum=30 --vote-period=86400 --vote-enactment=1000 \
   --bond="1000000ukex" \
-  --issurance-config='{"premint":"10000","postmint":"10000","time":"1680044405"}' \
+  --issuance-config='{"premint":"10000","postmint":"10000","time":"1680044405"}' \
   --lp-pool-config='{"ratio": "1.0", "drip": 86400}' \
   --executors-min=1 --executors-max=3 --verifiers-min=1 \
   --binary-info='{"name":"layer2dex","hash":"0cc0","source":"github.com","reference":"","type":"exec"}' \
@@ -56,7 +56,7 @@ sekaid tx layer2 proposal-upsert-dapp --title="title" --description="description
   --website="website" --logo="logo" --social="social" --docs="docs" \
   --controller-roles="1" --controller-accounts="" --vote-quorum=30 --vote-period=86400 --vote-enactment=1000 \
   --bond="1000000ukex" \
-  --issurance-config='{"premint":"10000","postmint":"10000","time":"1680044405"}' \
+  --issuance-config='{"premint":"10000","postmint":"10000","time":"1680044405"}' \
   --lp-pool-config='{"ratio": "1.0", "drip": 86400}' \
   --binary-info='{"name":"layer2dex","hash":"0cc0","source":"github.com","reference":"","type":"exec"}' \
   --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 
