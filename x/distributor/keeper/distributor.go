@@ -47,7 +47,7 @@ func (k Keeper) AllocateTokens(
 
 	inflationCoin := sdk.NewCoin(totalSupply.Denom, inflationRewards)
 	if inflationRewards.IsPositive() {
-		err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.Coins{inflationCoin})
+		err := k.tk.MintCoins(ctx, minttypes.ModuleName, sdk.Coins{inflationCoin})
 		if err != nil {
 			panic(err)
 		}

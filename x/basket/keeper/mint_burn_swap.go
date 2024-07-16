@@ -59,7 +59,7 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 	}
 
 	basketCoins := sdk.Coins{basketCoin}
-	err = k.bk.MintCoins(ctx, types.ModuleName, basketCoins)
+	err = k.tk.MintCoins(ctx, types.ModuleName, basketCoins)
 	if err != nil {
 		return err
 	}
@@ -115,7 +115,7 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 		return err
 	}
 
-	err = k.bk.BurnCoins(ctx, types.ModuleName, burnCoins)
+	err = k.tk.BurnCoins(ctx, types.ModuleName, burnCoins)
 	if err != nil {
 		return err
 	}

@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -18,45 +17,33 @@ func NewQuerier(keeper Keeper) types.QueryServer {
 
 var _ types.QueryServer = Querier{}
 
-func (q Querier) GetTokenAlias(ctx context.Context, request *types.TokenAliasRequest) (*types.TokenAliasResponse, error) {
-	alias := q.keeper.GetTokenAlias(sdk.UnwrapSDKContext(ctx), request.Symbol)
-
-	return &types.TokenAliasResponse{Data: alias}, nil
-}
-
-func (q Querier) GetTokenAliasesByDenom(ctx context.Context, request *types.TokenAliasesByDenomRequest) (*types.TokenAliasesByDenomResponse, error) {
-	aliases := q.keeper.GetTokenAliasesByDenom(sdk.UnwrapSDKContext(ctx), request.Denoms)
-
-	return &types.TokenAliasesByDenomResponse{Data: aliases}, nil
-}
-
-func (q Querier) GetAllTokenAliases(ctx context.Context, request *types.AllTokenAliasesRequest) (*types.AllTokenAliasesResponse, error) {
-	aliases := q.keeper.ListTokenAlias(sdk.UnwrapSDKContext(ctx))
-
-	return &types.AllTokenAliasesResponse{
-		Data:         aliases,
-		DefaultDenom: appparams.DefaultDenom,
-		Bech32Prefix: appparams.AccountAddressPrefix,
+func (q Querier) GetTokenInfo(goCtx context.Context, request *types.TokenInfoRequest) (*types.TokenInfoResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	info := q.keeper.GetTokenInfo(ctx, request.Denom)
+	supply := q.keeper.bankKeeper.GetSupply(ctx, request.Denom)
+	return &types.TokenInfoResponse{
+		Data:   info,
+		Supply: supply,
 	}, nil
 }
 
-func (q Querier) GetTokenRate(ctx context.Context, request *types.TokenRateRequest) (*types.TokenRateResponse, error) {
-	rate := q.keeper.GetTokenRate(sdk.UnwrapSDKContext(ctx), request.Denom)
+func (q Querier) GetTokenInfosByDenom(ctx context.Context, request *types.TokenInfosByDenomRequest) (*types.TokenInfosByDenomResponse, error) {
+	infos := q.keeper.GetTokenInfosByDenom(sdk.UnwrapSDKContext(ctx), request.Denoms)
+	return &types.TokenInfosByDenomResponse{Data: infos}, nil
+}
 
-	if rate == nil {
-		return &types.TokenRateResponse{Data: nil}, nil
+func (q Querier) GetAllTokenInfos(goCtx context.Context, request *types.AllTokenInfosRequest) (*types.AllTokenInfosResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	infos := q.keeper.GetAllTokenInfos(ctx)
+	data := []types.TokenInfoResponse{}
+	for _, info := range infos {
+		supply := q.keeper.bankKeeper.GetSupply(ctx, info.Denom)
+		data = append(data, types.TokenInfoResponse{
+			Data:   &info,
+			Supply: supply,
+		})
 	}
-	return &types.TokenRateResponse{Data: rate}, nil
-}
-
-func (q Querier) GetTokenRatesByDenom(ctx context.Context, request *types.TokenRatesByDenomRequest) (*types.TokenRatesByDenomResponse, error) {
-	rates := q.keeper.GetTokenRatesByDenom(sdk.UnwrapSDKContext(ctx), request.Denoms)
-	return &types.TokenRatesByDenomResponse{Data: rates}, nil
-}
-
-func (q Querier) GetAllTokenRates(ctx context.Context, request *types.AllTokenRatesRequest) (*types.AllTokenRatesResponse, error) {
-	rates := q.keeper.GetAllTokenRates(sdk.UnwrapSDKContext(ctx))
-	return &types.AllTokenRatesResponse{Data: rates}, nil
+	return &types.AllTokenInfosResponse{Data: data}, nil
 }
 
 func (q Querier) GetTokenBlackWhites(ctx context.Context, request *types.TokenBlackWhitesRequest) (*types.TokenBlackWhitesResponse, error) {

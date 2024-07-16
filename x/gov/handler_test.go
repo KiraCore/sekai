@@ -11,7 +11,6 @@ import (
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
-	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
@@ -1550,46 +1549,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 			},
 			fmt.Errorf("%s: not enough permissions", types.PermVoteSetNetworkPropertyProposal.String()),
-		},
-		{
-			"Voter does not have permission to vote this proposal: UpsertTokenAlias",
-			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain, sdk.ZeroDec(),
-			),
-			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
-				actor := types.NewNetworkActor(
-					voterAddr,
-					[]uint64{},
-					types.Active,
-					[]types.VoteOption{},
-					types.NewPermissions(nil, nil),
-					1,
-				)
-				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
-
-				// Create proposal
-				proposal, err := types.NewProposal(
-					1,
-					"title",
-					"some desc",
-					tokenstypes.NewUpsertTokenAliasProposal(
-						"eur",
-						"Euro",
-						"theIcon",
-						12,
-						[]string{},
-						false,
-					),
-					ctx.BlockTime(),
-					ctx.BlockTime().Add(time.Second*20),
-					ctx.BlockTime().Add(time.Second*30),
-					ctx.BlockHeight()+2,
-					ctx.BlockHeight()+3,
-				)
-				require.NoError(t, err)
-				app.CustomGovKeeper.SaveProposal(ctx, proposal)
-			},
-			fmt.Errorf("%s: not enough permissions", types.PermVoteUpsertTokenAliasProposal.String()),
 		},
 	}
 

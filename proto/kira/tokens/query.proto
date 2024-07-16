@@ -1,79 +1,56 @@
 syntax = "proto3";
 package kira.tokens;
 
-import "kira/tokens/alias.proto";
-import "kira/tokens/rate.proto";
+import "kira/tokens/token.proto";
 import "kira/tokens/freeze.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
 // Query defines the gRPC querier service
 service Query {
-  // Returns the token alias
-  rpc GetTokenAlias (TokenAliasRequest) returns (TokenAliasResponse) {}
-  rpc GetAllTokenAliases (AllTokenAliasesRequest) returns (AllTokenAliasesResponse) {
-    option (google.api.http).get = "/kira/tokens/aliases";
+  // Returns the token infos
+  rpc GetTokenInfo (TokenInfoRequest) returns (TokenInfoResponse) {
+    option (google.api.http).get = "/kira/tokens/info";
   }
-  rpc GetTokenAliasesByDenom (TokenAliasesByDenomRequest) returns (TokenAliasesByDenomResponse) {}
-  // Returns the token rates
-  rpc GetTokenRate (TokenRateRequest) returns (TokenRateResponse) {}
-  rpc GetAllTokenRates (AllTokenRatesRequest) returns (AllTokenRatesResponse) {
-    option (google.api.http).get = "/kira/tokens/rates";
+  rpc GetAllTokenInfos (AllTokenInfosRequest) returns (AllTokenInfosResponse) {
+    option (google.api.http).get = "/kira/tokens/infos";
   }
-  rpc GetTokenRatesByDenom (TokenRatesByDenomRequest) returns (TokenRatesByDenomResponse) {}
+  rpc GetTokenInfosByDenom (TokenInfosByDenomRequest) returns (TokenInfosByDenomResponse) {
+    option (google.api.http).get = "/kira/tokens/infos_by_denom";
+  }
   // Returns tokens black/white lists
-  rpc GetTokenBlackWhites (TokenBlackWhitesRequest) returns (TokenBlackWhitesResponse) {}
+  rpc GetTokenBlackWhites (TokenBlackWhitesRequest) returns (TokenBlackWhitesResponse) {
+    option (google.api.http).get = "/kira/tokens/black_whites";
+  }
 }
 
-message TokenAliasRequest {
-  string symbol = 1;
-}
-
-message TokenAliasResponse {
-  kira.tokens.TokenAlias data = 1;
-}
-
-message AllTokenAliasesRequest {}
-
-message AllTokenAliasesResponse {
-  repeated kira.tokens.TokenAlias data = 1;
-  string default_denom = 2;
-  string bech32_prefix = 3;
-}
-
-message TokenAliasesByDenomRequest {
-  repeated string denoms = 1;
-}
-  
-message TokenAliasesByDenomResponse {
-  map<string, kira.tokens.TokenAlias> data = 1;
-}
-
-message TokenRateRequest {
+message TokenInfoRequest {
   string denom = 1;
 }
 
-message TokenRateResponse {
-  kira.tokens.TokenRate data = 1;
+message TokenInfoResponse {
+  kira.tokens.TokenInfo data = 1;
+  cosmos.base.v1beta1.Coin supply = 2 [(gogoproto.nullable) = false];
 }
 
-message AllTokenRatesRequest {}
+message AllTokenInfosRequest {}
 
-message AllTokenRatesResponse {
-  repeated kira.tokens.TokenRate data = 1;
+message AllTokenInfosResponse {
+  repeated TokenInfoResponse data = 1 [ (gogoproto.nullable) = false ];
 }
 
-message TokenRatesByDenomRequest {
+message TokenInfosByDenomRequest {
   repeated string denoms = 1;
 }
   
-message TokenRatesByDenomResponse {
-  map<string, kira.tokens.TokenRate> data = 1;
+message TokenInfosByDenomResponse {
+  map<string, TokenInfoResponse> data = 1 [ (gogoproto.nullable) = false ];
 }
 
 message TokenBlackWhitesRequest {}
 message TokenBlackWhitesResponse {
-  TokensWhiteBlack data = 1;
+  TokensWhiteBlack data = 1 [ (gogoproto.nullable) = false ];
 }

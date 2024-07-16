@@ -8,44 +8,43 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type ApplyUpsertTokenAliasProposalHandler struct {
+type ApplyUpsertTokenInfosProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplyUpsertTokenAliasProposalHandler(keeper keeper.Keeper) *ApplyUpsertTokenAliasProposalHandler {
-	return &ApplyUpsertTokenAliasProposalHandler{
-		keeper: keeper,
+func NewApplyUpsertTokenInfosProposalHandler(keeper keeper.Keeper) *ApplyUpsertTokenInfosProposalHandler {
+	return &ApplyUpsertTokenInfosProposalHandler{keeper: keeper}
+}
+
+func (a ApplyUpsertTokenInfosProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeUpsertTokenInfos
+}
+
+func (a ApplyUpsertTokenInfosProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
+	p := proposal.(*tokenstypes.ProposalUpsertTokenInfo)
+
+	tokenInfo := a.keeper.GetTokenInfo(ctx, p.Denom)
+	if tokenInfo != nil {
+		tokenInfo.Name = p.Name
+		tokenInfo.Symbol = p.Symbol
+		tokenInfo.Icon = p.Icon
+		tokenInfo.Description = p.Description
+		tokenInfo.Website = p.Website
+		tokenInfo.Social = p.Social
+		tokenInfo.Inactive = p.Inactive
+		tokenInfo.FeeRate = p.FeeRate
+		tokenInfo.FeeEnabled = p.FeeEnabled
+		tokenInfo.StakeCap = p.StakeCap
+		tokenInfo.StakeMin = p.StakeMin
+		tokenInfo.StakeEnabled = p.StakeEnabled
+		return a.keeper.UpsertTokenInfo(ctx, *tokenInfo)
 	}
-}
 
-func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypeUpsertTokenAlias
-}
-
-func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
-	p := proposal.(*tokenstypes.ProposalUpsertTokenAlias)
-
-	alias := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms, p.Invalidated)
-	return a.keeper.UpsertTokenAlias(ctx, *alias)
-}
-
-type ApplyUpsertTokenRatesProposalHandler struct {
-	keeper keeper.Keeper
-}
-
-func NewApplyUpsertTokenRatesProposalHandler(keeper keeper.Keeper) *ApplyUpsertTokenRatesProposalHandler {
-	return &ApplyUpsertTokenRatesProposalHandler{keeper: keeper}
-}
-
-func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypeUpsertTokenRates
-}
-
-func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
-	p := proposal.(*tokenstypes.ProposalUpsertTokenRates)
-
-	rate := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments, p.StakeCap, p.StakeMin, p.StakeToken, p.Invalidated)
-	return a.keeper.UpsertTokenRate(ctx, *rate)
+	return a.keeper.UpsertTokenInfo(ctx, tokenstypes.NewTokenInfo(
+		p.Denom, p.TokenType, p.FeeRate, p.FeeEnabled, p.Supply, p.SupplyCap, p.StakeCap, p.StakeMin, p.StakeEnabled, p.Inactive,
+		p.Symbol, p.Name, p.Icon, p.Decimals,
+		p.Description, p.Website, p.Social, p.Holders, p.MintingFee, p.Owner, p.OwnerEditDisabled, p.NftMetadata, p.NftHash,
+	))
 }
 
 type ApplyWhiteBlackChangeProposalHandler struct {
