@@ -25,17 +25,17 @@ var _ types.MsgServer = msgServer{}
 func (s msgServer) ChangeCosmosEthereum(goCtx context.Context, msg *types.MsgChangeCosmosEthereum) (*types.MsgChangeCosmosEthereumResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	record := types.ChangeCosmosEthereumRecord{
-		From:      msg.From,
-		To:        msg.To,
-		InAmount:  msg.InAmount,
-		OutAmount: msg.OutAmount,
+		From:   msg.From,
+		To:     msg.To,
+		Hash:   msg.Hash,
+		Amount: msg.Amount,
 	}
 
-	if err := s.bk.IsSendEnabledCoins(ctx, msg.InAmount...); err != nil {
+	if err := s.bk.IsSendEnabledCoins(ctx, msg.Amount...); err != nil {
 		return nil, err
 	}
 
-	err := s.bk.SendCoinsFromAccountToModule(ctx, msg.From, types.ModuleName, msg.InAmount)
+	err := s.bk.SendCoinsFromAccountToModule(ctx, msg.From, types.ModuleName, msg.Amount)
 	if err != nil {
 		return nil, err
 	}
@@ -57,17 +57,16 @@ func (s msgServer) ChangeEthereumCosmos(goCtx context.Context, msg *types.MsgCha
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	record := types.ChangeEthereumCosmosRecord{
-		From:      msg.From,
-		To:        msg.To,
-		InAmount:  msg.InAmount,
-		OutAmount: msg.OutAmount,
+		From:   msg.From,
+		To:     msg.To,
+		Amount: msg.Amount,
 	}
 
-	if err := s.bk.IsSendEnabledCoins(ctx, msg.OutAmount...); err != nil {
+	if err := s.bk.IsSendEnabledCoins(ctx, msg.Amount...); err != nil {
 		return nil, err
 	}
 
-	err := s.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, msg.To, msg.OutAmount)
+	err := s.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, msg.To, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

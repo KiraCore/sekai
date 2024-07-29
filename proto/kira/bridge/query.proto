@@ -40,11 +40,10 @@ message ChangeCosmosEthereumByAddressResponse {
   ];
 
   string to = 2;
+  string hash = 32;
 
-  repeated cosmos.base.v1beta1.Coin in_amount = 3
+  repeated cosmos.base.v1beta1.Coin amount = 4
   [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
-
-  int64 out_amount = 4;
 }
 
 message ChangeEthereumCosmosByAddressResponse {
@@ -60,8 +59,6 @@ message ChangeEthereumCosmosByAddressResponse {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  int64 in_amount = 4;
-
-  repeated cosmos.base.v1beta1.Coin out_amount = 5
+  repeated cosmos.base.v1beta1.Coin amount = 4
   [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
 }

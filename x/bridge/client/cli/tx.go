@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
-	"strconv"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -38,19 +37,18 @@ func TxChangeCosmosEthereum() *cobra.Command {
 			}
 
 			to := args[1]
+			hash := args[2]
 
-			inAmount, err := sdk.ParseCoinsNormalized(args[2])
+			amount, err := sdk.ParseCoinsNormalized(args[3])
 			if err != nil {
 				return err
 			}
 
-			outAmount, _ := strconv.ParseInt(args[3], 10, 64)
-
 			msg := types.NewMsgChangeCosmosEthereum(
 				clientCtx.FromAddress,
 				to,
-				inAmount,
-				outAmount,
+				hash,
+				amount,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -81,9 +79,7 @@ func TxChangeEthereumCosmos() *cobra.Command {
 				return err
 			}
 
-			inAmount, _ := strconv.ParseInt(args[4], 10, 64)
-
-			outAmount, err := sdk.ParseCoinsNormalized(args[3])
+			amount, err := sdk.ParseCoinsNormalized(args[3])
 			if err != nil {
 				return err
 			}
@@ -92,8 +88,7 @@ func TxChangeEthereumCosmos() *cobra.Command {
 				clientCtx.FromAddress,
 				from,
 				to,
-				inAmount,
-				outAmount,
+				amount,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

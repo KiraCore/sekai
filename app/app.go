@@ -146,6 +146,7 @@ var (
 		collectivestypes.ModuleName:  nil,
 		layer2types.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		recoverytypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+		bridgetypes.ModuleName:       nil,
 	}
 
 	// module accounts that are allowed to receive tokens

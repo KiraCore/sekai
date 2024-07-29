@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewMsgChangeCosmosEthereum(from sdk.AccAddress, to string, inAmount sdk.Coins, outAmount int64) *MsgChangeCosmosEthereum {
-	return &MsgChangeCosmosEthereum{from, to, inAmount, outAmount}
+func NewMsgChangeCosmosEthereum(from sdk.AccAddress, to, hash string, amount sdk.Coins) *MsgChangeCosmosEthereum {
+	return &MsgChangeCosmosEthereum{from, to, hash, amount}
 }
 
 func (m *MsgChangeCosmosEthereum) Route() string {
@@ -32,8 +32,8 @@ func (m *MsgChangeCosmosEthereum) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgChangeEthereumCosmos(addr sdk.AccAddress, from string, to sdk.AccAddress, inAmount int64, outAmount sdk.Coins) *MsgChangeEthereumCosmos {
-	return &MsgChangeEthereumCosmos{addr, from, to, inAmount, outAmount}
+func NewMsgChangeEthereumCosmos(addr sdk.AccAddress, from string, to sdk.AccAddress, amount sdk.Coins) *MsgChangeEthereumCosmos {
+	return &MsgChangeEthereumCosmos{addr, from, to, amount}
 }
 
 func (m *MsgChangeEthereumCosmos) Route() string {
