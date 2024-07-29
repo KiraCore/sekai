@@ -61,7 +61,7 @@ func (sh *Helper) ClaimValidatorMsg(addr sdk.ValAddress, pk cryptotypes.PubKey) 
 
 func (sh *Helper) createValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok bool) {
 	msg, err := stakingtypes.NewMsgClaimValidator(
-		fmt.Sprintf("%s-%d", "moniker", rand.Intn(100)),
+		fmt.Sprintf("%s-%d", "moniker", rand.Intn(10000)),
 		addr,
 		pk,
 	)

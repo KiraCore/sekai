@@ -35,11 +35,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) {
 		k.SetValidatorVote(ctx, bondedVote.Validator.Address, ctx.BlockHeight())
 	}
 
-	// remove votes older than snap period
-	snapPeriod := k.GetSnapPeriod(ctx)
+	// remove votes older than maximum snap period
+	maxSnapPeriod := k.sk.MaxValidators(ctx)
 	allVotes := k.GetAllValidatorVotes(ctx)
 	for _, vote := range allVotes {
-		if vote.Height+snapPeriod <= ctx.BlockHeight() {
+		if vote.Height+int64(maxSnapPeriod) <= ctx.BlockHeight() {
 			consAddr, err := sdk.ConsAddressFromBech32(vote.ConsAddr)
 			if err != nil {
 				panic(err)
@@ -54,19 +54,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) {
 }
 
 func (k Keeper) EndBlocker(ctx sdk.Context) {
-	snapPeriod := k.GetSnapPeriod(ctx)
-	allVotes := k.GetAllValidatorVotes(ctx)
-
-	for _, vote := range allVotes {
-		if vote.Height+snapPeriod > ctx.BlockHeight() {
-			consAddr, err := sdk.ConsAddressFromBech32(vote.ConsAddr)
-			if err != nil {
-				continue
-			}
-			k.DeleteValidatorVote(ctx, consAddr, vote.Height)
-		}
-	}
-
 	properties := k.gk.GetNetworkProperties(ctx)
 	periodicSnapshot := k.GetPeriodicSnapshot(ctx)
 	if periodicSnapshot.SnapshotTime == 0 || periodicSnapshot.SnapshotTime+int64(properties.InflationPeriod) < ctx.BlockTime().Unix() {
