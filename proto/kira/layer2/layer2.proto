@@ -44,7 +44,7 @@ message LpPoolConfig {
   uint64 drip = 3; // time over which tokens should be distributed (can not be modified)
 }
 
-message IssuranceConfig {
+message IssuanceConfig {
   string deposit = 1; // spending pool id/name or kira address for extra dp deposit
   string premint = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
@@ -68,7 +68,7 @@ message Dapp {
   Controllers controllers = 8 [ (gogoproto.nullable) = false ]; // list of dApp owners, who can curate the execution record
   repeated BinaryInfo bin = 9 [ (gogoproto.nullable) = false ]; // array of files & their details essential for launching the dApp
   LpPoolConfig pool = 10 [ (gogoproto.nullable) = false ]; // lp pool configuration (can not be modified)
-  IssuranceConfig issurance = 11 [ (gogoproto.nullable) = false ]; // extra dApp (dp) token issuance configuration
+  IssuanceConfig issuance = 11 [ (gogoproto.nullable) = false ]; // extra dApp (dp) token issuance configuration
   uint64 update_time_max = 12; // maximum time the dApp leader has to update his session (can be no more then 86400 - 24h)
   uint64 executors_min = 13; // minimum number of validators that will be executing the dApp code (default 1)
   uint64 executors_max = 14; // maximum number of validators that will be executing the dApp code (default 21)
@@ -79,7 +79,10 @@ message Dapp {
   ]; // total bonds put on the dapp
   uint64 creation_time = 17; // dapp creation time
   DappStatus status = 18; // dapp status
-  uint64 vote_quorum = 19; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  string vote_quorum = 19 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
   uint64 vote_period = 20; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
   uint64 vote_enactment = 21; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
   uint64 liquidation_start = 22; // liquidation start time
@@ -90,6 +93,7 @@ message Dapp {
   string team_reserve = 24; // team multisig
   uint64 premint_time = 25; // timestamp for premint
   bool post_mint_paid = 26; // flag to show post mint paid or not
+  bool enable_bond_verifiers = 27; // flag to enable verifiers with bonding
 }
 
 message UserDappBond {

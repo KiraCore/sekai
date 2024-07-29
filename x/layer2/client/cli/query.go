@@ -21,7 +21,6 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryExecutionRegistrar(),
 		GetCmdQueryAllDapps(),
 		GetCmdQueryTransferDapp(),
-		GetCmdQueryGlobalTokens(),
 	)
 
 	return queryCmd
@@ -85,29 +84,6 @@ func GetCmdQueryTransferDapp() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.TransferDapps(context.Background(), &types.QueryTransferDappsRequest{})
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func GetCmdQueryGlobalTokens() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "global-tokens",
-		Short: "Queries global tokens",
-		Args:  cobra.MinimumNArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GlobalTokens(context.Background(), &types.QueryGlobalTokensRequest{})
 			if err != nil {
 				return err
 			}

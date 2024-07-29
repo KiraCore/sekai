@@ -75,7 +75,8 @@ func (suite *KeeperTestSuite) TestDistributeCollectiveRewards() {
 			},
 		},
 		0, 86400, 1000000,
-		30, 86400, 3000,
+		sdk.NewDecWithPrec(30, 2),
+		86400, 3000,
 	)
 
 	_, err = msgServer.CreateCollective(sdk.WrapSDKContext(suite.ctx), msg)
@@ -165,7 +166,8 @@ func (suite *KeeperTestSuite) TestEndBlocker() {
 			},
 		},
 		0, 86400, 1000000,
-		30, 86400, 3000,
+		sdk.NewDecWithPrec(30, 2),
+		86400, 3000,
 	)
 
 	_, err = msgServer.CreateCollective(sdk.WrapSDKContext(suite.ctx), msg)

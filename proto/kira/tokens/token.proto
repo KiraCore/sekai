@@ -1,0 +1,52 @@
+syntax = "proto3";
+package kira.tokens;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/tokens/types";
+
+message TokenInfo {
+  string denom = 1; // denomination target
+  string token_type = 2; // Token Type / Compatibility (can NOT be changed or owner defined)
+  string fee_rate = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];                     // Exchange rate in terms of KEX token
+  bool fee_enabled = 4; // Properties defining if it is enabled or disabled as fee payment method
+  string supply = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // current circulating supply can NOT be more then CAP
+  string supply_cap = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // maximum supply that can be issued, max 2^256 - 1, (can NOT be INCREASED or decreased below current circulatin supply)
+  string stake_cap = 7 [
+    (gogoproto.moretags) = "yaml:\"stake_cap\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // rewards cap, sum should be lower than 100%
+  string stake_min = 8 [
+    (gogoproto.moretags) = "yaml:\"stake_min\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false 
+  ];
+  bool stake_enabled = 9;
+  bool inactive = 10;    // flag that the token is inactive or not
+  string symbol = 11;    // Ticker (eg. ATOM, KEX, BTC)
+  string name = 12;      // Token Name (e.g. Cosmos, Kira, Bitcoin)
+  string icon = 13;     // Graphical Symbol (url link to graphics)
+  uint32 decimals = 14; // Integer number of max decimals, min 0, max 255, (can NOT be changed)
+  string description = 15; // 512 chars max, (can be changed by owner or proposal-upsert-alias)
+  string website = 16; // url 256 chars max, (can be changed by owner or proposal-upsert-alias)
+  string social = 17; // url 256 chars max, (can be changed by owner or proposal-upsert-alias)
+  uint64 holders = 18;
+  string minting_fee = 19 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // cost of minting 10^decimals per X ukex, can only increase (can be changed by owner only)
+  string owner = 20; // owner address or "" if noone should be able to modify most important properties
+  bool owner_edit_disabled = 21; // owner is disabled to edit token info
+  string nft_metadata = 22; // metadata url or CID
+  string nft_hash = 23; // hexadecimal metadata checksum
+}

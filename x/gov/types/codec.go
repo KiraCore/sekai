@@ -35,7 +35,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 						"description": "maximum transaction fee"
 					},
 					"vote_quorum": {
-						"type":        "uint64",
+						"type":        "decimal",
 						"description": "vote quorum"
 					},
 					"proposal_end_time": {
@@ -456,6 +456,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&SetProposalDurationsProposal{},
 		&ProposalResetWholeCouncilorRank{},
 		&ProposalJailCouncilor{},
+		&ProposalSetExecutionFees{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

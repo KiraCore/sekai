@@ -7,6 +7,7 @@ import (
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -126,4 +127,11 @@ type CustodyKeeper interface {
 	AddToCustodyPool(ctx sdk.Context, record custodytypes.CustodyPool)
 	GetCustodyPoolByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.TransactionPool
 	DropCustodyPool(ctx sdk.Context, addr sdk.AccAddress)
+}
+
+// TokensKeeper defines expected interface needed from tokens keeper
+type TokensKeeper interface {
+	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+	GetTokenInfo(ctx sdk.Context, denom string) *tokenstypes.TokenInfo
 }

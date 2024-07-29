@@ -242,7 +242,7 @@ func NewInitApp(
 		custodytypes.StoreKey,
 		bridgetypes.StoreKey,
 		collectivestypes.ModuleName,
-		layer2types.ModuleName,
+		layer2types.StoreKey,
 		consensusparamtypes.StoreKey,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -275,7 +275,7 @@ func NewInitApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
+	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec, app.BankKeeper)
 	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[govtypes.ModuleName], appCodec, app.BankKeeper)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[stakingtypes.ModuleName], cdc, app.CustomGovKeeper)
 	multiStakingKeeper := multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper, customStakingKeeper)
@@ -285,7 +285,6 @@ func NewInitApp(
 		&customStakingKeeper,
 		multiStakingKeeper,
 		app.CustomGovKeeper,
-		app.GetSubspace(slashingtypes.ModuleName),
 	)
 
 	app.BasketKeeper = basketkeeper.NewKeeper(
@@ -319,11 +318,12 @@ func NewInitApp(
 	)
 
 	app.Layer2Keeper = layer2keeper.NewKeeper(
-		keys[collectivestypes.StoreKey], appCodec,
+		keys[layer2types.StoreKey], appCodec,
 		app.BankKeeper,
 		app.CustomStakingKeeper,
 		app.CustomGovKeeper,
 		app.SpendingKeeper,
+		app.TokensKeeper,
 	)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
@@ -346,7 +346,7 @@ func NewInitApp(
 
 	app.RecoveryKeeper = recoverykeeper.NewKeeper(
 		appCodec,
-		keys[slashingtypes.StoreKey],
+		keys[recoverytypes.StoreKey],
 		app.AccountKeeper,
 		app.BankKeeper,
 		&customStakingKeeper,
@@ -355,15 +355,23 @@ func NewInitApp(
 		app.CollectivesKeeper,
 		app.SpendingKeeper,
 		app.CustodyKeeper,
+		app.TokensKeeper,
 	)
 
 	app.DistrKeeper = distributorkeeper.NewKeeper(
 		keys[distributortypes.ModuleName], appCodec,
 		app.AccountKeeper, app.BankKeeper,
 		app.CustomStakingKeeper, app.CustomGovKeeper,
-		app.MultiStakingKeeper, app.RecoveryKeeper)
+		app.MultiStakingKeeper, app.RecoveryKeeper, app.TokensKeeper)
 	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
-	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper, app.DistrKeeper)
+	app.UbiKeeper = ubikeeper.NewKeeper(
+		keys[ubitypes.ModuleName],
+		appCodec,
+		app.BankKeeper,
+		app.SpendingKeeper,
+		app.DistrKeeper,
+		app.TokensKeeper,
+	)
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
@@ -378,8 +386,8 @@ func NewInitApp(
 			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyResetWholeCouncilorRankProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyJailCouncilorProposalHandler(app.CustomGovKeeper),
-			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
-			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
+			customgov.NewApplySetExecutionFeesProposalHandler(app.CustomGovKeeper),
+			tokens.NewApplyUpsertTokenInfosProposalHandler(app.TokensKeeper),
 			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
 			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
@@ -544,6 +552,7 @@ func NewInitApp(
 			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 			nil,
+			encodingConfig.InterfaceRegistry,
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)

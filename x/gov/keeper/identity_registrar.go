@@ -8,11 +8,11 @@ import (
 	"strings"
 	"time"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/KiraCore/sekai/x/gov/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func ValidateIdentityRecordKey(key string) bool {
@@ -144,6 +144,32 @@ func (k Keeper) DeleteIdentityRecordById(ctx sdk.Context, recordId uint64) {
 	prefix.NewStore(ctx.KVStore(k.storeKey), types.IdentityRecordByAddressPrefix(record.Address)).Delete(sdk.Uint64ToBigEndian(recordId))
 }
 
+func (k Keeper) CancelInvalidIdentityRecordVerifyRequests(ctx sdk.Context, address sdk.AccAddress, recordIds []uint64) error {
+	recordIdMap := make(map[uint64]bool)
+	for _, recordId := range recordIds {
+		recordIdMap[recordId] = true
+	}
+	// if record value's updated after requesting verification, cancels verification request automatically
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.IdRecordVerifyRequestByRequesterPrefix(address.String()))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		requestId := sdk.BigEndianToUint64(iterator.Value())
+		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
+		for _, reqRecordId := range request.RecordIds {
+			if recordIdMap[reqRecordId] {
+				err := k.CancelIdentityRecordsVerifyRequest(ctx, address, requestId)
+				if err != nil {
+					return err
+				}
+				break
+			}
+		}
+	}
+	return nil
+}
+
 // RegisterIdentityRecord defines a method to register identity records for an address
 func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress, infos []types.IdentityInfoEntry) error {
 	// validate key and set the key to non case-sensitive
@@ -151,7 +177,7 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 	uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
 	for i, info := range infos {
 		if !ValidateIdentityRecordKey(info.Key) {
-			return sdkerrors.Wrap(types.ErrInvalidIdentityRecordKey, fmt.Sprintf("invalid key exists: key=%s", info.Key))
+			return errorsmod.Wrap(types.ErrInvalidIdentityRecordKey, fmt.Sprintf("invalid key exists: key=%s", info.Key))
 		}
 		infos[i].Key = FormalizeIdentityRecordKey(info.Key)
 
@@ -182,17 +208,21 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 			if len(addrs) == 1 && bytes.Equal(addrs[0], address) {
 
 			} else if len(addrs) > 0 {
-				return sdkerrors.Wrap(types.ErrKeyShouldBeUnique, fmt.Sprintf("the key %s, value %s is already registered by %s", infos[i].Key, infos[i].Info, addrs[0].String()))
+				return errorsmod.Wrap(types.ErrKeyShouldBeUnique, fmt.Sprintf("the key %s, value %s is already registered by %s", infos[i].Key, infos[i].Info, addrs[0].String()))
 			}
 		}
 	}
 
+	recordIdsAffected := []uint64{}
 	for _, info := range infos {
 		// use existing record id if it already exists
 		recordId := k.GetIdentityRecordIdByAddressKey(ctx, address, info.Key)
+		record := k.GetIdentityRecordById(ctx, recordId)
 		if recordId == 0 {
 			recordId = k.GetLastIdentityRecordId(ctx) + 1
 			k.SetLastIdentityRecordId(ctx, recordId)
+		} else if record == nil || record.Value != info.Info {
+			recordIdsAffected = append(recordIdsAffected, recordId)
 		}
 		// create or update identity record
 		k.SetIdentityRecord(ctx, types.IdentityRecord{
@@ -204,7 +234,7 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 			Verifiers: []string{},
 		})
 	}
-	return nil
+	return k.CancelInvalidIdentityRecordVerifyRequests(ctx, address, recordIdsAffected)
 }
 
 // DeleteIdentityRecords defines a method to delete identity records owned by an address
@@ -212,13 +242,13 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 	// validate key and set the key to non case-sensitive
 	for i, key := range keys {
 		if !ValidateIdentityRecordKey(key) {
-			return sdkerrors.Wrap(types.ErrInvalidIdentityRecordKey, fmt.Sprintf("invalid key exists: key=%s", key))
+			return errorsmod.Wrap(types.ErrInvalidIdentityRecordKey, fmt.Sprintf("invalid key exists: key=%s", key))
 		}
 		keys[i] = FormalizeIdentityRecordKey(key)
 
 		// we prevent deleting moniker field of a validator
 		if key == "moniker" {
-			return sdkerrors.Wrap(types.ErrMonikerDeletionNotAllowed, fmt.Sprintf("moniker field is not allowed to delete"))
+			return errorsmod.Wrap(types.ErrMonikerDeletionNotAllowed, fmt.Sprintf("moniker field is not allowed to delete"))
 		}
 	}
 
@@ -246,34 +276,14 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 	for _, recordId := range recordIds {
 		prevRecord := k.GetIdentityRecordById(ctx, recordId)
 		if prevRecord == nil {
-			return sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
+			return errorsmod.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
 		}
 
 		recordIdMap[recordId] = true
 		k.DeleteIdentityRecordById(ctx, recordId)
 	}
 
-	// remove record ids from verification request list
-	requests := k.GetIdRecordsVerifyRequestsByRequester(ctx, address)
-	for _, request := range requests {
-		recordIds := []uint64{}
-		for _, recordid := range request.RecordIds {
-			if !recordIdMap[recordid] {
-				recordIds = append(recordIds, recordid)
-			}
-		}
-
-		if len(recordIds) == 0 {
-			err := k.CancelIdentityRecordsVerifyRequest(ctx, sdk.MustAccAddressFromBech32(request.Address), request.Id)
-			if err != nil {
-				return err
-			}
-		} else {
-			request.RecordIds = recordIds
-			k.SetIdentityRecordsVerifyRequest(ctx, request)
-		}
-	}
-	return nil
+	return k.CancelInvalidIdentityRecordVerifyRequests(ctx, address, recordIds)
 }
 
 // GetAllIdentityRecords query all identity records
@@ -297,7 +307,7 @@ func (k Keeper) GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAdd
 	// validate key and set the key to non case-sensitive
 	for i, key := range keys {
 		if !ValidateIdentityRecordKey(key) {
-			return []types.IdentityRecord{}, sdkerrors.Wrap(types.ErrInvalidIdentityRecordKey, fmt.Sprintf("invalid key exists: key=%s", key))
+			return []types.IdentityRecord{}, errorsmod.Wrap(types.ErrInvalidIdentityRecordKey, fmt.Sprintf("invalid key exists: key=%s", key))
 		}
 		keys[i] = FormalizeIdentityRecordKey(key)
 	}
@@ -315,9 +325,17 @@ func (k Keeper) GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAdd
 		recordId := sdk.BigEndianToUint64(bz)
 		record := k.GetIdentityRecordById(ctx, recordId)
 		if record == nil {
-			return records, sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
+			records = append(records, types.IdentityRecord{
+				Id:        0,
+				Address:   address.String(),
+				Key:       key,
+				Value:     "",
+				Date:      time.Time{},
+				Verifiers: []string{},
+			})
+		} else {
+			records = append(records, *record)
 		}
-		records = append(records, *record)
 	}
 	return records, nil
 }
@@ -385,7 +403,7 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 
 	for _, recordId := range recordIds {
 		if !idsMap[recordId] {
-			return requestId, sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("executor is not owner of the identity record: id=%d", recordId))
+			return requestId, errorsmod.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("executor is not owner of the identity record: id=%d", recordId))
 		}
 	}
 
@@ -393,7 +411,7 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 	for _, recordId := range recordIds {
 		record := k.GetIdentityRecordById(ctx, recordId)
 		if record == nil {
-			return requestId, sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
+			return requestId, errorsmod.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
 		}
 		if lastRecordEditDate.Before(record.Date) {
 			lastRecordEditDate = record.Date
@@ -411,7 +429,7 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 
 	minApprovalTip := k.GetNetworkProperties(ctx).MinIdentityApprovalTip
 	if sdk.NewInt(int64(minApprovalTip)).GT(tip.Amount) {
-		return requestId, sdkerrors.Wrap(types.ErrInvalidApprovalTip, fmt.Sprintf("approval tip is lower than minimum tip configured by the network"))
+		return requestId, errorsmod.Wrap(types.ErrInvalidApprovalTip, fmt.Sprintf("approval tip is lower than minimum tip configured by the network"))
 	}
 
 	k.SetIdentityRecordsVerifyRequest(ctx, request)
@@ -459,7 +477,7 @@ func (k Keeper) DeleteIdRecordsVerifyRequest(ctx sdk.Context, requestId uint64) 
 func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk.AccAddress, requestId uint64, approve bool) error {
 	request := k.GetIdRecordsVerifyRequest(ctx, requestId)
 	if request == nil {
-		return sdkerrors.Wrap(types.ErrInvalidVerifyRequestId, fmt.Sprintf("specified identity record verify request does NOT exist: id=%d", requestId))
+		return errorsmod.Wrap(types.ErrInvalidVerifyRequestId, fmt.Sprintf("specified identity record verify request does NOT exist: id=%d", requestId))
 	}
 	if verifier.String() != request.Verifier {
 		return errors.New("verifier does not match with requested")
@@ -476,7 +494,7 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 	for _, recordId := range request.RecordIds {
 		record := k.GetIdentityRecordById(ctx, recordId)
 		if record == nil {
-			return sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
+			return errorsmod.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
 		}
 
 		if record.Date.After(request.LastRecordEditDate) {
@@ -485,7 +503,7 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 		}
 	}
 
-	if approve == false {
+	if !approve {
 		k.DeleteIdRecordsVerifyRequest(ctx, requestId)
 		return nil
 	}
@@ -493,7 +511,7 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 	for _, recordId := range request.RecordIds {
 		record := k.GetIdentityRecordById(ctx, recordId)
 		if record == nil {
-			return sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
+			return errorsmod.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
 		}
 
 		// if already exist, skip
@@ -512,7 +530,7 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 func (k Keeper) CancelIdentityRecordsVerifyRequest(ctx sdk.Context, executor sdk.AccAddress, requestId uint64) error {
 	request := k.GetIdRecordsVerifyRequest(ctx, requestId)
 	if request == nil {
-		return sdkerrors.Wrap(types.ErrInvalidVerifyRequestId, fmt.Sprintf("specified identity record verify request does NOT exist: id=%d", requestId))
+		return errorsmod.Wrap(types.ErrInvalidVerifyRequestId, fmt.Sprintf("specified identity record verify request does NOT exist: id=%d", requestId))
 	}
 	if executor.String() != request.Address {
 		return errors.New("executor is not identity record creator")

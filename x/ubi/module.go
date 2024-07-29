@@ -117,7 +117,6 @@ func (am AppModule) QuerierRoute() string {
 	return ubitypes.QuerierRoute
 }
 
-
 func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {

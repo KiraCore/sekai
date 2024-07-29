@@ -28,15 +28,12 @@ func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, stakingKeeper types.Stak
 		}
 		keeper.SetValidatorSigningInfo(ctx, address, info.ValidatorSigningInfo)
 	}
-
-	keeper.SetParams(ctx, data.Params)
 }
 
 // ExportGenesis writes the current store values
 // to a genesis file, which can be imported again
 // with InitGenesis
 func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) (data *types.GenesisState) {
-	params := keeper.GetParams(ctx)
 	signingInfos := make([]types.SigningInfo, 0)
 	keeper.IterateValidatorSigningInfos(ctx, func(address sdk.ConsAddress, info types.ValidatorSigningInfo) (stop bool) {
 		bechAddr := address.String()
@@ -48,5 +45,5 @@ func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) (data *types.GenesisSt
 		return false
 	})
 
-	return types.NewGenesisState(params, signingInfos)
+	return types.NewGenesisState(signingInfos)
 }

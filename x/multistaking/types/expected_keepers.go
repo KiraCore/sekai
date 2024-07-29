@@ -32,7 +32,8 @@ type BankKeeper interface {
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
 }
 
-// TokensKeeper defines expected interface needed to get token rate
+// TokensKeeper defines expected interface needed from tokens keeper
 type TokensKeeper interface {
-	GetTokenRate(ctx sdk.Context, denom string) *tokenstypes.TokenRate
+	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+	GetTokenInfo(ctx sdk.Context, denom string) *tokenstypes.TokenInfo
 }

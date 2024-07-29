@@ -39,19 +39,13 @@ var PermMetadata = []PermInfo{
 		Description: "the permission that an actor must have in order to vote a proposal to whitelist account permission",
 	},
 	{
-		Id:          int32(PermUpsertTokenAlias),
-		Name:        "PERMISSION_UPSERT_TOKEN_ALIAS",
-		Module:      "tokens",
-		Description: "the permission to upsert token alias",
-	},
-	{
 		Id:          int32(PermChangeTxFee),
 		Name:        "PERMISSION_CHANGE_TX_FEE",
 		Module:      "tokens",
 		Description: "Permission to change tx fee",
 	},
 	{
-		Id:          int32(PermUpsertTokenRate),
+		Id:          int32(PermUpsertTokenInfo),
 		Name:        "PERMISSION_UPSERT_TOKEN_RATE",
 		Module:      "tokens",
 		Description: "Permission to upsert token rate",
@@ -87,18 +81,6 @@ var PermMetadata = []PermInfo{
 		Description: "the permission that an actor must have in order to vote a proposal to set network property.",
 	},
 	{
-		Id:          int32(PermCreateUpsertTokenAliasProposal),
-		Name:        "PERMISSION_CREATE_UPSERT_TOKEN_ALIAS_PROPOSAL",
-		Module:      "tokens",
-		Description: "the permission needed to create proposals for upsert token Alias.",
-	},
-	{
-		Id:          int32(PermVoteUpsertTokenAliasProposal),
-		Name:        "PERMISSION_VOTE_UPSERT_TOKEN_ALIAS_PROPOSAL",
-		Module:      "tokens",
-		Description: "the permission needed to vote proposals for upsert token.",
-	},
-	{
 		Id:          int32(PermCreateSetPoorNetworkMessagesProposal),
 		Name:        "PERMISSION_CREATE_SET_POOR_NETWORK_MESSAGES",
 		Module:      "tokens",
@@ -111,13 +93,13 @@ var PermMetadata = []PermInfo{
 		Description: "the permission needed to vote proposals to set poor network messages.",
 	},
 	{
-		Id:          int32(PermCreateUpsertTokenRateProposal),
+		Id:          int32(PermCreateUpsertTokenInfoProposal),
 		Name:        "PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL",
 		Module:      "tokens",
 		Description: "the permission needed to create proposals for upsert token rate.",
 	},
 	{
-		Id:          int32(PermVoteUpsertTokenRateProposal),
+		Id:          int32(PermVoteUpsertTokenInfoProposal),
 		Name:        "PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL",
 		Module:      "tokens",
 		Description: "the permission needed to vote proposals for upsert token rate.",
@@ -397,5 +379,29 @@ var PermMetadata = []PermInfo{
 		Name:        "PERMISSION_VOTE_JAIL_COUNCILOR_PROPOSAL",
 		Module:      "gov",
 		Description: "the permission needed to vote on jail councilors proposal",
+	},
+	{
+		Id:          int32(PermCreatePollProposal),
+		Name:        "PERMISSION_CREATE_POLL_PROPOSAL",
+		Module:      "gov",
+		Description: "the permission needed to create a poll proposal",
+	},
+	{
+		Id:          int32(PermCreateDappProposalWithoutBond),
+		Name:        "PERMISSION_CREATE_DAPP_PROPOSAL_WITHOUT_BOND",
+		Module:      "gov",
+		Description: "the permission needed to create a dapp proposal without bond",
+	},
+	{
+		Id:          int32(PermCreateSetExecutionFeesProposal),
+		Name:        "PERMISSION_CREATE_SET_EXECUTION_FEES_PROPOSAL",
+		Module:      "gov",
+		Description: "the permission needed to create a proposal to set execution fees",
+	},
+	{
+		Id:          int32(PermVoteSetExecutionFeesProposal),
+		Name:        "PERMISSION_VOTE_SET_EXECUTION_FEES_PROPOSAL",
+		Module:      "gov",
+		Description: "the permission needed to vote on set execution fees proposal",
 	},
 }

@@ -9,6 +9,8 @@ import (
 
 	"github.com/KiraCore/sekai/x/genutil"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	cfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/libs/cli"
 	tmos "github.com/cometbft/cometbft/libs/os"
@@ -124,6 +126,35 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			govGenState.Bech32Prefix = bech32Prefix
 			govGenState.DefaultDenom = defaultDenom
 			genesis[govtypes.ModuleName], err = cdc.MarshalJSON(&govGenState)
+			if err != nil {
+				return err
+			}
+
+			tokenGenState := tokenstypes.GetGenesisStateFromAppState(clientCtx.Codec, genesis)
+			tokenGenState.TokenInfos = []tokenstypes.TokenInfo{
+				{
+					Denom:        defaultDenom,
+					FeeRate:      sdk.OneDec(),
+					FeeEnabled:   true,
+					StakeCap:     sdk.NewDecWithPrec(5, 1), // 0.5
+					StakeMin:     sdk.OneInt(),
+					StakeEnabled: true,
+					Inactive:     false,
+					Symbol:       defaultDenom,
+					Name:         defaultDenom,
+					Icon:         "",
+					Decimals:     6,
+				},
+			}
+			tokenGenState.TokenBlackWhites.Whitelisted = []string{defaultDenom}
+			genesis[tokenstypes.ModuleName], err = cdc.MarshalJSON(&tokenGenState)
+			if err != nil {
+				return err
+			}
+
+			spendingGenState := spendingtypes.GetGenesisStateFromAppState(clientCtx.Codec, genesis)
+			spendingGenState.Pools[0].Rates[0].Denom = defaultDenom
+			genesis[spendingtypes.ModuleName], err = cdc.MarshalJSON(&spendingGenState)
 			if err != nil {
 				return err
 			}

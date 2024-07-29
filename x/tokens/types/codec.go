@@ -11,40 +11,9 @@ import (
 
 // RegisterCodec register codec and metadata
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgUpsertTokenAlias{}, "kiraHub/MsgUpsertTokenAlias", nil)
-	functionmeta.AddNewFunction((&MsgUpsertTokenAlias{}).Type(), `{
-		"description": "MsgUpsertTokenAlias represents a message to register token alias.",
-		"parameters": {
-			"symbol": {
-				"type":        "string",
-				"description": "Ticker (eg. ATOM, KEX, BTC)."
-			},
-			"name": {
-				"type":        "string",
-				"description": "Token Name (e.g. Cosmos, Kira, Bitcoin)."
-			},
-			"icon": {
-				"type":        "string",
-				"description": "Graphical Symbol (url link to graphics)."
-			},
-			"decimals": {
-				"type":        "uint32",
-				"description": "Integer number of max decimals."
-			},
-			"denoms": {
-				"type":        "array<string>",
-				"description": "An array of token denoms to be aliased."
-			},
-			"proposer": {
-				"type":        "string",
-				"description": "proposer who propose this message."
-			}
-		}
-	}`)
-
-	cdc.RegisterConcrete(&MsgUpsertTokenRate{}, "kiraHub/MsgUpsertTokenRate", nil)
-	functionmeta.AddNewFunction((&MsgUpsertTokenRate{}).Type(), `{
-		"description": "MsgUpsertTokenRate represents a message to register token rate.",
+	cdc.RegisterConcrete(&MsgUpsertTokenInfo{}, "kiraHub/MsgUpsertTokenInfo", nil)
+	functionmeta.AddNewFunction((&MsgUpsertTokenInfo{}).Type(), `{
+		"description": "MsgUpsertTokenInfo represents a message to register token rate.",
 		"parameters": {
 			"denom": {
 				"type":        "string",
@@ -64,20 +33,42 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 			}
 		}
 	}`)
+
+	cdc.RegisterConcrete(&MsgEthereumTx{}, "kiraHub/MsgEthereumTx", nil)
+	functionmeta.AddNewFunction((&MsgEthereumTx{}).Type(), `{
+		"description": "MsgUpsertTokenInfo represents a message to register token rate.",
+		"parameters": {
+			"tx_type": {
+				"type":        "string",
+				"description": "ethereum tx type."
+			},
+			"sender": {
+				"type":        "string",
+				"description": "bech32 encoded address of ethereum tx"
+			},
+			"hash": {
+				"type":        "string",
+				"description": "ethereum tx hash in hex."
+			},
+			"data": {
+				"type":        "bytes",
+				"description": "rlp encoding of ethereum tx bytes."
+			}
+		}
+	}`)
 }
 
 // RegisterInterfaces register Msg and structs
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpsertTokenRate{},
-		&MsgUpsertTokenAlias{},
+		&MsgUpsertTokenInfo{},
+		&MsgEthereumTx{},
 	)
 
 	registry.RegisterInterface(
 		"kira.gov.Content",
 		(*govtypes.Content)(nil),
-		&ProposalUpsertTokenAlias{},
-		&ProposalUpsertTokenRates{},
+		&ProposalUpsertTokenInfo{},
 		&ProposalTokensWhiteBlackChange{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

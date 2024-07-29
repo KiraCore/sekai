@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/KiraCore/sekai/x/basket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) error {
@@ -41,7 +41,7 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 		_, indexes := basket.RatesAndIndexes()
 		tokenIndex := indexes[token.Denom]
 		if !basket.Tokens[tokenIndex].Deposits {
-			return sdkerrors.Wrap(types.ErrDepositsDisabledForToken, fmt.Sprintf("denom=%s", token.Denom))
+			return errorsmod.Wrap(types.ErrDepositsDisabledForToken, fmt.Sprintf("denom=%s", token.Denom))
 		}
 		basketTokenAmount = basketTokenAmount.Add(sdk.NewDecFromInt(token.Amount).Mul(rate))
 	}
@@ -59,7 +59,7 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 	}
 
 	basketCoins := sdk.Coins{basketCoin}
-	err = k.bk.MintCoins(ctx, types.ModuleName, basketCoins)
+	err = k.tk.MintCoins(ctx, types.ModuleName, basketCoins)
 	if err != nil {
 		return err
 	}
@@ -115,7 +115,7 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 		return err
 	}
 
-	err = k.bk.BurnCoins(ctx, types.ModuleName, burnCoins)
+	err = k.tk.BurnCoins(ctx, types.ModuleName, burnCoins)
 	if err != nil {
 		return err
 	}

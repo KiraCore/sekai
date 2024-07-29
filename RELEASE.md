@@ -1,3 +1,3 @@
 Features:
 
-- Add flag for filtering only required modules for migration #630
+- Fix legacy tx signing

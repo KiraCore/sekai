@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	errorsmod "cosmossdk.io/errors"
 	appparams "github.com/KiraCore/sekai/app/params"
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 )
 
@@ -162,7 +162,7 @@ func (k Keeper) ExecutionFee(goCtx context.Context, request *types.ExecutionFeeR
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	fee := k.GetExecutionFee(ctx, request.TransactionType)
 	if fee == nil {
-		return nil, sdkerrors.Wrap(types.ErrFeeNotExist, fmt.Sprintf("fee does not exist for %s", request.TransactionType))
+		return nil, errorsmod.Wrap(types.ErrFeeNotExist, fmt.Sprintf("fee does not exist for %s", request.TransactionType))
 	}
 	return &types.ExecutionFeeResponse{Fee: fee}, nil
 }
@@ -195,7 +195,7 @@ func (k Keeper) Proposal(goCtx context.Context, request *types.QueryProposalRequ
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	proposal, found := k.GetProposal(ctx, request.ProposalId)
 	if found == false {
-		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("proposal does not exist for %d", request.ProposalId))
+		return nil, errorsmod.Wrap(types.ErrGettingProposals, fmt.Sprintf("proposal does not exist for %d", request.ProposalId))
 	}
 	votes := k.GetProposalVotes(ctx, request.ProposalId)
 	return &types.QueryProposalResponse{
@@ -209,7 +209,7 @@ func (k Keeper) Proposals(goCtx context.Context, request *types.QueryProposalsRe
 	c := sdk.UnwrapSDKContext(goCtx)
 	if request == nil {
 		err := status.Error(codes.InvalidArgument, "empty request")
-		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
+		return nil, errorsmod.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
 
 	store := c.KVStore(k.storeKey)
@@ -251,7 +251,7 @@ func (k Keeper) Proposals(goCtx context.Context, request *types.QueryProposalsRe
 	pageRes, err = query.FilteredPaginate(proposalsStore, request.Pagination, onResult)
 
 	if err != nil {
-		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
+		return nil, errorsmod.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
 
 	res := types.QueryProposalsResponse{
@@ -267,7 +267,7 @@ func (k Keeper) WhitelistedProposalVoters(goCtx context.Context, request *types.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	proposal, found := k.GetProposal(ctx, request.ProposalId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("proposal does not exist for %d", request.ProposalId))
+		return nil, errorsmod.Wrap(types.ErrGettingProposals, fmt.Sprintf("proposal does not exist for %d", request.ProposalId))
 	}
 
 	// dynamic proposal users for spending pool proposals
@@ -321,9 +321,8 @@ func (k Keeper) ProposerVotersCount(goCtx context.Context, request *types.QueryP
 		types.PermWhitelistAccountPermissionProposal,
 		types.PermCreateUpsertDataRegistryProposal,
 		types.PermCreateSetNetworkPropertyProposal,
-		types.PermCreateUpsertTokenAliasProposal,
 		types.PermCreateSetPoorNetworkMessagesProposal,
-		types.PermCreateUpsertTokenRateProposal,
+		types.PermCreateUpsertTokenInfoProposal,
 		types.PermCreateUnjailValidatorProposal,
 		types.PermCreateRoleProposal,
 		types.PermCreateTokensWhiteBlackChangeProposal,
@@ -347,9 +346,8 @@ func (k Keeper) ProposerVotersCount(goCtx context.Context, request *types.QueryP
 		types.PermVoteWhitelistAccountPermissionProposal,
 		types.PermVoteUpsertDataRegistryProposal,
 		types.PermVoteSetNetworkPropertyProposal,
-		types.PermVoteUpsertTokenAliasProposal,
 		types.PermVoteSetPoorNetworkMessagesProposal,
-		types.PermVoteUpsertTokenRateProposal,
+		types.PermVoteUpsertTokenInfoProposal,
 		types.PermVoteUnjailValidatorProposal,
 		types.PermVoteCreateRoleProposal,
 		types.PermVoteTokensWhiteBlackChangeProposal,
@@ -385,7 +383,7 @@ func (k Keeper) Vote(goCtx context.Context, request *types.QueryVoteRequest) (*t
 	}
 	vote, found := k.GetVote(ctx, request.ProposalId, voter)
 	if !found {
-		return &types.QueryVoteResponse{Vote: vote}, sdkerrors.Wrap(types.ErrGettingProposalVotes, fmt.Sprintf("error getting votes for proposal %d, voter %s", request.ProposalId, request.Voter))
+		return &types.QueryVoteResponse{Vote: vote}, errorsmod.Wrap(types.ErrGettingProposalVotes, fmt.Sprintf("error getting votes for proposal %d, voter %s", request.ProposalId, request.Voter))
 	}
 	return &types.QueryVoteResponse{Vote: vote}, nil
 }

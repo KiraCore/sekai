@@ -61,13 +61,13 @@ func (suite *KeeperTestSuite) TestCreateDappProposal() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),
 				Time:     1680141605,
 			},
-			VoteQuorum:    30,
+			VoteQuorum:    sdk.NewDecWithPrec(30, 2),
 			VotePeriod:    86400,
 			VoteEnactment: 3000,
 			UpdateTimeMax: 60,
@@ -139,13 +139,13 @@ func (suite *KeeperTestSuite) TestBondDappProposal() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),
 				Time:     1680141605,
 			},
-			VoteQuorum:    30,
+			VoteQuorum:    sdk.NewDecWithPrec(30, 2),
 			VotePeriod:    86400,
 			VoteEnactment: 3000,
 			UpdateTimeMax: 60,
@@ -226,13 +226,13 @@ func (suite *KeeperTestSuite) TestReclaimDappBondProposal() {
 				Deposit: "",
 				Drip:    86400,
 			},
-			Issurance: types.IssuranceConfig{
+			Issuance: types.IssuanceConfig{
 				Deposit:  "",
 				Premint:  sdk.OneInt(),
 				Postmint: sdk.OneInt(),
 				Time:     1680141605,
 			},
-			VoteQuorum:    30,
+			VoteQuorum:    sdk.NewDecWithPrec(30, 2),
 			VotePeriod:    86400,
 			VoteEnactment: 3000,
 			UpdateTimeMax: 60,

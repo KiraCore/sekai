@@ -29,8 +29,8 @@ func TestSimappExportGenesis(t *testing.T) {
 	bz, err := app.AppCodec().MarshalJSON(genesis)
 	require.NoError(t, err)
 	buffer := new(bytes.Buffer)
-	err = json.Compact(buffer, []byte(`{	
-  "default_denom": "ukex",	
+	err = json.Compact(buffer, []byte(`{
+  "default_denom": "ukex",
   "bech32_prefix": "kira",
   "starting_proposal_id": "1",
   "next_role_id": "3",
@@ -53,15 +53,12 @@ func TestSimappExportGenesis(t *testing.T) {
         1,
         2,
         3,
-        6,
         8,
         9,
         12,
         13,
         10,
         11,
-        14,
-        15,
         18,
         19,
         20,
@@ -114,7 +111,10 @@ func TestSimappExportGenesis(t *testing.T) {
         63,
         64,
         65,
-        66
+        66,
+        67,
+        68,
+        69
       ]
     },
     "2": {
@@ -128,7 +128,7 @@ func TestSimappExportGenesis(t *testing.T) {
   "network_properties": {
     "min_tx_fee": "100",
     "max_tx_fee": "1000000",
-    "vote_quorum": "33",
+    "vote_quorum": "0.330000000000000000",
     "minimum_proposal_end_time": "300",
     "proposal_enactment_time": "300",
     "min_proposal_end_blocks": "2",
@@ -152,9 +152,9 @@ func TestSimappExportGenesis(t *testing.T) {
     "unstaking_period": "2629800",
     "max_delegators": "100",
     "min_delegation_pushout": "10",
-    "slashing_period": "3600",
+    "slashing_period": "2629800",
     "max_jailed_percentage": "0.250000000000000000",
-    "max_slashing_percentage": "0.010000000000000000",
+    "max_slashing_percentage": "0.005000000000000000",
     "min_custody_reward": "200",
     "max_custody_buffer_size": "10",
     "max_custody_tx_size": "8192",
@@ -174,35 +174,27 @@ func TestSimappExportGenesis(t *testing.T) {
     "max_proposal_checksum_size": "128",
   	"min_dapp_bond": "1000000",	
     "max_dapp_bond": "10000000",	
-    "dapp_liquidation_threshold": "0",
-    "dapp_liquidation_period": "0",
+    "dapp_liquidation_threshold": "100000000000",
+    "dapp_liquidation_period": "2419200",
     "dapp_bond_duration": "604800",
     "dapp_verifier_bond": "0.001000000000000000",
     "dapp_auto_denounce_time": "60",
     "dapp_mischance_rank_decrease_amount": "1",
     "dapp_max_mischance": "10",
-    "dapp_inactive_rank_decrease_percent": "10",
+    "dapp_inactive_rank_decrease_percent": "0.100000000000000000",
     "dapp_pool_slippage_default": "0.100000000000000000",
     "minting_ft_fee": "100000000000000",
     "minting_nft_fee": "100000000000000",
-    "veto_threshold": "33.400000000000000000",
+    "veto_threshold": "0.334000000000000000",
     "autocompound_interval_num_blocks": "17280",
+    "downtime_inactive_duration": "600",
 	"bridge_address": "test",
-    "bridge_cosmos_ethereum_exchange_rate": 10,
-    "bridge_ethereum_cosmos_exchange_rate": 0.100000000000000000,
   },
   "execution_fees": [
     {
       "transaction_type": "activate",
       "execution_fee": "100",
       "failure_fee": "1000",
-      "timeout": "10",
-      "default_parameters": "0"
-    },
-    {
-      "transaction_type": "claim-councilor",
-      "execution_fee": "100",
-      "failure_fee": "1",
       "timeout": "10",
       "default_parameters": "0"
     },
@@ -214,7 +206,14 @@ func TestSimappExportGenesis(t *testing.T) {
       "default_parameters": "0"
     },
     {
-      "transaction_type": "claim-validator",
+      "transaction_type": "claim_councilor",
+      "execution_fee": "100",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "claim_validator",
       "execution_fee": "100",
       "failure_fee": "1",
       "timeout": "10",
@@ -242,13 +241,6 @@ func TestSimappExportGenesis(t *testing.T) {
       "default_parameters": "0"
     },
     {
-      "transaction_type": "upsert-token-alias",
-      "execution_fee": "100",
-      "failure_fee": "1",
-      "timeout": "10",
-      "default_parameters": "0"
-    },
-    {
       "transaction_type": "veto-proposal-type-x",
       "execution_fee": "100",
       "failure_fee": "1",
@@ -265,28 +257,28 @@ func TestSimappExportGenesis(t *testing.T) {
   ],
   "poor_network_messages": {
     "messages": [
-      "submit-proposal",
-      "set-network-properties",
-      "vote-proposal",
-      "claim-councilor",
-      "whitelist-permissions",
-      "blacklist-permissions",
-      "create-role",
-      "assign-role",
-      "unassign-role",
-      "whitelist-role-permission",
-      "blacklist-role-permission",
-      "remove-whitelist-role-permission",
-      "remove-blacklist-role-permission",
-      "claim-validator",
+      "submit_proposal",
+      "set_network_properties",
+      "vote_proposal",
+      "claim_councilor",
+      "whitelist_permissions",
+      "blacklist_permissions",
+      "create_role",
+      "assign_role",
+      "unassign_role",
+      "whitelist_role_permission",
+      "blacklist_role_permission",
+      "remove_whitelist_role_permission",
+      "remove_blacklist_role_permission",
+      "claim_validator",
       "activate",
       "pause",
       "unpause",
-      "register-identity-records",
-      "edit-identity-record",
-      "request-identity-records-verify",
-      "handle-identity-records-verify-request",
-      "cancel-identity-records-verify-request"
+      "register_identity_records",
+      "delete_identity_records",
+      "request_identity_records_verify",
+      "handle_identity_records_verify_request",
+      "cancel_identity_records_verify_request"
     ]
   },
   "proposals": [],
@@ -340,69 +332,70 @@ func TestExportInitGenesis(t *testing.T) {
 				types.PermSetPermissions,
 				types.PermClaimValidator,
 				types.PermClaimCouncilor,
-				types.PermUpsertTokenAlias,
 			}, nil),
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &types.NetworkProperties{
-			MinTxFee:                         100,
-			MaxTxFee:                         1000000,
-			VoteQuorum:                       33,
-			MinimumProposalEndTime:           300, // 300 seconds / 5 mins
-			ProposalEnactmentTime:            300, // 300 seconds / 5 mins
-			MinProposalEndBlocks:             2,
-			MinProposalEnactmentBlocks:       1,
-			MischanceRankDecreaseAmount:      1,
-			MaxMischance:                     1,
-			InactiveRankDecreasePercent:      sdk.NewDecWithPrec(2, 2),
-			MinValidators:                    1,
-			PoorNetworkMaxBankSend:           1,
-			EnableForeignFeePayments:         true,
-			MinIdentityApprovalTip:           200,
-			UniqueIdentityKeys:               "moniker,username",
-			UbiHardcap:                       6000_000,
-			ValidatorsFeeShare:               sdk.NewDecWithPrec(50, 2), // 50%
-			InflationRate:                    sdk.NewDecWithPrec(18, 2), // 18%
-			InflationPeriod:                  31557600,                  // 1 year
-			UnstakingPeriod:                  2629800,                   // 1 month
-			MaxDelegators:                    100,
-			MinDelegationPushout:             10,
-			SlashingPeriod:                   3600,
-			MaxJailedPercentage:              sdk.NewDecWithPrec(25, 2),
-			MaxSlashingPercentage:            sdk.NewDecWithPrec(1, 2),
-			MinCustodyReward:                 200,
-			MaxCustodyBufferSize:             10,
-			MaxCustodyTxSize:                 8192,
-			AbstentionRankDecreaseAmount:     1,
-			MaxAbstention:                    2,
-			MinCollectiveBond:                100_000, // in KEX
-			MinCollectiveBondingTime:         86400,   // in seconds
-			MaxCollectiveOutputs:             10,
-			MinCollectiveClaimPeriod:         14400,                     // 4hrs
-			ValidatorRecoveryBond:            300000,                    // 300k KEX
-			MaxAnnualInflation:               sdk.NewDecWithPrec(35, 2), // 35%
-			MaxProposalTitleSize:             128,
-			MaxProposalDescriptionSize:       1024,
-			MaxProposalPollOptionSize:        64,
-			MaxProposalPollOptionCount:       128,
-			MaxProposalReferenceSize:         512,
-			MaxProposalChecksumSize:          128,
-			MinDappBond:                      1000000,
-			MaxDappBond:                      10000000,
-			DappBondDuration:                 604800,
-			DappVerifierBond:                 sdk.NewDecWithPrec(1, 3), //0.1%
-			DappAutoDenounceTime:             60,                       // 60s
-			DappMischanceRankDecreaseAmount:  1,
-			DappMaxMischance:                 10,
-			DappInactiveRankDecreasePercent:  10,
-			DappPoolSlippageDefault:          sdk.NewDecWithPrec(1, 1), // 10%
-			MintingFtFee:                     100_000_000_000_000,
-			MintingNftFee:                    100_000_000_000_000,
-			VetoThreshold:                    sdk.NewDecWithPrec(3340, 2), // 33.40%
-			AutocompoundIntervalNumBlocks:    17280,
-			BridgeAddress:                    "test",
-			BridgeCosmosEthereumExchangeRate: sdk.NewDec(10),
-			BridgeEthereumCosmosExchangeRate: sdk.NewDecWithPrec(1, 1),
+			MinTxFee:                        100,
+			MaxTxFee:                        1000000,
+			VoteQuorum:                      sdk.NewDecWithPrec(33, 2),
+			MinimumProposalEndTime:          300, // 300 seconds / 5 mins
+			ProposalEnactmentTime:           300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:            2,
+			MinProposalEnactmentBlocks:      1,
+			MischanceRankDecreaseAmount:     1,
+			MaxMischance:                    1,
+			InactiveRankDecreasePercent:     sdk.NewDecWithPrec(2, 2),
+			MinValidators:                   1,
+			UnjailMaxTime:                   600,
+			PoorNetworkMaxBankSend:          1,
+			EnableForeignFeePayments:        true,
+			MinIdentityApprovalTip:          200,
+			UniqueIdentityKeys:              "moniker,username",
+			UbiHardcap:                      6000_000,
+			ValidatorsFeeShare:              sdk.NewDecWithPrec(50, 2), // 50%
+			InflationRate:                   sdk.NewDecWithPrec(18, 2), // 18%
+			InflationPeriod:                 31557600,                  // 1 year
+			UnstakingPeriod:                 2629800,                   // 1 month
+			MaxDelegators:                   100,
+			MinDelegationPushout:            10,
+			SlashingPeriod:                  2629800,
+			MaxJailedPercentage:             sdk.NewDecWithPrec(25, 2),
+			MaxSlashingPercentage:           sdk.NewDecWithPrec(5, 3), // 0.5%
+			MinCustodyReward:                200,
+			MaxCustodyBufferSize:            10,
+			MaxCustodyTxSize:                8192,
+			AbstentionRankDecreaseAmount:    1,
+			MaxAbstention:                   2,
+			MinCollectiveBond:               100_000, // in KEX
+			MinCollectiveBondingTime:        86400,   // in seconds
+			MaxCollectiveOutputs:            10,
+			MinCollectiveClaimPeriod:        14400,                     // 4hrs
+			ValidatorRecoveryBond:           300000,                    // 300k KEX
+			MaxAnnualInflation:              sdk.NewDecWithPrec(35, 2), // 35%
+			MaxProposalTitleSize:            128,
+			MaxProposalDescriptionSize:      1024,
+			MaxProposalPollOptionSize:       64,
+			MaxProposalPollOptionCount:      128,
+			MaxProposalReferenceSize:        512,
+			MaxProposalChecksumSize:         128,
+			MinDappBond:                     1000000,
+			MaxDappBond:                     10000000,
+			DappBondDuration:                604800,
+			DappVerifierBond:                sdk.NewDecWithPrec(1, 3), //0.1%
+			DappAutoDenounceTime:            60,                       // 60s
+			DappMischanceRankDecreaseAmount: 1,
+			DappMaxMischance:                10,
+			DappInactiveRankDecreasePercent: sdk.NewDecWithPrec(10, 2),
+			DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
+			DappLiquidationThreshold:        100_000_000_000,          // default 100’000 KEX
+			DappLiquidationPeriod:           2419200,                  // default 2419200, ~28d
+			MintingFtFee:                    100_000_000_000_000,
+			MintingNftFee:                   100_000_000_000_000,
+			VetoThreshold:                   sdk.NewDecWithPrec(3340, 4), // 33.40%
+			AutocompoundIntervalNumBlocks:   17280,
+			DowntimeInactiveDuration:        600,
+			BridgeAddress:                   "test",
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -449,8 +442,7 @@ func TestExportInitGenesis(t *testing.T) {
       "whitelist": [	
         1,	
         2,	
-        3,	
-        6	
+        3
       ]	
     },	
     "2": {	
@@ -460,45 +452,45 @@ func TestExportInitGenesis(t *testing.T) {
   },	
   "network_actors": [],	
   "network_properties": {	
-    "min_tx_fee": "100",	
-    "max_tx_fee": "1000000",	
-    "vote_quorum": "33",	
-    "minimum_proposal_end_time": "300",	
-    "proposal_enactment_time": "300",	
-    "min_proposal_end_blocks": "2",	
-    "min_proposal_enactment_blocks": "1",	
-    "enable_foreign_fee_payments": true,	
-    "mischance_rank_decrease_amount": "1",	
-    "max_mischance": "1",	
-    "mischance_confidence": "0",	
-    "inactive_rank_decrease_percent": "0.020000000000000000",	
-    "min_validators": "1",	
-    "poor_network_max_bank_send": "1",	
-    "unjail_max_time": "0",	
-    "enable_token_whitelist": false,	
-    "enable_token_blacklist": false,	
-    "min_identity_approval_tip": "200",	
-    "unique_identity_keys": "moniker,username",	
-    "ubi_hardcap": "6000000",	
-    "validators_fee_share": "0.500000000000000000",	
-    "inflation_rate": "0.180000000000000000",	
-    "inflation_period": "31557600",	
-    "unstaking_period": "2629800",	
-    "max_delegators": "100",	
-    "min_delegation_pushout": "10",	
-    "slashing_period": "3600",	
-    "max_jailed_percentage": "0.250000000000000000",	
-    "max_slashing_percentage": "0.010000000000000000",	
-    "min_custody_reward": "200",	
-    "max_custody_buffer_size": "10",	
-    "max_custody_tx_size": "8192",	
-    "abstention_rank_decrease_amount": "1",	
-    "max_abstention": "2",	
-    "min_collective_bond": "100000",	
-    "min_collective_bonding_time": "86400",	
-    "max_collective_outputs": "10",	
-    "min_collective_claim_period": "14400",	
-    "validator_recovery_bond": "300000",	
+    "min_tx_fee": "100",
+    "max_tx_fee": "1000000",
+    "vote_quorum": "0.330000000000000000",
+    "minimum_proposal_end_time": "300",
+    "proposal_enactment_time": "300",
+    "min_proposal_end_blocks": "2",
+    "min_proposal_enactment_blocks": "1",
+    "enable_foreign_fee_payments": true,
+    "mischance_rank_decrease_amount": "1",
+    "max_mischance": "1",
+    "mischance_confidence": "0",
+    "inactive_rank_decrease_percent": "0.020000000000000000",
+    "min_validators": "1",
+    "poor_network_max_bank_send": "1",
+    "unjail_max_time": "600",
+    "enable_token_whitelist": false,
+    "enable_token_blacklist": false,
+    "min_identity_approval_tip": "200",
+    "unique_identity_keys": "moniker,username",
+    "ubi_hardcap": "6000000",
+    "validators_fee_share": "0.500000000000000000",
+    "inflation_rate": "0.180000000000000000",
+    "inflation_period": "31557600",
+    "unstaking_period": "2629800",
+    "max_delegators": "100",
+    "min_delegation_pushout": "10",
+    "slashing_period": "2629800",
+    "max_jailed_percentage": "0.250000000000000000",
+    "max_slashing_percentage": "0.005000000000000000",
+    "min_custody_reward": "200",
+    "max_custody_buffer_size": "10",
+    "max_custody_tx_size": "8192",
+    "abstention_rank_decrease_amount": "1",
+    "max_abstention": "2",
+    "min_collective_bond": "100000",
+    "min_collective_bonding_time": "86400",
+    "max_collective_outputs": "10",
+    "min_collective_claim_period": "14400",
+    "validator_recovery_bond": "300000",
     "max_annual_inflation": "0.350000000000000000",
     "max_proposal_title_size": "128",
     "max_proposal_description_size": "1024",
@@ -506,24 +498,23 @@ func TestExportInitGenesis(t *testing.T) {
     "max_proposal_poll_option_count": "128",
     "max_proposal_reference_size": "512",
     "max_proposal_checksum_size": "128",
-    "min_dapp_bond": "1000000",	
+  	"min_dapp_bond": "1000000",	
     "max_dapp_bond": "10000000",	
-    "dapp_liquidation_threshold": "0",
-    "dapp_liquidation_period": "0",
+    "dapp_liquidation_threshold": "100000000000",
+    "dapp_liquidation_period": "2419200",
     "dapp_bond_duration": "604800",
     "dapp_verifier_bond": "0.001000000000000000",
     "dapp_auto_denounce_time": "60",
     "dapp_mischance_rank_decrease_amount": "1",
     "dapp_max_mischance": "10",
-    "dapp_inactive_rank_decrease_percent": "10",
+    "dapp_inactive_rank_decrease_percent": "0.100000000000000000",
     "dapp_pool_slippage_default": "0.100000000000000000",
     "minting_ft_fee": "100000000000000",
     "minting_nft_fee": "100000000000000",
-    "veto_threshold": "33.400000000000000000",
+    "veto_threshold": "0.334000000000000000",
     "autocompound_interval_num_blocks": "17280",
-	"bridge_address": "test",
-    "bridge_cosmos_ethereum_exchange_rate": 10,
-    "bridge_ethereum_cosmos_exchange_rate": 0.100000000000000000,
+    "downtime_inactive_duration": "600",
+    "bridge_address": "test",
   },	
   "execution_fees": [	
     {	
@@ -536,7 +527,7 @@ func TestExportInitGenesis(t *testing.T) {
   ],	
   "poor_network_messages": {	
     "messages": [	
-      "set-network-properties"	
+      "set_network_properties"	
     ]	
   },	
   "proposals": [],	

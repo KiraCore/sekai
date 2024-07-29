@@ -3,86 +3,83 @@ package types
 import (
 	"errors"
 
+	"cosmossdk.io/math"
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var (
-	_ types.Content = &ProposalUpsertTokenAlias{}
-	_ types.Content = &ProposalUpsertTokenRates{}
+	_ types.Content = &ProposalUpsertTokenInfo{}
 	_ types.Content = &ProposalTokensWhiteBlackChange{}
 )
 
-func NewUpsertTokenAliasProposal(
+func NewUpsertTokenInfosProposal(
+	denom string,
+	tokenType string,
+	feeRate math.LegacyDec,
+	feeEnabled bool,
+	supply math.Int,
+	supplyCap math.Int,
+	stakeCap math.LegacyDec,
+	stakeMin math.Int,
+	stakeEnabled bool,
+	inactive bool,
 	symbol string,
 	name string,
 	icon string,
 	decimals uint32,
-	denoms []string,
-	isInvalidated bool,
-) *ProposalUpsertTokenAlias {
-	return &ProposalUpsertTokenAlias{
-		Symbol:      symbol,
-		Name:        name,
-		Icon:        icon,
-		Decimals:    decimals,
-		Denoms:      denoms,
-		Invalidated: isInvalidated,
+	description string,
+	website string,
+	social string,
+	holders uint64,
+	mintingFee math.Int,
+	owner string,
+	ownerEditDisabled bool,
+	nftMetadata string,
+	nftHash string,
+) *ProposalUpsertTokenInfo {
+	return &ProposalUpsertTokenInfo{
+		Denom:             denom,
+		TokenType:         tokenType,
+		FeeRate:           feeRate,
+		FeeEnabled:        feeEnabled,
+		Supply:            supply,
+		SupplyCap:         supplyCap,
+		StakeCap:          stakeCap,
+		StakeMin:          stakeMin,
+		StakeEnabled:      stakeEnabled,
+		Inactive:          inactive,
+		Symbol:            symbol,
+		Name:              name,
+		Icon:              icon,
+		Decimals:          decimals,
+		Description:       description,
+		Website:           website,
+		Social:            social,
+		Holders:           holders,
+		MintingFee:        mintingFee,
+		Owner:             owner,
+		OwnerEditDisabled: ownerEditDisabled,
+		NftMetadata:       nftMetadata,
+		NftHash:           nftHash,
 	}
 }
 
-func (m *ProposalUpsertTokenAlias) ProposalType() string {
-	return kiratypes.ProposalTypeUpsertTokenAlias
+func (m *ProposalUpsertTokenInfo) ProposalType() string {
+	return kiratypes.ProposalTypeUpsertTokenInfos
 }
 
-func (m *ProposalUpsertTokenAlias) ProposalPermission() types.PermValue {
-	return types.PermCreateUpsertTokenAliasProposal
+func (m *ProposalUpsertTokenInfo) ProposalPermission() types.PermValue {
+	return types.PermCreateUpsertTokenInfoProposal
 }
 
-func (m *ProposalUpsertTokenAlias) VotePermission() types.PermValue {
-	return types.PermVoteUpsertTokenAliasProposal
-}
-
-// ValidateBasic returns basic validation
-func (m *ProposalUpsertTokenAlias) ValidateBasic() error {
-	return nil
-}
-
-func NewUpsertTokenRatesProposal(
-	denom string,
-	rate sdk.Dec,
-	feePayments bool,
-	stakeCap sdk.Dec,
-	stakeMin sdk.Int,
-	stakeToken bool,
-	isInvalidated bool,
-) *ProposalUpsertTokenRates {
-	return &ProposalUpsertTokenRates{
-		Denom:       denom,
-		Rate:        rate,
-		FeePayments: feePayments,
-		StakeCap:    stakeCap,
-		StakeMin:    stakeMin,
-		StakeToken:  stakeToken,
-		Invalidated: isInvalidated,
-	}
-}
-
-func (m *ProposalUpsertTokenRates) ProposalType() string {
-	return kiratypes.ProposalTypeUpsertTokenRates
-}
-
-func (m *ProposalUpsertTokenRates) ProposalPermission() types.PermValue {
-	return types.PermCreateUpsertTokenRateProposal
-}
-
-func (m *ProposalUpsertTokenRates) VotePermission() types.PermValue {
-	return types.PermVoteUpsertTokenRateProposal
+func (m *ProposalUpsertTokenInfo) VotePermission() types.PermValue {
+	return types.PermVoteUpsertTokenInfoProposal
 }
 
 // ValidateBasic returns basic validation
-func (m *ProposalUpsertTokenRates) ValidateBasic() error {
+func (m *ProposalUpsertTokenInfo) ValidateBasic() error {
 	if m.StakeCap.LT(sdk.NewDec(0)) { // not positive
 		return errors.New("reward cap should be positive")
 	}

@@ -20,14 +20,11 @@ PermWhitelistAccountPermissionProposal=4
 # permission to vote on a proposal to whitelist account permission
 PermVoteWhitelistAccountPermissionProposal=5
 
-# permission to upsert token alias
-PermUpsertTokenAlias=6
-
 # permission to change transaction fees - execution fee and fee range
 PermChangeTxFee=7
 
 # permission to upsert token rates
-PermUpsertTokenRate=8
+PermUpsertTokenInfo=8
 
 # permission to add, modify and assign roles
 PermUpsertRole=9
@@ -44,12 +41,6 @@ PermCreateSetNetworkPropertyProposal=12
 # permission to vote a proposal to set network property
 PermVoteSetNetworkPropertyProposal=13
 
-# permission to create proposals to upsert token alias
-PermCreateUpsertTokenAliasProposal=14
-
-# permission to vote proposals to upsert token alias
-PermVoteUpsertTokenAliasProposal=15
-
 # permission to create proposals for setting poor network messages
 PermCreateSetPoorNetworkMessagesProposal=16
 
@@ -57,10 +48,10 @@ PermCreateSetPoorNetworkMessagesProposal=16
 PermVoteSetPoorNetworkMessagesProposal=17
 
 # permission to create proposals to upsert token rate
-PermCreateUpsertTokenRateProposal=18
+PermCreateUpsertTokenInfoProposal=18
 
 # permission to vote propsals to upsert token rate
-PermVoteUpsertTokenRateProposal=19
+PermVoteUpsertTokenInfoProposal=19
 
 # permission to create a proposal to unjail a validator
 PermCreateUnjailValidatorProposal=20
@@ -200,6 +191,18 @@ PermCreateJailCouncilorProposal=64
 # permission needed to vote on jail councilors proposal
 PermVoteJailCouncilorProposal=65
 
+# permission needed to create a poll proposal
+PermCreatePollProposal=66
+
+# permission needed to create a dapp proposal without bond
+PermCreateDappProposalWithoutBond=67
+
+# permission needed to create a proposal to set execution fees
+PermCreateSetExecutionFeesProposal=68
+
+# permission needed to vote on set execution fees proposal
+PermVoteSetExecutionFeesProposal=69
+
 ###################################### transaction_types ######################################
 TypeMsgSend="send"
 TypeMsgMultiSend="multisend"
@@ -217,8 +220,7 @@ MsgTypeBlacklistRolePermission="blacklist-role-permission"
 MsgTypeRemoveWhitelistRolePermission="remove-whitelist-role-permission"
 MsgTypeRemoveBlacklistRolePermission="remove-blacklist-role-permission"
 MsgTypeClaimValidator="claim-validator"
-MsgTypeUpsertTokenAlias="upsert-token-alias"
-MsgTypeUpsertTokenRate="upsert-token-rate"
+MsgTypeUpsertTokenInfo="upsert-token-rate"
 
 ###################################### function IDs ######################################
 FuncIDMsgSend=1
@@ -245,8 +247,7 @@ FuncIDMsgBlacklistRolePermission=29
 FuncIDMsgRemoveWhitelistRolePermission=30
 FuncIDMsgRemoveBlacklistRolePermission=31
 FuncIDMsgClaimValidator=32
-FuncIDMsgUpsertTokenAlias=33
-FuncIDMsgUpsertTokenRate=34
+FuncIDMsgUpsertTokenInfo=34
 FuncIDMsgActivate=35
 FuncIDMsgPause=36
 FuncIDMsgUnpause=37

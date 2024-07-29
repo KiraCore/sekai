@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"time"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"golang.org/x/exp/utf8string"
 )
 
@@ -42,7 +42,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		router := k.keeper.GetProposalRouter()
 		isAllowed := router.IsAllowedAddressDynamicProposal(ctx, msg.Proposer, content)
 		if !isAllowed {
-			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "spending pool permission")
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "not enough permission to create the proposal")
 		}
 	} else {
 		isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, content.ProposalPermission())
@@ -111,7 +111,7 @@ func (k msgServer) VoteProposal(
 		router := k.keeper.GetProposalRouter()
 		isAllowed := router.IsAllowedAddressDynamicProposal(ctx, msg.Voter, content)
 		if !isAllowed {
-			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "spending pool permission")
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "not enough permission to vote on the proposal")
 		}
 	} else {
 		isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, content.VotePermission())
@@ -806,17 +806,17 @@ func (k msgServer) CouncilorPause(
 
 	// cannot be paused if not jailed already
 	if councilor.Status == types.CouncilorJailed {
-		return nil, sdkerrors.Wrap(types.ErrCouncilorJailed, "Can NOT pause jailed councilor")
+		return nil, errorsmod.Wrap(types.ErrCouncilorJailed, "Can NOT pause jailed councilor")
 	}
 
 	// cannot be paused if not inactive already
 	if councilor.Status == types.CouncilorInactive {
-		return nil, sdkerrors.Wrap(types.ErrCouncilorInactivated, "Can NOT pause inactivated councilor")
+		return nil, errorsmod.Wrap(types.ErrCouncilorInactivated, "Can NOT pause inactivated councilor")
 	}
 
 	// cannot be paused if not paused already
 	if councilor.Status == types.CouncilorPaused {
-		return nil, sdkerrors.Wrap(types.ErrCouncilorPaused, "Can NOT pause already paused councilor")
+		return nil, errorsmod.Wrap(types.ErrCouncilorPaused, "Can NOT pause already paused councilor")
 	}
 
 	councilor.Status = types.CouncilorPaused
@@ -843,7 +843,7 @@ func (k msgServer) CouncilorUnpause(
 
 	// cannot be paused if not paused already
 	if councilor.Status != types.CouncilorPaused {
-		return nil, sdkerrors.Wrap(types.ErrCouncilorNotPaused, "Can NOT unpause not paused councilor")
+		return nil, errorsmod.Wrap(types.ErrCouncilorNotPaused, "Can NOT unpause not paused councilor")
 	}
 
 	councilor.Status = types.CouncilorActive
@@ -871,7 +871,7 @@ func (k msgServer) CouncilorActivate(
 
 	// cannot be activated if not inactive already
 	if councilor.Status != types.CouncilorInactive {
-		return nil, sdkerrors.Wrap(types.ErrCouncilorNotInactivated, "Can NOT activate NOT inactive councilor")
+		return nil, errorsmod.Wrap(types.ErrCouncilorNotInactivated, "Can NOT activate NOT inactive councilor")
 	}
 
 	councilor.Status = types.CouncilorActive

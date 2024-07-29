@@ -57,6 +57,11 @@ const (
 	FlagPollReference     = "poll-reference"
 	FlagPollChecksum      = "poll-checksum"
 	FlagCustomPollValue   = "poll-custom-value"
+	FlagTxTypes           = "tx-types"
+	FlagExecutionFees     = "execution-fees"
+	FlagFailureFees       = "failure-fees"
+	FlagTimeouts          = "timeouts"
+	FlagDefaultParams     = "default-params"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -150,6 +155,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
 	proposalCmd.AddCommand(GetTxProposalResetWholeCouncilorRankCmd())
 	proposalCmd.AddCommand(GetTxProposalJailCouncilorCmd())
+	proposalCmd.AddCommand(GetTxProposalSetExecutionFeesCmd())
 
 	proposalCmd.AddCommand(accountProposalCmd)
 	proposalCmd.AddCommand(roleProposalCmd)
@@ -224,6 +230,9 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 		Short: "Assign permission to a kira address whitelist",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			perm, err := cmd.Flags().GetUint32(FlagPermission)
 			if err != nil {
@@ -259,6 +268,9 @@ func GetTxRemoveWhitelistedPermissions() *cobra.Command {
 		Short: "Remove whitelisted permission from an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			perm, err := cmd.Flags().GetUint32(FlagPermission)
 			if err != nil {
@@ -396,17 +408,64 @@ func NewTxSetNetworkProperties() *cobra.Command {
 			msg := types.NewMsgSetNetworkProperties(
 				clientCtx.FromAddress,
 				&types.NetworkProperties{
-					MinTxFee:                    minTxFee,
-					MaxTxFee:                    maxTxFee,
-					VoteQuorum:                  33,
-					MinimumProposalEndTime:      300, // 5min
-					ProposalEnactmentTime:       300, // 5min
-					EnableForeignFeePayments:    true,
-					MischanceRankDecreaseAmount: 10,
-					InactiveRankDecreasePercent: sdk.NewDecWithPrec(50, 2), // 50%
-					PoorNetworkMaxBankSend:      1000000,                   // 1M ukex
-					MinValidators:               minValidators,
-					MinCustodyReward:            minCustodyReward,
+					MinTxFee:                        minTxFee,
+					MaxTxFee:                        maxTxFee,
+					VoteQuorum:                      sdk.NewDecWithPrec(33, 2), // 33%
+					MinimumProposalEndTime:          300,                       // 5min
+					ProposalEnactmentTime:           300,                       // 5min
+					EnableForeignFeePayments:        true,
+					MischanceRankDecreaseAmount:     10,
+					InactiveRankDecreasePercent:     sdk.NewDecWithPrec(50, 2), // 50%
+					PoorNetworkMaxBankSend:          1000000,                   // 1M ukex
+					MinValidators:                   minValidators,
+					MinCustodyReward:                minCustodyReward,
+					MinProposalEndBlocks:            2,
+					MinProposalEnactmentBlocks:      1,
+					MaxMischance:                    1,
+					MinIdentityApprovalTip:          200,
+					UniqueIdentityKeys:              "moniker,username",
+					UbiHardcap:                      6000_000,
+					ValidatorsFeeShare:              sdk.NewDecWithPrec(50, 2), // 50%
+					InflationRate:                   sdk.NewDecWithPrec(18, 2), // 18%
+					InflationPeriod:                 31557600,                  // 1 year
+					UnstakingPeriod:                 2629800,                   // 1 month
+					MaxDelegators:                   100,
+					MinDelegationPushout:            10,
+					SlashingPeriod:                  2629800,
+					MaxJailedPercentage:             sdk.NewDecWithPrec(25, 2),
+					MaxSlashingPercentage:           sdk.NewDecWithPrec(5, 3), // 0.5%
+					MaxCustodyBufferSize:            10,
+					MaxCustodyTxSize:                8192,
+					AbstentionRankDecreaseAmount:    1,
+					MaxAbstention:                   2,
+					MinCollectiveBond:               100_000, // in KEX
+					MinCollectiveBondingTime:        86400,   // in seconds
+					MaxCollectiveOutputs:            10,
+					MinCollectiveClaimPeriod:        14400,                     // 4hrs
+					ValidatorRecoveryBond:           300000,                    // 300k KEX
+					MaxAnnualInflation:              sdk.NewDecWithPrec(35, 2), // 35%
+					MaxProposalTitleSize:            128,
+					MaxProposalDescriptionSize:      1024,
+					MaxProposalPollOptionSize:       64,
+					MaxProposalPollOptionCount:      128,
+					MaxProposalReferenceSize:        512,
+					MaxProposalChecksumSize:         128,
+					MinDappBond:                     1000000,
+					MaxDappBond:                     10000000,
+					DappBondDuration:                604800,
+					DappVerifierBond:                sdk.NewDecWithPrec(1, 3), //0.1%
+					DappAutoDenounceTime:            60,                       // 60s
+					DappMischanceRankDecreaseAmount: 1,
+					DappMaxMischance:                10,
+					DappInactiveRankDecreasePercent: sdk.NewDecWithPrec(10, 2), // 10%
+					DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1),  // 10%
+					DappLiquidationThreshold:        100_000_000_000,           // default 100’000 KEX
+					DappLiquidationPeriod:           2419200,                   // default 2419200, ~28d
+					MintingFtFee:                    100_000_000_000_000,
+					MintingNftFee:                   100_000_000_000_000,
+					VetoThreshold:                   sdk.NewDecWithPrec(3340, 4), // 33.40%
+					AutocompoundIntervalNumBlocks:   17280,
+					DowntimeInactiveDuration:        600,
 				},
 			)
 
@@ -784,9 +843,65 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 			MIN_TX_FEE
 			MAX_TX_FEE
 			VOTE_QUORUM
-			PROPOSAL_END_TIME
+			MINIMUM_PROPOSAL_END_TIME
 			PROPOSAL_ENACTMENT_TIME
-			ENABLE_FOREIGN_TX_FEE_PAYMENTS
+			MIN_PROPOSAL_END_BLOCKS
+			MIN_PROPOSAL_ENACTMENT_BLOCKS
+			ENABLE_FOREIGN_FEE_PAYMENTS
+			MISCHANCE_RANK_DECREASE_AMOUNT
+			MAX_MISCHANCE
+			MISCHANCE_CONFIDENCE
+			INACTIVE_RANK_DECREASE_PERCENT
+			POOR_NETWORK_MAX_BANK_SEND
+			MIN_VALIDATORS
+			UNJAIL_MAX_TIME
+			ENABLE_TOKEN_WHITELIST
+			ENABLE_TOKEN_BLACKLIST
+			MIN_IDENTITY_APPROVAL_TIP
+			UNIQUE_IDENTITY_KEYS
+			UBI_HARDCAP
+			VALIDATORS_FEE_SHARE
+			INFLATION_RATE
+			INFLATION_PERIOD
+			UNSTAKING_PERIOD
+			MAX_DELEGATORS
+			MIN_DELEGATION_PUSHOUT
+			SLASHING_PERIOD
+			MAX_JAILED_PERCENTAGE
+			MAX_SLASHING_PERCENTAGE
+			MIN_CUSTODY_REWARD
+			MAX_CUSTODY_BUFFER_SIZE
+			MAX_CUSTODY_TX_SIZE
+			ABSTENTION_RANK_DECREASE_AMOUNT
+			MAX_ABSTENTION
+			MIN_COLLECTIVE_BOND
+			MIN_COLLECTIVE_BONDING_TIME
+			MAX_COLLECTIVE_OUTPUTS
+			MIN_COLLECTIVE_CLAIM_PERIOD
+			VALIDATOR_RECOVERY_BOND
+			MAX_ANNUAL_INFLATION
+			MAX_PROPOSAL_TITLE_SIZE
+			MAX_PROPOSAL_DESCRIPTION_SIZE
+			MAX_PROPOSAL_POLL_OPTION_SIZE
+			MAX_PROPOSAL_POLL_OPTION_COUNT
+			MAX_PROPOSAL_REFERENCE_SIZE
+			MAX_PROPOSAL_CHECKSUM_SIZE
+			MIN_DAPP_BOND
+			MAX_DAPP_BOND
+			DAPP_LIQUIDATION_THRESHOLD
+			DAPP_LIQUIDATION_PERIOD
+			DAPP_BOND_DURATION
+			DAPP_VERIFIER_BOND
+			DAPP_AUTO_DENOUNCE_TIME
+			DAPP_MISCHANCE_RANK_DECREASE_AMOUNT
+			DAPP_MAX_MISCHANCE
+			DAPP_INACTIVE_RANK_DECREASE_PERCENT
+			DAPP_POOL_SLIPPAGE_DEFAULT
+			MINTING_FT_FEE
+			MINTING_NFT_FEE
+			VETO_THRESHOLD
+			AUTOCOMPOUND_INTERVAL_NUM_BLOCKS
+			DOWNTIME_INACTIVE_DURATION
 		`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -802,9 +917,29 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 
 			value := types.NetworkPropertyValue{}
 			switch types.NetworkProperty(property) {
+			case types.InactiveRankDecreasePercent:
+				fallthrough
 			case types.UniqueIdentityKeys:
-				value.StrValue = args[1]
+				fallthrough
 			case types.ValidatorsFeeShare:
+				fallthrough
+			case types.InflationRate:
+				fallthrough
+			case types.MaxJailedPercentage:
+				fallthrough
+			case types.MaxSlashingPercentage:
+				fallthrough
+			case types.MaxAnnualInflation:
+				fallthrough
+			case types.DappVerifierBond:
+				fallthrough
+			case types.DappPoolSlippageDefault:
+				fallthrough
+			case types.DappInactiveRankDecreasePercent:
+				fallthrough
+			case types.VoteQuorum:
+				fallthrough
+			case types.VetoThreshold:
 				value.StrValue = args[1]
 			default:
 				numVal, err := strconv.Atoi(args[1])
@@ -2307,6 +2442,114 @@ func GetTxProposalJailCouncilorCmd() *cobra.Command {
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxProposalSetExecutionFeesCmd implement cli command for ProposalSetExecutionFees
+func GetTxProposalSetExecutionFeesCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "proposal-set-execution-fees",
+		Short:   "Create a proposal to set execution fees",
+		Example: `proposal-set-execution-fees --tx-types=[txTypes] --execution-fees=[executionFees] --failure-fees=[failureFees] --timeouts=[timeouts] --default-params=[defaultParams]`,
+		Args:    cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			txTypesStr, err := cmd.Flags().GetString(FlagTxTypes)
+			if err != nil {
+				return fmt.Errorf("invalid tx types: %w", err)
+			}
+
+			execFeesStr, err := cmd.Flags().GetString(FlagExecutionFees)
+			if err != nil {
+				return fmt.Errorf("invalid execution fees: %w", err)
+			}
+
+			failureFeesStr, err := cmd.Flags().GetString(FlagFailureFees)
+			if err != nil {
+				return fmt.Errorf("invalid failure fees: %w", err)
+			}
+
+			timeoutsStr, err := cmd.Flags().GetString(FlagTimeouts)
+			if err != nil {
+				return fmt.Errorf("invalid timeouts: %w", err)
+			}
+
+			defaultParamsStr, err := cmd.Flags().GetString(FlagTimeouts)
+			if err != nil {
+				return fmt.Errorf("invalid default params: %w", err)
+			}
+
+			txTypes := strings.Split(txTypesStr, ",")
+			execFeeStrs := strings.Split(execFeesStr, ",")
+			failureFeeStrs := strings.Split(failureFeesStr, ",")
+			timeoutStrs := strings.Split(timeoutsStr, ",")
+			defaultParamStrs := strings.Split(defaultParamsStr, ",")
+			executionFees := []types.ExecutionFee{}
+			for i, txType := range txTypes {
+				execFee, err := strconv.Atoi(execFeeStrs[i])
+				if err != nil {
+					return err
+				}
+				failureFee, err := strconv.Atoi(failureFeeStrs[i])
+				if err != nil {
+					return err
+				}
+				timeout, err := strconv.Atoi(timeoutStrs[i])
+				if err != nil {
+					return err
+				}
+				defaultParams, err := strconv.Atoi(defaultParamStrs[i])
+				if err != nil {
+					return err
+				}
+				executionFees = append(executionFees, types.ExecutionFee{
+					TransactionType:   txType,
+					ExecutionFee:      uint64(execFee),
+					FailureFee:        uint64(failureFee),
+					Timeout:           uint64(timeout),
+					DefaultParameters: uint64(defaultParams),
+				})
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewSetExecutionFeesProposal(clientCtx.FromAddress, description, executionFees),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+	cmd.Flags().String(FlagTxTypes, "", "Transaction types to set execution fees")
+	cmd.Flags().String(FlagExecutionFees, "", "Execution fees")
+	cmd.Flags().String(FlagFailureFees, "", "Failure fees")
+	cmd.Flags().String(FlagTimeouts, "", "Timeouts")
+	cmd.Flags().String(FlagDefaultParams, "", "Default params")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

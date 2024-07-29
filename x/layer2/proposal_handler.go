@@ -43,12 +43,12 @@ func (a ApplyJoinDappProposalHandler) AllowedAddresses(ctx sdk.Context, proposal
 	return a.keeper.AllowedAddresses(ctx, dapp.Controllers)
 }
 
-func (a ApplyJoinDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplyJoinDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.ProposalJoinDapp)
 
 	dapp := a.keeper.GetDapp(ctx, p.DappName)
 	if dapp.Name == "" {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return dapp.VoteQuorum
@@ -118,12 +118,12 @@ func (a ApplyUpsertDappProposalHandler) AllowedAddresses(ctx sdk.Context, propos
 	return a.keeper.AllowedAddresses(ctx, dapp.Controllers)
 }
 
-func (a ApplyUpsertDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+func (a ApplyUpsertDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) sdk.Dec {
 	p := proposal.(*types.ProposalUpsertDapp)
 
 	dapp := a.keeper.GetDapp(ctx, p.Dapp.Name)
 	if dapp.Name == "" {
-		return 0
+		return sdk.ZeroDec()
 	}
 
 	return dapp.VoteQuorum
@@ -169,7 +169,7 @@ func (a ApplyUpsertDappProposalHandler) Apply(ctx sdk.Context, proposalID uint64
 	dapp.Controllers = p.Dapp.Controllers
 	dapp.Bin = p.Dapp.Bin
 	dapp.Pool = p.Dapp.Pool
-	dapp.Issurance = p.Dapp.Issurance
+	dapp.Issuance = p.Dapp.Issuance
 	dapp.UpdateTimeMax = p.Dapp.UpdateTimeMax
 	dapp.ExecutorsMin = p.Dapp.ExecutorsMin
 	dapp.ExecutorsMax = p.Dapp.ExecutorsMax
@@ -180,6 +180,10 @@ func (a ApplyUpsertDappProposalHandler) Apply(ctx sdk.Context, proposalID uint64
 	dapp.VoteQuorum = p.Dapp.VoteQuorum
 	dapp.VotePeriod = p.Dapp.VotePeriod
 	dapp.VoteEnactment = p.Dapp.VoteEnactment
+	if dapp.EnableBondVerifiers && !p.Dapp.EnableBondVerifiers {
+		return types.ErrCanNotDisableBondedVerifiers
+	}
+	dapp.EnableBondVerifiers = p.Dapp.EnableBondVerifiers
 
 	a.keeper.SetDapp(ctx, p.Dapp)
 	return nil

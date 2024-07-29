@@ -28,7 +28,7 @@ func (suite *KeeperTestSuite) TestCollectiveSetGetDelete() {
 			ClaimStart:       0,
 			ClaimPeriod:      1000,
 			ClaimEnd:         100000,
-			VoteQuorum:       30,
+			VoteQuorum:       sdk.NewDecWithPrec(30, 2),
 			VotePeriod:       86400,
 			VoteEnactment:    3000,
 			Donations:        []sdk.Coin{sdk.NewInt64Coin("ukex", 1000_000)},
@@ -55,7 +55,7 @@ func (suite *KeeperTestSuite) TestCollectiveSetGetDelete() {
 			ClaimStart:       0,
 			ClaimPeriod:      1000,
 			ClaimEnd:         100000,
-			VoteQuorum:       30,
+			VoteQuorum:       sdk.NewDecWithPrec(30, 2),
 			VotePeriod:       86400,
 			VoteEnactment:    3000,
 			Donations:        []sdk.Coin{sdk.NewInt64Coin("ukex", 1000_000)},
@@ -160,7 +160,7 @@ func (suite *KeeperTestSuite) TestSendDonation() {
 		ClaimStart:       0,
 		ClaimPeriod:      1000,
 		ClaimEnd:         100000,
-		VoteQuorum:       30,
+		VoteQuorum:       sdk.NewDecWithPrec(30, 2),
 		VotePeriod:       86400,
 		VoteEnactment:    3000,
 		Donations:        []sdk.Coin{sdk.NewInt64Coin("ukex", 100_000)},
@@ -199,7 +199,7 @@ func (suite *KeeperTestSuite) GetBondsValue() {
 	suite.Require().Equal(value, sdk.NewDec(1000_000))
 
 	// get bonds value with newly registered token
-	suite.app.TokensKeeper.UpsertTokenRate(suite.ctx, tokenstypes.TokenRate{
+	suite.app.TokensKeeper.UpsertTokenInfo(suite.ctx, tokenstypes.TokenInfo{
 		Denom:   "zzz",
 		FeeRate: sdk.NewDec(10),
 	})
@@ -228,7 +228,7 @@ func (suite *KeeperTestSuite) WithdrawCollective() {
 		ClaimStart:       0,
 		ClaimPeriod:      1000,
 		ClaimEnd:         100000,
-		VoteQuorum:       30,
+		VoteQuorum:       sdk.NewDecWithPrec(30, 2),
 		VotePeriod:       86400,
 		VoteEnactment:    3000,
 		Donations:        []sdk.Coin{sdk.NewInt64Coin("ukex", 100_000)},
@@ -296,7 +296,7 @@ func (suite *KeeperTestSuite) ExecuteCollectiveRemove() {
 		ClaimStart:       0,
 		ClaimPeriod:      1000,
 		ClaimEnd:         100000,
-		VoteQuorum:       30,
+		VoteQuorum:       sdk.NewDecWithPrec(30, 2),
 		VotePeriod:       86400,
 		VoteEnactment:    3000,
 		Donations:        []sdk.Coin{sdk.NewInt64Coin("ukex", 100_000)},
