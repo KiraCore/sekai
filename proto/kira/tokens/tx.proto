@@ -41,7 +41,7 @@ message MsgUpsertTokenInfo {
   string stake_min = 8 [
     (gogoproto.moretags) = "yaml:\"stake_min\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false 
+    (gogoproto.nullable) = false
   ];
   bool stake_enabled = 9;
   bool inactive = 10;    // flag that the token is inactive or not
