@@ -188,7 +188,7 @@ func TestSimappExportGenesis(t *testing.T) {
     "veto_threshold": "0.334000000000000000",
     "autocompound_interval_num_blocks": "17280",
     "downtime_inactive_duration": "600",
-	"bridge_address": "test",
+	"bridge_address": "test"
   },
   "execution_fees": [
     {
@@ -514,7 +514,7 @@ func TestExportInitGenesis(t *testing.T) {
     "veto_threshold": "0.334000000000000000",
     "autocompound_interval_num_blocks": "17280",
     "downtime_inactive_duration": "600",
-    "bridge_address": "test",
+    "bridge_address": "test"
   },	
   "execution_fees": [	
     {	
