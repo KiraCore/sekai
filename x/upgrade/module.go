@@ -124,7 +124,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 		panic(err)
 	}
 	genesisState := types.GenesisState{
-		Version:     "v0.1.22.11",
+		Version:     "v0.4.1",
 		CurrentPlan: currentPlan,
 		NextPlan:    nextPlan,
 	}

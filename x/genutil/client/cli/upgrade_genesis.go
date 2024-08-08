@@ -5,9 +5,14 @@ import (
 	"fmt"
 	"strings"
 
+	"cosmossdk.io/math"
 	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/genutil"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	v0345tokenstypes "github.com/KiraCore/sekai/x/tokens/legacy/v0345"
+
+	// "github.com/KiraCore/sekai/x/tokens/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	v0317upgradetypes "github.com/KiraCore/sekai/x/upgrade/legacy/v0317"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
@@ -17,6 +22,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -112,7 +118,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			err = cdc.UnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesisV03123)
 			if err == nil { // which means old upgrade genesis
 				upgradeGenesis := upgradetypes.GenesisState{
-					Version:     "v0.3.45",
+					Version:     "v0.4.1",
 					CurrentPlan: upgradedPlan(upgradeGenesisV03123.CurrentPlan),
 					NextPlan:    upgradedPlan(upgradeGenesisV03123.NextPlan),
 				}
@@ -124,8 +130,8 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			upgradeGenesis := upgradetypes.GenesisState{}
 			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
 			if upgradeGenesis.Version == "" {
-				upgradeGenesis.Version = "v0.3.45"
-				fmt.Println("upgraded the upgrade module genesis to v0.3.45")
+				upgradeGenesis.Version = "v0.4.1"
+				fmt.Println("upgraded the upgrade module genesis to v0.4.1")
 			}
 
 			// if upgradeGenesis.NextPlan == nil {
@@ -176,6 +182,68 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 					panic(err)
 				}
 				genesisState[govtypes.ModuleName] = bz
+			}
+
+			bankGenesis := banktypes.GenesisState{}
+			err = cdc.UnmarshalJSON(genesisState[banktypes.ModuleName], &bankGenesis)
+
+			holders := make(map[string]uint64)
+			for _, balance := range bankGenesis.Balances {
+				for _, coin := range balance.Coins {
+					holders[coin.Denom]++
+				}
+			}
+
+			// upgrade gov genesis for more role permissions
+			tokensGenesisV0345 := v0345tokenstypes.GenesisStateV0345{}
+			err = cdc.UnmarshalJSON(genesisState[tokenstypes.ModuleName], &tokensGenesisV0345)
+			if err == nil { // which means old tokens genesis
+				aliasMap := make(map[string]*v0345tokenstypes.TokenAlias)
+				for _, alias := range tokensGenesisV0345.Aliases {
+					for _, denom := range alias.Denoms {
+						aliasMap[denom] = alias
+					}
+				}
+				tokenInfos := []tokenstypes.TokenInfo{}
+				for _, rate := range tokensGenesisV0345.Rates {
+					alias := aliasMap[rate.Denom]
+					if alias == nil {
+						alias = &v0345tokenstypes.TokenAlias{}
+					}
+					tokenInfos = append(tokenInfos, tokenstypes.TokenInfo{
+						Denom:             rate.Denom,
+						TokenType:         "adr20",
+						FeeRate:           rate.FeeRate,
+						FeeEnabled:        rate.FeePayments,
+						Supply:            bankGenesis.Supply.AmountOf(rate.Denom),
+						SupplyCap:         math.ZeroInt(),
+						StakeCap:          rate.StakeCap,
+						StakeMin:          rate.StakeMin,
+						StakeEnabled:      rate.StakeToken,
+						Inactive:          rate.Invalidated,
+						Symbol:            alias.Symbol,
+						Name:              alias.Name,
+						Icon:              alias.Icon,
+						Decimals:          alias.Decimals,
+						Description:       "",
+						Website:           "",
+						Social:            "",
+						Holders:           holders[rate.Denom],
+						MintingFee:        math.ZeroInt(),
+						Owner:             "",
+						OwnerEditDisabled: true,
+						NftMetadata:       "",
+						NftHash:           "",
+					})
+				}
+				tokensGenesis := tokenstypes.GenesisState{
+					TokenInfos: tokenInfos,
+					TokenBlackWhites: tokenstypes.TokensWhiteBlack{
+						Whitelisted: tokensGenesisV0345.TokenBlackWhites.Whitelisted,
+						Blacklisted: tokensGenesisV0345.TokenBlackWhites.Blacklisted,
+					},
+				}
+				genesisState[tokenstypes.ModuleName] = cdc.MustMarshalJSON(&tokensGenesis)
 			}
 
 			appState, err := json.MarshalIndent(genesisState, "", " ")
