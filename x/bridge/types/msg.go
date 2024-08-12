@@ -41,7 +41,7 @@ func (m *MsgChangeEthereumCosmos) Route() string {
 }
 
 func (m *MsgChangeEthereumCosmos) Type() string {
-	return types.MsgTypeChangeCosmosEthereum
+	return types.MsgTypeChangeEthereumCosmos
 }
 
 func (m *MsgChangeEthereumCosmos) ValidateBasic() error {
