@@ -252,7 +252,7 @@ func (suite *KeeperTestSuite) TestReclaimDappBondProposal() {
 	reclaimMsg := &types.MsgReclaimDappBondProposal{
 		Sender:   addr1.String(),
 		DappName: createMsg.Dapp.Name,
-		Bond:     sdk.NewInt64Coin("ukex", 10000000000),
+		Bond:     sdk.NewInt64Coin("ukex", 10000000),
 	}
 
 	_, err = msgServer.ReclaimDappBondProposal(sdk.WrapSDKContext(suite.ctx), reclaimMsg)
