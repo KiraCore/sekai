@@ -81,6 +81,14 @@ func (k msgServer) BondDappProposal(goCtx context.Context, msg *types.MsgBondDap
 		return nil, types.ErrInvalidDappBondDenom
 	}
 
+	dapp.TotalBond = dapp.TotalBond.Add(msg.Bond)
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	target := sdk.NewInt(int64(properties.MaxDappBond))
+	if dapp.TotalBond.Amount.GT(target) {
+		return nil, types.ErrMaxDappBondReached
+	}
+
 	// send initial bond to module account
 	addr := sdk.MustAccAddressFromBech32(msg.Sender)
 	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{msg.Bond})
@@ -88,12 +96,6 @@ func (k msgServer) BondDappProposal(goCtx context.Context, msg *types.MsgBondDap
 		return nil, err
 	}
 
-	properties := k.keeper.gk.GetNetworkProperties(ctx)
-	if dapp.TotalBond.Amount.GTE(sdk.NewInt(int64(properties.MaxDappBond)).Mul(sdk.NewInt(1000_000))) {
-		return nil, types.ErrMaxDappBondReached
-	}
-
-	dapp.TotalBond = dapp.TotalBond.Add(msg.Bond)
 	k.keeper.SetDapp(ctx, dapp)
 
 	userDappBond := k.keeper.GetUserDappBond(ctx, msg.DappName, msg.Sender)
@@ -114,6 +116,11 @@ func (k msgServer) BondDappProposal(goCtx context.Context, msg *types.MsgBondDap
 func (k msgServer) ReclaimDappBondProposal(goCtx context.Context, msg *types.MsgReclaimDappBondProposal) (*types.MsgReclaimDappBondProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name == "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
 	userDappBond := k.keeper.GetUserDappBond(ctx, msg.DappName, msg.Sender)
 	if userDappBond.DappName == "" {
 		return nil, types.ErrUserDappBondDoesNotExist
@@ -125,8 +132,7 @@ func (k msgServer) ReclaimDappBondProposal(goCtx context.Context, msg *types.Msg
 		return nil, types.ErrNotEnoughUserDappBond
 	}
 
-	userDappBond.Bond.Amount = userDappBond.Bond.Amount.Sub(msg.Bond.Amount)
-	k.keeper.SetUserDappBond(ctx, userDappBond)
+	dapp.TotalBond = dapp.TotalBond.Sub(msg.Bond)
 
 	// send tokens back to user
 	addr := sdk.MustAccAddressFromBech32(msg.Sender)
@@ -134,6 +140,11 @@ func (k msgServer) ReclaimDappBondProposal(goCtx context.Context, msg *types.Msg
 	if err != nil {
 		return nil, err
 	}
+
+	k.keeper.SetDapp(ctx, dapp)
+
+	userDappBond.Bond.Amount = userDappBond.Bond.Amount.Sub(msg.Bond.Amount)
+	k.keeper.SetUserDappBond(ctx, userDappBond)
 
 	return &types.MsgReclaimDappBondProposalResponse{}, nil
 }
