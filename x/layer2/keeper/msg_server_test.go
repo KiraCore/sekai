@@ -155,7 +155,7 @@ func (suite *KeeperTestSuite) TestBondDappProposal() {
 			TotalBond:     sdk.Coin{},
 			CreationTime:  0,
 		},
-		Bond: sdk.NewInt64Coin("ukex", 1000000),
+		Bond: sdk.NewInt64Coin("ukex", 10000000000),
 	}
 
 	_, err = msgServer.CreateDappProposal(sdk.WrapSDKContext(suite.ctx), createMsg)
@@ -165,7 +165,7 @@ func (suite *KeeperTestSuite) TestBondDappProposal() {
 	bondMsg := &types.MsgBondDappProposal{
 		Sender:   addr1.String(),
 		DappName: createMsg.Dapp.Name,
-		Bond:     sdk.NewInt64Coin("ukex", 1000000),
+		Bond:     sdk.NewInt64Coin("ukex", 10000000000),
 	}
 
 	_, err = msgServer.BondDappProposal(sdk.WrapSDKContext(suite.ctx), bondMsg)
@@ -187,7 +187,7 @@ func (suite *KeeperTestSuite) TestReclaimDappBondProposal() {
 	val.Status = stakingtypes.Active
 	suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
 
-	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 2000000)}
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 20000000000)}
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
@@ -242,7 +242,7 @@ func (suite *KeeperTestSuite) TestReclaimDappBondProposal() {
 			TotalBond:     sdk.Coin{},
 			CreationTime:  0,
 		},
-		Bond: sdk.NewInt64Coin("ukex", 1000000),
+		Bond: sdk.NewInt64Coin("ukex", 10000000000),
 	}
 
 	_, err = msgServer.CreateDappProposal(sdk.WrapSDKContext(suite.ctx), createMsg)
@@ -252,7 +252,7 @@ func (suite *KeeperTestSuite) TestReclaimDappBondProposal() {
 	reclaimMsg := &types.MsgReclaimDappBondProposal{
 		Sender:   addr1.String(),
 		DappName: createMsg.Dapp.Name,
-		Bond:     sdk.NewInt64Coin("ukex", 1000000),
+		Bond:     sdk.NewInt64Coin("ukex", 10000000000),
 	}
 
 	_, err = msgServer.ReclaimDappBondProposal(sdk.WrapSDKContext(suite.ctx), reclaimMsg)

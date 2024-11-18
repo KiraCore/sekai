@@ -84,8 +84,7 @@ func (k msgServer) BondDappProposal(goCtx context.Context, msg *types.MsgBondDap
 	dapp.TotalBond = dapp.TotalBond.Add(msg.Bond)
 
 	properties := k.keeper.gk.GetNetworkProperties(ctx)
-	target := sdk.NewInt(int64(properties.MaxDappBond))
-	if dapp.TotalBond.Amount.GT(target) {
+	if dapp.TotalBond.Amount.GT(sdk.NewInt(int64(properties.MaxDappBond)).Mul(sdk.NewInt(1000_000))) {
 		return nil, types.ErrMaxDappBondReached
 	}
 
