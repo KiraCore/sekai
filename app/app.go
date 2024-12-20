@@ -20,9 +20,6 @@ import (
 	"github.com/KiraCore/sekai/x/distributor"
 	distributorkeeper "github.com/KiraCore/sekai/x/distributor/keeper"
 	distributortypes "github.com/KiraCore/sekai/x/distributor/types"
-	"github.com/KiraCore/sekai/x/ethereum"
-	ethereumkeeper "github.com/KiraCore/sekai/x/ethereum/keeper"
-	ethereumtypes "github.com/KiraCore/sekai/x/ethereum/types"
 	"github.com/KiraCore/sekai/x/evidence"
 	evidencekeeper "github.com/KiraCore/sekai/x/evidence/keeper"
 	evidencetypes "github.com/KiraCore/sekai/x/evidence/types"
@@ -131,7 +128,6 @@ var (
 		collectives.AppModuleBasic{},
 		layer2.AppModuleBasic{},
 		consensus.AppModuleBasic{},
-		ethereum.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -188,7 +184,6 @@ type SekaiApp struct {
 	CollectivesKeeper     collectiveskeeper.Keeper
 	Layer2Keeper          layer2keeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
-	EthereumKeeper        ethereumkeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -242,7 +237,6 @@ func NewInitApp(
 		collectivestypes.ModuleName,
 		layer2types.StoreKey,
 		consensusparamtypes.StoreKey,
-		ethereumtypes.StoreKey,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -370,7 +364,6 @@ func NewInitApp(
 		app.DistrKeeper,
 		app.TokensKeeper,
 	)
-	app.EthereumKeeper = ethereumkeeper.NewKeeper(keys[ethereumtypes.StoreKey], appCodec, app.CustomGovKeeper, app.BankKeeper)
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
@@ -446,7 +439,6 @@ func NewInitApp(
 		collectives.NewAppModule(app.CollectivesKeeper),
 		layer2.NewAppModule(app.Layer2Keeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
-		ethereum.NewAppModule(app.EthereumKeeper, app.CustomGovKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -459,7 +451,8 @@ func NewInitApp(
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
-		ethereumtypes.ModuleName,
+		baskettypes.ModuleName,
+		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
 		layer2types.ModuleName,
@@ -474,7 +467,6 @@ func NewInitApp(
 		feeprocessingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
-		ethereumtypes.ModuleName,
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
 		layer2types.ModuleName,
@@ -503,7 +495,6 @@ func NewInitApp(
 		paramstypes.ModuleName,
 		distributortypes.ModuleName,
 		custodytypes.ModuleName,
-		ethereumtypes.ModuleName,
 		multistakingtypes.ModuleName,
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
