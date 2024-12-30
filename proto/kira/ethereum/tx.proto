@@ -1,0 +1,31 @@
+syntax = "proto3";
+package kira.ethereum;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/bank/v1beta1/bank.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "kira/ethereum/ethereum.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/ethereum/types";
+
+// Msg defines the ethereum Msg service.
+service Msg {
+  rpc Relay(MsgRelay) returns (MsgRelayResponse);
+}
+
+message MsgRelay {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string data = 2;
+}
+
+message MsgRelayResponse {}
