@@ -1,0 +1,26 @@
+syntax = "proto3";
+package kira.ethereum;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "kira/ethereum/ethereum.proto";
+import "kira/ethereum/tx.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/ethereum/types";
+
+service Query {
+  rpc RelayByAddress (RelayByAddressRequest) returns (RelayByAddressResponse) {
+    option (google.api.http).get = "/kira/ethereum/relay/{addr}";
+  }
+}
+
+message RelayByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message RelayByAddressResponse {
+  MsgRelay msg_relay = 1;
+}
