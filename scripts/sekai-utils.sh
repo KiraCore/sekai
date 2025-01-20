@@ -1361,3 +1361,17 @@ function getPollVotes() {
 
   echo "$RESULT"
 }
+
+
+function ethereumTxRelay() {
+    local SOURCE=$1
+    local DATA=$2
+    local RESULT=""
+
+    ($(isNullOrEmpty $FEE_AMOUNT)) && FEE_AMOUNT=100
+    ($(isNullOrEmpty $FEE_DENOM)) && FEE_DENOM="ukex"
+
+    RESULT=$(sekaid tx ethereum relay --from="$SOURCE" "$DATA" --keyring-backend=test --chain-id="$NETWORK_NAME" --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home="$SEKAID_HOME" 2> /dev/null | txAwait2 180 2> /dev/null || echo -n "" )
+
+    echo "${RESULT,,}"
+}
