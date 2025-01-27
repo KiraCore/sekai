@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"github.com/KiraCore/sekai/x/ethereum/types"
 	"github.com/armon/go-metrics"
+	"github.com/cometbft/cometbft/crypto/secp256k1"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -131,6 +132,14 @@ func (m msgServer) Relay(goCtx context.Context, relay *types.MsgRelay) (*types.M
 	err = proto.Unmarshal(dataBytes, msg)
 	if err != nil {
 		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, err.Error())
+	}
+
+	pubB := crypto.CompressPubkey(pubKey)
+	pubK := secp256k1.PubKey(pubB)
+	kiraAdr := sdk.AccAddress(pubK.Address())
+
+	if msg.FromAddress != kiraAdr.String() {
+		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, "Recovered address does not equal sender")
 	}
 
 	if err := m.bk.IsSendEnabledCoins(ctx, msg.Amount...); err != nil {
