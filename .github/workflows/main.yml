@@ -126,7 +126,7 @@ jobs:
       - name: Confirm installation!
         run: cosign version
       - name: Download artifacts
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v4.2.1
         with:
           name: sekai-bin-deb
       - name: Inspecting & organizing artifacts
