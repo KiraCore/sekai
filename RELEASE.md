@@ -1,3 +1,3 @@
 Features:
 
-- Fix legacy tx signing
+- KIP-87:Ethereum RPC Abstraction
