@@ -103,7 +103,7 @@ jobs:
           echo -e "\`\`\`"   >> ./bin/RELEASE.md
           tar -czvf deb.tar.gz -C ./bin .
       - name: Uploading artifacts
-        uses: actions/upload-artifact@v3.0.0
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: sekai-bin-deb
           path: ./deb.tar.gz
