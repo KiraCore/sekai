@@ -77,6 +77,7 @@ enum NetworkProperty {
     VETO_THRESHOLD = 59 [ (gogoproto.enumvalue_customname) = "VetoThreshold" ];
     AUTOCOMPOUND_INTERVAL_NUM_BLOCKS = 60 [ (gogoproto.enumvalue_customname) = "AutocompoundIntervalNumBlocks" ];
     DOWNTIME_INACTIVE_DURATION = 61 [ (gogoproto.enumvalue_customname) = "DowntimeInactiveDuration" ];
+    BRIDGE_ADDRESS = 62 [ (gogoproto.enumvalue_customname) = "BridgeAddress" ];
 }
 
 message NetworkPropertyValue {
@@ -182,4 +183,5 @@ message NetworkProperties {
     ];
     uint64 autocompound_interval_num_blocks = 61; // default 17280 - once per day
     uint64 downtime_inactive_duration = 62; // default 600s - 10min
+    string bridge_address = 63;
 }
