@@ -7,10 +7,11 @@ import (
 	"encoding/hex"
 	"github.com/KiraCore/sekai/x/ethereum/types"
 	"github.com/armon/go-metrics"
+	"github.com/cometbft/cometbft/crypto/secp256k1"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	types2 "github.com/cosmos/cosmos-sdk/x/bank/types"
+	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
@@ -70,8 +71,12 @@ func (m msgServer) Relay(goCtx context.Context, relay *types.MsgRelay) (*types.M
 		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, err.Error())
 	}
 
-	data, _ := hex.DecodeString(tx.Data[2:])
-	chainID := big.NewInt(int64(tx.ChainId))
+	data, err := hex.DecodeString(tx.Data[2:])
+	if err != nil {
+		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, err.Error())
+	}
+
+	chainID := big.NewInt(tx.ChainId)
 
 	rBytes, err := hex.DecodeString(tx.R[2:])
 	if err != nil {
@@ -98,7 +103,15 @@ func (m msgServer) Relay(goCtx context.Context, relay *types.MsgRelay) (*types.M
 	signer := ethtypes.NewEIP155Signer(chainID)
 	hash := signer.Hash(ntx)
 
-	sig := append(rBytes, append(sBytes, vBytes...)...)
+	r := new(big.Int).SetBytes(rBytes)
+	s := new(big.Int).SetBytes(sBytes)
+	v := new(big.Int).SetBytes(vBytes)
+
+	sig, err := recoverPlain(r, s, v, false)
+	if err != nil {
+		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, err.Error())
+	}
+
 	pubKey, err := crypto.SigToPub(hash.Bytes(), sig)
 	if err != nil {
 		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, err.Error())
@@ -110,10 +123,23 @@ func (m msgServer) Relay(goCtx context.Context, relay *types.MsgRelay) (*types.M
 		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, "Recovered address does not equal sender")
 	}
 
-	var msg = new(types2.MsgSend)
-	err = proto.Unmarshal([]byte(tx.Data), msg)
+	dataBytes, err := hex.DecodeString(tx.Data[2:])
 	if err != nil {
 		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, err.Error())
+	}
+
+	var msg = new(bank.MsgSend)
+	err = proto.Unmarshal(dataBytes, msg)
+	if err != nil {
+		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, err.Error())
+	}
+
+	pubB := crypto.CompressPubkey(pubKey)
+	pubK := secp256k1.PubKey(pubB)
+	kiraAdr := sdk.AccAddress(pubK.Address())
+
+	if msg.FromAddress != kiraAdr.String() {
+		return &types.MsgRelayResponse{}, errors.Wrap(types.ErrEthTxNotValid, "Recovered address does not equal sender")
 	}
 
 	if err := m.bk.IsSendEnabledCoins(ctx, msg.Amount...); err != nil {
@@ -154,4 +180,22 @@ func (m msgServer) Relay(goCtx context.Context, relay *types.MsgRelay) (*types.M
 	m.keeper.SetRelay(ctx, relay)
 
 	return &types.MsgRelayResponse{}, nil
+}
+
+func recoverPlain(R, S, Vb *big.Int, homestead bool) ([]byte, error) {
+	if Vb.BitLen() > 8 {
+		return nil, errors.ErrPanic //todo
+	}
+
+	V := byte(Vb.Uint64() - 27)
+	if !crypto.ValidateSignatureValues(V, R, S, homestead) {
+		return nil, errors.ErrPanic //todo
+	}
+
+	r, s := R.Bytes(), S.Bytes()
+	sig := make([]byte, 65)
+	copy(sig[32-len(r):32], r)
+	copy(sig[64-len(s):64], s)
+	sig[64] = V
+	return sig, nil
 }
