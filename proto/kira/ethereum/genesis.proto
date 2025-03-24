@@ -1,0 +1,8 @@
+syntax = "proto3";
+package kira.ethereum;
+
+import "kira/ethereum/ethereum.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/ethereum/types";
+
+message GenesisState { }
