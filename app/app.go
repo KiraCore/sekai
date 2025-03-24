@@ -11,6 +11,9 @@ import (
 	"github.com/KiraCore/sekai/x/basket"
 	basketkeeper "github.com/KiraCore/sekai/x/basket/keeper"
 	baskettypes "github.com/KiraCore/sekai/x/basket/types"
+	"github.com/KiraCore/sekai/x/bridge"
+	bridgekeeper "github.com/KiraCore/sekai/x/bridge/keeper"
+	bridgetypes "github.com/KiraCore/sekai/x/bridge/types"
 	"github.com/KiraCore/sekai/x/collectives"
 	collectiveskeeper "github.com/KiraCore/sekai/x/collectives/keeper"
 	collectivestypes "github.com/KiraCore/sekai/x/collectives/types"
@@ -124,6 +127,7 @@ var (
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
 		custody.AppModuleBasic{},
+		bridge.AppModuleBasic{},
 		multistaking.AppModuleBasic{},
 		collectives.AppModuleBasic{},
 		layer2.AppModuleBasic{},
@@ -142,6 +146,7 @@ var (
 		collectivestypes.ModuleName:  nil,
 		layer2types.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		recoverytypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+		bridgetypes.ModuleName:       nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -169,6 +174,7 @@ type SekaiApp struct {
 	ParamsKeeper  paramskeeper.Keeper
 
 	CustodyKeeper         custodykeeper.Keeper
+	BridgeKeeper          bridgekeeper.Keeper
 	CustomGovKeeper       customgovkeeper.Keeper
 	CustomStakingKeeper   customstakingkeeper.Keeper
 	CustomSlashingKeeper  customslashingkeeper.Keeper
@@ -234,6 +240,7 @@ func NewInitApp(
 		feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey,
 		custodytypes.StoreKey,
+		bridgetypes.StoreKey,
 		collectivestypes.ModuleName,
 		layer2types.StoreKey,
 		consensusparamtypes.StoreKey,
@@ -335,6 +342,7 @@ func NewInitApp(
 	app.EvidenceKeeper = *evidenceKeeper
 
 	app.CustodyKeeper = custodykeeper.NewKeeper(keys[custodytypes.StoreKey], appCodec, app.CustomGovKeeper, app.BankKeeper)
+	app.BridgeKeeper = bridgekeeper.NewKeeper(keys[bridgetypes.StoreKey], appCodec, app.BankKeeper)
 
 	app.RecoveryKeeper = recoverykeeper.NewKeeper(
 		appCodec,
@@ -436,6 +444,7 @@ func NewInitApp(
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		custody.NewAppModule(app.CustodyKeeper, app.CustomGovKeeper, app.BankKeeper),
+		bridge.NewAppModule(app.BridgeKeeper, app.BankKeeper),
 		collectives.NewAppModule(app.CollectivesKeeper),
 		layer2.NewAppModule(app.Layer2Keeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
@@ -450,9 +459,10 @@ func NewInitApp(
 		upgradetypes.ModuleName, slashingtypes.ModuleName, recoverytypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
-		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
-		baskettypes.ModuleName,
-		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
+		distributortypes.ModuleName,
+		multistakingtypes.ModuleName,
+		custodytypes.ModuleName,
+		bridgetypes.ModuleName,
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
 		layer2types.ModuleName,
@@ -467,6 +477,7 @@ func NewInitApp(
 		feeprocessingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
+		bridgetypes.ModuleName,
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
 		layer2types.ModuleName,
@@ -495,6 +506,7 @@ func NewInitApp(
 		paramstypes.ModuleName,
 		distributortypes.ModuleName,
 		custodytypes.ModuleName,
+		bridgetypes.ModuleName,
 		multistakingtypes.ModuleName,
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
@@ -534,6 +546,7 @@ func NewInitApp(
 			app.AccountKeeper,
 			app.BankKeeper,
 			app.CustodyKeeper,
+			app.BridgeKeeper,
 			nil,
 			nil,
 			ante.DefaultSigVerificationGasConsumer,
