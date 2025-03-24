@@ -1,0 +1,21 @@
+syntax = "proto3";
+package kira.ethereum;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/ethereum/types";
+
+message EVMTx {
+  string From     = 1;
+  string To       = 2;
+  string Value    = 3;
+  string Gas      = 4;
+  string GasPrice = 5;
+  string Nonce    = 6;
+  string Data     = 7;
+  int64  ChainId  = 8;
+  string V        = 9;
+  string R        = 10;
+  string S        = 11;
+}
