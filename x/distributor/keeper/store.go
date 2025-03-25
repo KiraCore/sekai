@@ -26,20 +26,6 @@ func (k Keeper) GetFeesTreasury(ctx sdk.Context) sdk.Coins {
 	return coins
 }
 
-func (k Keeper) SetSnapPeriod(ctx sdk.Context, period int64) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(types.SnapPeriodKey, sdk.Uint64ToBigEndian(uint64(period)))
-}
-
-func (k Keeper) GetSnapPeriod(ctx sdk.Context) int64 {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.SnapPeriodKey)
-	if bz == nil {
-		return 1
-	}
-	return int64(sdk.BigEndianToUint64(bz))
-}
-
 func (k Keeper) SetValidatorVote(ctx sdk.Context, consAddr sdk.ConsAddress, height int64) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.PrefixKeyValidatorVote)
 	bz := sdk.Uint64ToBigEndian(uint64(height))

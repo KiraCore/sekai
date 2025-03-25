@@ -72,9 +72,8 @@ func (k Keeper) AllocateTokens(
 	proposerValidator, err := k.sk.GetValidatorByConsAddr(ctx, previousProposer)
 	if err == nil {
 		// calculate reward based on historical bonded votes of the validator
-		votes := k.GetValidatorVotes(ctx, previousProposer)
-		power := int64(len(votes))
-		snapPeriod := k.GetSnapPeriod(ctx)
+		power := k.GetValidatorPerformanceByConsAddr(ctx, previousProposer)
+		snapPeriod := k.sk.GetNumberOfActiveValidators(ctx)
 		validatorRewards := sdk.Coins{}
 		poolRewards := sdk.Coins{}
 
@@ -167,10 +166,22 @@ func (k Keeper) SetPreviousProposerConsAddr(ctx sdk.Context, consAddr sdk.ConsAd
 	store.Set(types.ProposerKey, consAddr)
 }
 
+func (k Keeper) GetValidatorPerformanceByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) int64 {
+	voteHeights := k.GetValidatorVotes(ctx, consAddr)
+	snapPeriod := k.sk.GetNumberOfActiveValidators(ctx)
+	performance := int64((0))
+	for _, height := range voteHeights {
+		if height+snapPeriod > ctx.BlockHeight() {
+			performance++
+		}
+	}
+	return performance
+}
+
 func (k Keeper) GetValidatorPerformance(ctx sdk.Context, valAddr sdk.ValAddress) (int64, error) {
 	validator, err := k.sk.GetValidator(ctx, valAddr)
 	if err != nil {
 		return 0, err
 	}
-	return int64(len(k.GetValidatorVotes(ctx, validator.GetConsAddr()))), nil
+	return k.GetValidatorPerformanceByConsAddr(ctx, validator.GetConsAddr()), nil
 }

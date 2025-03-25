@@ -177,6 +177,15 @@ func (k Keeper) IterateLastValidators(ctx sdk.Context, fn func(index int64, vali
 	}
 }
 
+func (k Keeper) GetNumberOfActiveValidators(ctx sdk.Context) int64 {
+	numValidators := int64(0)
+	k.IterateLastValidators(ctx, func(_ int64, _ types.Validator) (stop bool) {
+		numValidators += 1
+		return false
+	})
+	return numValidators
+}
+
 // GetValidatorByConsAddr get validator by sdk.ConsAddress
 func (k Keeper) GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) (types.Validator, error) {
 	store := ctx.KVStore(k.storeKey)
