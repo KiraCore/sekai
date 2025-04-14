@@ -3564,7 +3564,7 @@ type QueryClient interface {
 	AddressesByBlacklistedPermission(ctx context.Context, in *QueryAddressesByBlacklistedPermission, opts ...grpc.CallOption) (*QueryAddressesByBlacklistedPermissionResponse, error)
 	// AddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
 	AddressesByWhitelistedRole(ctx context.Context, in *QueryAddressesByWhitelistedRole, opts ...grpc.CallOption) (*QueryAddressesByWhitelistedRoleResponse, error)
-	// Query list of all polls by address
+	//Query list of all polls by address
 	PollsListByAddress(ctx context.Context, in *QueryPollsListByAddress, opts ...grpc.CallOption) (*QueryPollsListByAddressResponse, error)
 	PollsVotesByPollId(ctx context.Context, in *QueryPollsVotesByPollId, opts ...grpc.CallOption) (*QueryPollsVotesByPollIdResponse, error)
 	// CustomPrefixes returns custom denom and bech32 address prefix
@@ -3961,7 +3961,7 @@ type QueryServer interface {
 	AddressesByBlacklistedPermission(context.Context, *QueryAddressesByBlacklistedPermission) (*QueryAddressesByBlacklistedPermissionResponse, error)
 	// AddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
 	AddressesByWhitelistedRole(context.Context, *QueryAddressesByWhitelistedRole) (*QueryAddressesByWhitelistedRoleResponse, error)
-	// Query list of all polls by address
+	//Query list of all polls by address
 	PollsListByAddress(context.Context, *QueryPollsListByAddress) (*QueryPollsListByAddressResponse, error)
 	PollsVotesByPollId(context.Context, *QueryPollsVotesByPollId) (*QueryPollsVotesByPollIdResponse, error)
 	// CustomPrefixes returns custom denom and bech32 address prefix

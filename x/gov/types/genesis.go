@@ -162,6 +162,7 @@ func DefaultGenesis() *GenesisState {
 			VetoThreshold:                   sdk.NewDecWithPrec(3340, 4), // 33.40%
 			AutocompoundIntervalNumBlocks:   17280,
 			DowntimeInactiveDuration:        600,
+			BridgeAddress:                   "test",
 		},
 		ExecutionFees: []ExecutionFee{
 			{
