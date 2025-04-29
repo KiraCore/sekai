@@ -9,7 +9,7 @@ jobs:
   # isolate signing & repo cloning from docker image
   auto-pr:
     name: Automated Master Branch PR
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
       packages: write

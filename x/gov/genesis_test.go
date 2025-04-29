@@ -187,7 +187,8 @@ func TestSimappExportGenesis(t *testing.T) {
     "minting_nft_fee": "100000000000000",
     "veto_threshold": "0.334000000000000000",
     "autocompound_interval_num_blocks": "17280",
-    "downtime_inactive_duration": "600"
+    "downtime_inactive_duration": "600",
+	"bridge_address": "test"
   },
   "execution_fees": [
     {
@@ -394,6 +395,7 @@ func TestExportInitGenesis(t *testing.T) {
 			VetoThreshold:                   sdk.NewDecWithPrec(3340, 4), // 33.40%
 			AutocompoundIntervalNumBlocks:   17280,
 			DowntimeInactiveDuration:        600,
+			BridgeAddress:                   "test",
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -511,7 +513,8 @@ func TestExportInitGenesis(t *testing.T) {
     "minting_nft_fee": "100000000000000",
     "veto_threshold": "0.334000000000000000",
     "autocompound_interval_num_blocks": "17280",
-    "downtime_inactive_duration": "600"
+    "downtime_inactive_duration": "600",
+    "bridge_address": "test"
   },	
   "execution_fees": [	
     {	
