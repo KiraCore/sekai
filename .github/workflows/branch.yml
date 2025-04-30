@@ -8,7 +8,7 @@ on:
 jobs:
   auto-pr:
     name: Automated Master Branch PR
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       packages: write

@@ -29,17 +29,17 @@ func TxChangeCosmosEthereum() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "change_cosmos_ethereum",
 		Short: "Create new change request from Cosmos to Ethereum",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			to := args[1]
-			hash := args[2]
+			to := args[0]
+			hash := args[1]
 
-			amount, err := sdk.ParseCoinsNormalized(args[3])
+			amount, err := sdk.ParseCoinsNormalized(args[2])
 			if err != nil {
 				return err
 			}
@@ -65,21 +65,21 @@ func TxChangeEthereumCosmos() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "change_ethereum_cosmos",
 		Short: "Create new change request from Ethereum to Cosmos",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			from := args[1]
+			from := args[0]
 
-			to, err := sdk.AccAddressFromBech32(args[2])
+			to, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
 
-			amount, err := sdk.ParseCoinsNormalized(args[3])
+			amount, err := sdk.ParseCoinsNormalized(args[2])
 			if err != nil {
 				return err
 			}
