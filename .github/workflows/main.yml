@@ -158,6 +158,10 @@ jobs:
         run: |
           echo "SOURCE_BRANCH=$(echo ${{ env.REF_BRANCH }})" >> $GITHUB_ENV
           echo "DESTINATION_BRANCH=$(echo ${{ env.BASE_REF_BRANCH }})" >> $GITHUB_ENV
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0           
       - name: Create release tag
         run: |
           echo "Release for $RELEASE_BRANCH is being tagged"
