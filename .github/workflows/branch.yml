@@ -72,7 +72,7 @@ jobs:
           git push origin ${{ env.RELEASE_BRANCH }}
         env:
           RELEASE_BRANCH: ${{ env.RELEASE_BRANCH }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_PAT }}
       - name: Create PR from feature to version branch
         # ref. repo-sync/pull-request is broken, using cea2aj/pull-request instead
         # TODO: cea2aj/pull-request abondoned, we need to switch back to peter-evans/create-pull-request
