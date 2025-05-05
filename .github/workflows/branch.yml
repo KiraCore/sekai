@@ -69,7 +69,7 @@ jobs:
         run: |
           git fetch origin ${{ github.event.repository.default_branch }}
           git checkout -b ${{ env.RELEASE_BRANCH }} origin/${{ github.event.repository.default_branch }}
-          git push origin ${{ env.RELEASE_BRANCH }}
+          git push https://x-access-token:${{ secrets.REPO_ACCESS_PAT }}@github.com/KiraCore/${{ github.event.repository.name }} ${{ env.RELEASE_BRANCH }}
         env:
           RELEASE_BRANCH: ${{ env.RELEASE_BRANCH }}
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_PAT }}
@@ -83,7 +83,7 @@ jobs:
            ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
            ( startsWith(env.RELEASE_BRANCH, 'release/v') && contains(env.RELEASE_BRANCH, '.') )
         with:
-          github_token: ${{ secrets.REPO_ACCESS }}
+          github_token: ${{ secrets.REPO_ACCESS_PAT }}
           source_branch: ${{ env.SOURCE_BRANCH }}
           destination_branch: ${{ env.RELEASE_BRANCH}}
           pr_title: "${{ env.SOURCE_BRANCH }} -> ${{ env.RELEASE_BRANCH }}"
