@@ -1,3 +1,3 @@
 Features:
 
-- cidi: Update version of runners to latest
+- cidi: Tag test
