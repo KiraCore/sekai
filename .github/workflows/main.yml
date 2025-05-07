@@ -193,6 +193,24 @@ jobs:
           rm -fv ../cosign.key
       # ref: https://github.com/softprops/action-gh-release, v0.1.14
       # Release on merge only (push action) - this should run only once
+      - name: Checkout
+        if: |
+          github.event_name == 'push' &&
+          ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
+          ( startsWith(env.SOURCE_BRANCH, 'release/v') && contains(env.SOURCE_BRANCH, '.') )
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git config
+        if: |
+          github.event_name == 'push' &&
+          ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
+          ( startsWith(env.SOURCE_BRANCH, 'release/v') && contains(env.SOURCE_BRANCH, '.') )
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
       - name: Publish release
         if: |
           github.event_name == 'push' &&
@@ -201,6 +219,7 @@ jobs:
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
         with:
           body_path: RELEASE.md
+          tag_name: ${{ env.RELEASE_VER }}
           name: ${{ env.RELEASE_VER }}
           prerelease: ${{ env.PRE_RELEASE }}
           draft: false
