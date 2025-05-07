@@ -125,6 +125,25 @@ jobs:
           cosign-release: 'v2.2.3'
       - name: Confirm installation!
         run: cosign version
+
+      - name: Checkout
+        if: |
+          github.event_name == 'push' &&
+          ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
+          ( startsWith(env.SOURCE_BRANCH, 'release/v') && contains(env.SOURCE_BRANCH, '.') )
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git config
+        if: |
+          github.event_name == 'push' &&
+          ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
+          ( startsWith(env.SOURCE_BRANCH, 'release/v') && contains(env.SOURCE_BRANCH, '.') )
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
       - name: Download artifacts
         uses: actions/download-artifact@v4.2.1
         with:
@@ -193,24 +212,6 @@ jobs:
           rm -fv ../cosign.key
       # ref: https://github.com/softprops/action-gh-release, v0.1.14
       # Release on merge only (push action) - this should run only once
-      - name: Checkout
-        if: |
-          github.event_name == 'push' &&
-          ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
-          ( startsWith(env.SOURCE_BRANCH, 'release/v') && contains(env.SOURCE_BRANCH, '.') )
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Git config
-        if: |
-          github.event_name == 'push' &&
-          ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
-          ( startsWith(env.SOURCE_BRANCH, 'release/v') && contains(env.SOURCE_BRANCH, '.') )
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
       - name: Publish release
         if: |
           github.event_name == 'push' &&
