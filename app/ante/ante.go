@@ -94,6 +94,11 @@ func (bd BridgeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, 
 
 	for _, msg := range feeTx.GetMsgs() {
 		switch kiratypes.MsgType(msg) {
+		case kiratypes.MsgTypeChangeCosmosEthereum:
+			if !properties.BridgeStatus {
+				return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "bridge module is disabled")
+			}
+
 		case kiratypes.MsgTypeChangeEthereumCosmos:
 			msg, ok := msg.(*bridgetypes.MsgChangeEthereumCosmos)
 			if !ok {
