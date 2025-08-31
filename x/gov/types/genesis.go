@@ -163,6 +163,7 @@ func DefaultGenesis() *GenesisState {
 			AutocompoundIntervalNumBlocks:   17280,
 			DowntimeInactiveDuration:        600,
 			BridgeAddress:                   "test",
+			BridgeStatus:                    true, // bridge module enabled by default
 		},
 		ExecutionFees: []ExecutionFee{
 			{
