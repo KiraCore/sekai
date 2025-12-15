@@ -333,6 +333,9 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		MaxAnnualInflation,
 		MinDappBond,
 		MaxDappBond,
+		MintingFtFee,
+		MintingNftFee,
+		BridgeAddress,
 		DappBondDuration:
 		return nil
 	default:

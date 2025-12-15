@@ -940,6 +940,7 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 			case types.VoteQuorum:
 				fallthrough
 			case types.VetoThreshold:
+			case types.BridgeAddress:
 				value.StrValue = args[1]
 			default:
 				numVal, err := strconv.Atoi(args[1])
